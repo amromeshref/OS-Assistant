@@ -1,7 +1,6 @@
 import os
 
-
-VOICE_ENABLED = False
+VOICE_INPUT_ENABLED = True
 AVAILABLE_PLATFORMS = ["ollama", "groq"]
 DEFAULT_PLATFORM = "groq"
 
