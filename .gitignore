@@ -1,0 +1,10 @@
+logs/
+notebooks/
+src/os_assistant/__pycache__/
+src/os_assistant/core/__pycache__/
+src/os_assistant/utils/__pycache__/
+src/os_assistant/config/__pycache__
+src/os_assistant/prompts/__pycache__
+src/os_assistant/tools/__pycache__
+src/os_assistant.egg-info/
+thinking.txt
