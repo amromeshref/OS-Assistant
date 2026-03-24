@@ -113,6 +113,7 @@ class LLMModel:
                     )
                     return response['message']['content']
                 else:
+                    # TODO: Implement structured output handling for Ollama.
                     pass
             except Exception as e:
                 logger.error(f"Error generating response with Ollama: {e}")
