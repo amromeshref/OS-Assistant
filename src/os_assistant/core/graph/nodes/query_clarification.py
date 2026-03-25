@@ -16,7 +16,7 @@ def query_clarification_node(state: OSAssistantState) -> OSAssistantState:
     """
     logger.info("Starting query clarification node.")
     state.clarification_attempts += 1
-    
+
     llm_model = LLMModel()
     sys_prompt = get_query_clarification_sys_prompt()
 
