@@ -1,4 +1,4 @@
-def get_query_clarification_sys_prompt():
+def get_query_clarification_sys_prompt(structured_output=None):
     prompt = """
 You are a clarification agent for an OS assistant.
 
