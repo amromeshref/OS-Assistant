@@ -7,9 +7,11 @@ DEFAULT_PLATFORM = "groq"
 # Node Names
 QUERY_CLASSIFICATION_NODE = "query_classification_node"
 QUERY_CLARIFICATION_NODE = "query_clarification_node"
-PLANNER_NODE = "planner_node"
+PLANNER_NODE = "planning_node"
+USER_VALIDATION_NODE = "user_validation_node"
 
 # Configuration for the clarification node
+# shourd be added to config dir
 CLARIFICATION_NODE_MAX_ATTEMPTS = 3
 
 
