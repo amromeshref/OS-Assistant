@@ -15,9 +15,9 @@ src/os_assistant/utils/__pycache__/
 src/os_assistant/core/graphs/__pycache__/
 src/os_assistant/core/states/__pycache__/
 
-src/os_assistant/core/graphs/congnition/__pycache__/
-src/os_assistant/core/graphs/congnition/nodes/__pycache__/
-src/os_assistant/core/graphs/congnition/routing/__pycache__/
+src/os_assistant/core/graphs/cognition/__pycache__/
+src/os_assistant/core/graphs/cognition/nodes/__pycache__/
+src/os_assistant/core/graphs/cognition/routing/__pycache__/
 
 src/os_assistant/core/graphs/execution/__pycache__/
 src/os_assistant/core/graphs/execution/nodes/__pycache__/
