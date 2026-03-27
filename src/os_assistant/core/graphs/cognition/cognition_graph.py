@@ -24,7 +24,6 @@ class CognitionGraph(StateGraph):
         Returns:
             StateGraph[OSAssistantState]: The constructed cognition graph.
         """
-        logger.info("Building OS Assistant graph.")
         graph = StateGraph(OSAssistantState)
 
         graph.add_node(QUERY_CLASSIFICATION_NODE, query_classification_node)
@@ -41,7 +40,7 @@ class CognitionGraph(StateGraph):
         )
         graph.add_edge(QUERY_CLARIFICATION_NODE, END)
 
-        logger.info("OS Assistant graph built successfully.")
+        logger.info("Cognition graph built successfully.")
 
         return graph
 
@@ -49,9 +48,8 @@ class CognitionGraph(StateGraph):
         """
         Compiles the cognition graph.
         """
-        logger.info("Compiling OS Assistant graph.")
         self.compiled_graph = self.graph.compile()
-        logger.info("OS Assistant graph compiled successfully.")
+        logger.info("Cognition graph compiled successfully.")
     
     def execute(self, initial_state: OSAssistantState) -> OSAssistantState:
         """
