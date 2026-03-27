@@ -26,7 +26,6 @@ class PlanningGraph(StateGraph):
         Returns:
             StateGraph[OSAssistantState]: The constructed planning graph.
         """
-        logger.info("Building Planning Graph.")
         graph = StateGraph(OSAssistantState)
 
         graph.add_node(PLANNER_NODE, planning_node)
@@ -44,7 +43,6 @@ class PlanningGraph(StateGraph):
         """
         Compiles the planning graph.
         """
-        logger.info("Compiling Planning Graph.")
         self.compiled_graph = self.graph.compile()
         logger.info("Planning Graph compiled successfully.")
     
