@@ -83,6 +83,50 @@ class PlanningState(BaseModel):
     )
 
 
+class CommandExecution(BaseModel):
+    command_line: str = Field(
+        ..., description="The exact command-line instruction that was executed."
+    )
+
+    success: bool = Field(
+        ..., description="Indicates whether the command executed successfully."
+    )
+
+    output: str = Field(
+        ..., description="The standard output produced by the command, if any."
+    )
+
+    error: Optional[str] = Field(
+        default=None, description="The error output produced by the command, if any."
+    )
+    # messages: Optional[List[str]] = Field(default_factory=list),
+    # remaining_steps: Optional[List[str]] = Field(default_factory=list)
+
+class InformationResponse(BaseModel):
+    query: str = Field(
+        default=None,
+        description="The query or topic that was answered"
+    )
+    
+    answer: str = Field(
+        default=None,
+        description="Clear and user-friendly explanation"
+    )
+
+class FinalResponse(BaseModel):
+    """
+    Final response sent to the user.
+    """
+
+    response: str = Field(
+        ..., description="User-friendly final response combining all results"
+    )
+
+    summary: Optional[str] = Field(
+        default=None,
+        description="Short summary of what was done"
+    )
+
 class OSAssistantState(BaseModel):
     """
     Represents the state of the OS Assistant, including any relevant information
@@ -145,4 +189,43 @@ class OSAssistantState(BaseModel):
     user_validation_status: str = Field(
         default=None,
         description="The status of the user validation process (e.g., 'pending', 'completed', 'error').",
-    )   
+    )
+
+
+    # =========== Execution ===========
+
+    command_executions: List[CommandExecution] = Field(
+        default_factory=list,
+        description=(
+            "A list of command execution results, detailing the outcome of each command "
+            "that was run as part of fulfilling the user's request."
+        ),
+    )
+
+    command_execution_status: str = Field(
+        default=None,
+        description="The status of the command execution process (e.g., 'pending', 'completed', 'error')."
+    )
+
+    # =========== Information Response ===========
+
+    generated_information_responses: List[InformationResponse] = Field(
+        default_factory=list,
+        description="A list of generated responses to answer the information the user requested"
+    )
+
+    generated_information_responses_status: str = Field(
+        default=None,
+        description="The status of the information generation process (e.g., 'pending', 'completed', 'error')."
+    )
+
+    # =========== Final Response ===========
+    final_response: FinalResponse = Field(
+        default = None,
+        description="Final response sent to the user"
+    )
+
+    final_response_status: str = Field(
+        default=None,
+        description="The status of the final response process (e.g., 'pending', 'completed', 'error')."
+    )
