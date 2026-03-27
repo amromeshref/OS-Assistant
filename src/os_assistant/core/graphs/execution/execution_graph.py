@@ -1,0 +1,72 @@
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.core.graphs.execution.nodes.code_execution import code_execution_node
+from os_assistant.core.graphs.execution.nodes.information_generation import information_generation_node
+from os_assistant.core.graphs.execution.nodes.final_response import final_response_node
+from os_assistant.core.graphs.execution.routing.logic import (
+    route_after_code_execution,
+    route_after_starting,
+)
+from os_assistant.core.settings import (
+    CODE_EXECUTION_NODE,
+    INFORMATION_NODE,
+    FINAL_RESPONSE_NODE,
+)
+
+from os_assistant.utils.logger import get_logger
+from langgraph.graph import StateGraph, END, START
+
+
+logger = get_logger(__name__)
+
+class ExecutionGraph:
+    def __init__(self):
+        self.graph = self._build_execution_graph()
+        self.compiled_graph = None
+    
+    def _build_execution_graph(self) -> StateGraph[OSAssistantState]:
+        """
+        """
+        graph = StateGraph(OSAssistantState)
+        
+        graph.add_node(CODE_EXECUTION_NODE, code_execution_node)
+        graph.add_node(INFORMATION_NODE, information_generation_node)
+        graph.add_node(FINAL_RESPONSE_NODE, final_response_node)
+
+        graph.add_conditional_edges(
+            START,
+            route_after_starting,
+            {
+                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
+                INFORMATION_NODE: INFORMATION_NODE
+            }
+        )
+
+        graph.add_conditional_edges(
+            CODE_EXECUTION_NODE,
+            route_after_code_execution,
+            {
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
+                INFORMATION_NODE: INFORMATION_NODE
+            }
+        )
+
+        graph.add_edge(INFORMATION_NODE, FINAL_RESPONSE_NODE)
+        graph.add_edge(FINAL_RESPONSE_NODE, END)
+
+        logger.info("Code Execution graph built successfully.")
+
+        return graph
+    
+    def compile(self) -> None:
+        """
+        """
+        self.compiled_graph = self.graph.compile()
+        logger.info("Code Execution graph compiled successfully.")
+    
+    def execute(self, initial_state: OSAssistantState) -> OSAssistantState:
+        """
+        """
+        logger.info("Executing Code Execution graph.")
+        final_state = self.compiled_graph.invoke(initial_state)
+        logger.info("Code Execution Graph execution completed.")
+        return final_state
