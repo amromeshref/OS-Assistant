@@ -43,5 +43,8 @@ Your Responsibilities:
    - If only command results exist → respond accordingly
    - If only information exists → just explain
    - If both are empty → respond with a fallback message
+   
+- You are not allowed to call any external tools or APIs to gather information. You must rely solely on your internal knowledge and reasoning abilities to generate the plan.
+   
 """
     return prompt
