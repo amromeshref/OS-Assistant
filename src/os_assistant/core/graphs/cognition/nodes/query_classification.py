@@ -30,7 +30,7 @@ def query_classification_node(state: OSAssistantState) -> OSAssistantState:
     # Generate the classification response from the LLM
     response: QueryClassificationState = llm_model.generate_response(
         system_message=sys_prompt,
-        human_message=state.original_query,
+        human_message=state.original_queries[-1],  # Use the most recent original query for classification
         structured_output=QueryClassificationState,
     )
 
@@ -45,7 +45,8 @@ def query_classification_node(state: OSAssistantState) -> OSAssistantState:
 
     state.query_classification = response
     state.query_classification_status = "completed"
-    state.original_query_enhanced = response.original_query_enhanced
+    state.original_queries_enhanced.append(response.original_query_enhanced)
+    state.finalized_enhanced_query = response.original_query_enhanced
 
     logger.info("Completed query classification node.")
 
