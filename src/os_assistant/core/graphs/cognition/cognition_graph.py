@@ -1,7 +1,7 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.cognition.nodes.query_clarification import query_clarification_node
 from os_assistant.core.graphs.cognition.nodes.query_classification import query_classification_node
-from os_assistant.core.graphs.cognition.routing.logic import route_query_after_classification
+from os_assistant.core.graphs.cognition.routing.logic import route_query_after_classification, route_query_after_starting
 from os_assistant.core.settings import (
     QUERY_CLASSIFICATION_NODE,
     QUERY_CLARIFICATION_NODE,
@@ -29,7 +29,15 @@ class CognitionGraph(StateGraph):
         graph.add_node(QUERY_CLASSIFICATION_NODE, query_classification_node)
         graph.add_node(QUERY_CLARIFICATION_NODE, query_clarification_node)
 
-        graph.add_edge(START, QUERY_CLASSIFICATION_NODE)
+        graph.add_conditional_edges(
+            START,
+            route_query_after_starting,
+            {
+                QUERY_CLARIFICATION_NODE: QUERY_CLARIFICATION_NODE,
+                QUERY_CLASSIFICATION_NODE: QUERY_CLASSIFICATION_NODE,
+            },
+        )
+
         graph.add_conditional_edges(
             QUERY_CLASSIFICATION_NODE,
             route_query_after_classification,
@@ -38,6 +46,7 @@ class CognitionGraph(StateGraph):
                 END: END,
             },
         )
+        
         graph.add_edge(QUERY_CLARIFICATION_NODE, END)
 
         logger.info("Cognition graph built successfully.")
@@ -61,5 +70,6 @@ class CognitionGraph(StateGraph):
         """        
         logger.info("Executing Cognition Graph.")
         final_state = self.compiled_graph.invoke(initial_state)
+        final_state = OSAssistantState(**final_state)
         logger.info("Cognition Graph execution completed.")
         return final_state
