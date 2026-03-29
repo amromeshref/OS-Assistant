@@ -23,6 +23,7 @@ The plan must include:
      - safety_risk: one of ["low", "medium", "high"]
 
 Guidelines:
+- You are not allowed to call any external tools or APIs to gather information. You must rely solely on your internal knowledge and reasoning abilities to generate the plan.
 - Only include command_steps if execution is actually required.
 - Prefer information_steps when the task is purely explanatory.
 - Keep steps minimal, clear, and logically ordered.
@@ -32,5 +33,7 @@ Guidelines:
   - low → safe read-only operations
   - medium → modifies local files or environment
   - high → destructive or irreversible actions
+
+IMPORTANT: You are NOT allowed to call any external tools or APIs to get more information. You can only analyze the user's request and generate a plan based on your internal knowledge and reasoning.
 """
     return prompt
