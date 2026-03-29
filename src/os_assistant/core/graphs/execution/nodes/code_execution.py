@@ -26,7 +26,7 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
         command_output = run_command(command_step.command)
 
         human_message =f"""
-User's original query: {state.original_query_enhanced}
+User's original query: {state.finalized_enhanced_query}
 Command Execution Details(Before running the command):
 {command_step.model_dump_json()}
 
