@@ -27,7 +27,7 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
         information_response = InformationResponse()
         information_response.query = information_step.description
         human_message = f"""
-User's Original Query: {state.original_query_enhanced}
+User's Original Query: {state.finalized_enhanced_query}
 Information Query: {information_step.description}
 """
         if len(state.command_executions) != 0:
