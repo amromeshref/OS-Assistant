@@ -24,5 +24,7 @@ Your Responsibilities:
 3. Extract error information:
    - If an error exists, include it clearly
    - If no error → return null
+
+IMPORTANT: You are NOT allowed to call any external tools or APIs to get more information. You can only analyze the provided command and its outputs.
 """
     return prompt
