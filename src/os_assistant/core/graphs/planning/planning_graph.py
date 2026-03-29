@@ -56,5 +56,6 @@ class PlanningGraph(StateGraph):
         """        
         logger.info("Executing Planning Graph.")
         final_state = self.compiled_graph.invoke(initial_state)
+        final_state = OSAssistantState(**final_state)
         logger.info("Planning Graph execution completed.")
         return final_state
