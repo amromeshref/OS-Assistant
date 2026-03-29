@@ -1,4 +1,4 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.core.states.os_assistant_state import OSAssistantState, QueryClarificationState
 from os_assistant.prompts.query_clarification import get_query_clarification_sys_prompt
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models import LLMModel
@@ -21,19 +21,23 @@ def query_clarification_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_query_clarification_sys_prompt()
 
     human_message = f"""
-The user's original query is: "{state.query_classification.original_query_enhanced}"
-Follow up reasoning: "{state.query_classification.follow_up_reasoning}"
-"""
-
+Current Turn Query: {state.original_queries[-1]}
+Conversation History: {str(state.multi_turn_conversation_history)}
+    """
     # Generate the classification response from the LLM
-    response: str = llm_model.generate_response(
-        system_message=sys_prompt, human_message=human_message, structured_output=None
+    response: QueryClarificationState = llm_model.generate_response(
+        system_message=sys_prompt,
+        human_message=human_message,
+        structured_output=QueryClarificationState
     )
 
     # TODO: Implement parsing logic
 
-    state.generated_response_for_clarification = response
+    state.query_clarification = response
     logger.info("Completed query clarification node.")
+
+    if not state.query_clarification.is_clarification_needed:
+        state.finalized_enhanced_query = state.query_clarification.finalized_enhanced_query
 
     return state
 
