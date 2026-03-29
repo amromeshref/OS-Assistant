@@ -18,7 +18,7 @@ def final_response_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_final_response_sys_prompt()
 
     human_message = f"""
-User's Original Query: {state.original_query_enhanced}
+User's Original Query: {state.finalized_enhanced_query}
 Short summary of how the user's query should be handeled: {state.planning.fulfillment_summary}
 """
     if len(state.command_executions) != 0:
