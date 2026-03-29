@@ -19,7 +19,7 @@ def planning_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_planning_sys_prompt()
     
     human_message = f"""
-User's original query: {state.original_query_enhanced}
+User's original query: {state.finalized_enhanced_query}
 Query Type (command, information, or both): {state.query_classification.query_type}
 Classification Reasoning: {state.query_classification.classification_reasoning}
     """
