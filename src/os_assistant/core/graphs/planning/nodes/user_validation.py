@@ -19,7 +19,7 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_user_validation_sys_prompt()
     
     human_message = f"""
-User's original query: {state.original_query_enhanced}
+User's original query: {state.finalized_enhanced_query}
 Generated execution/information plan: {state.planning.model_dump_json()}
     """
 
