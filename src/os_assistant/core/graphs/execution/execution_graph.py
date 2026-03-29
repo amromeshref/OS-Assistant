@@ -68,5 +68,6 @@ class ExecutionGraph:
         """
         logger.info("Executing Code Execution graph.")
         final_state = self.compiled_graph.invoke(initial_state)
+        final_state = OSAssistantState(**final_state)
         logger.info("Code Execution Graph execution completed.")
         return final_state
