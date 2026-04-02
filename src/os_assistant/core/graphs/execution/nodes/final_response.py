@@ -6,6 +6,7 @@ from os_assistant.prompts.final_response import get_final_response_sys_prompt
 
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models import LLMModel
+from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str, planning_state_to_str
 
 logger = get_logger(__name__)
 
@@ -17,28 +18,21 @@ def final_response_node(state: OSAssistantState) -> OSAssistantState:
     llm_model = LLMModel()
     sys_prompt = get_final_response_sys_prompt()
 
-    human_message = f"""
+    if state.user_validation.user_feedback_type == "rejected":
+        human_message = f"""
+User rejected the plan during validation.
+User's Original Query: {state.finalized_enhanced_query}
+Planning State: {planning_state_to_str(state.planning)}
+Conversatin history till now: {str(state.multi_turn_conversation_history)}
+"""
+    else:
+        human_message = f"""
 User's Original Query: {state.finalized_enhanced_query}
 Short summary of how the user's query should be handeled: {state.planning.fulfillment_summary}
-"""
-    if len(state.command_executions) != 0:
-        command_executions_str = ""
-        for command_execution in state.command_executions:
-            command_executions_str += command_execution.model_dump_json() + "\n"
-
-        human_message += f"""
-Command Execution Details:
-{command_executions_str}
-"""
-
-    if len(state.generated_information_responses) != 0:
-        information_responses_str = ""
-        for information_response in state.generated_information_responses:
-            information_responses_str += information_response.model_dump_json() + "\n"
-
-        human_message += f"""
-Information Responses Details:
-{information_responses_str}
+Command Executions:
+{command_executions_to_str(state.command_executions)}
+Information Responses:
+{information_responses_to_str(state.generated_information_responses)}
 """
     
     response: FinalResponse = llm_model.generate_response(
