@@ -1,8 +1,9 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.planning.nodes.planning import planning_node
 from os_assistant.core.graphs.planning.nodes.user_validation import user_validation_node
+from os_assistant.core.graphs.planning.routing.logic import route_after_starting, route_after_planning
 from os_assistant.core.settings import (
-    PLANNER_NODE,
+    PLANNING_NODE,
     USER_VALIDATION_NODE,
 )
 
@@ -28,11 +29,27 @@ class PlanningGraph(StateGraph):
         """
         graph = StateGraph(OSAssistantState)
 
-        graph.add_node(PLANNER_NODE, planning_node)
+        graph.add_node(PLANNING_NODE, planning_node)
         graph.add_node(USER_VALIDATION_NODE, user_validation_node)
 
-        graph.add_edge(START, PLANNER_NODE)
-        graph.add_edge(PLANNER_NODE, USER_VALIDATION_NODE)
+        graph.add_conditional_edges(
+            START,
+            route_after_starting,
+            {
+                PLANNING_NODE: PLANNING_NODE,
+                USER_VALIDATION_NODE: USER_VALIDATION_NODE,
+            }
+        )
+        
+        graph.add_conditional_edges(
+            PLANNING_NODE,
+            route_after_planning,
+            {
+                END: END,
+                USER_VALIDATION_NODE: USER_VALIDATION_NODE,
+            }
+        )
+
         graph.add_edge(USER_VALIDATION_NODE, END)
 
         logger.info("Planning Graph built successfully.")
