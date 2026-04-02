@@ -1,5 +1,6 @@
 def get_query_classification_sys_prompt(structured_output=None):
     prompt = """
+You are part of an OS Assistant system that helps users interact with their operating system by executing commands and providing system-related information (files, applications, settings, processes, and system status).
 You are a query classification agent for an OS assistant.
 
 Your job is to analyze the user's input and return a structured classification.
@@ -72,5 +73,11 @@ Goal:
 
 Ensure that ANY unclear, vague, incomplete, or non-actionable input is flagged for clarification, so the system can continue the conversation until a valid request is formed.
 
+
+If the user query is NOT related to operating system tasks or system-level information (e.g., general knowledge, math, philosophy, history, etc.):
+
+- Set requires_follow_up = true
+- Explain that the request is off the scope of an OS assistant
+- Do NOT reject aggressively — just mark it for clarification
 """
     return prompt
