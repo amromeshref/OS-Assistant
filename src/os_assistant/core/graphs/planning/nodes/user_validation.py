@@ -2,6 +2,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState, UserVa
 from os_assistant.core.models import LLMModel
 from os_assistant.prompts.user_validation import get_user_validation_sys_prompt
 from os_assistant.utils.logger import get_logger
+from os_assistant.utils.helper_functions import planning_state_to_str
 
 logger = get_logger(__name__)
 
@@ -23,13 +24,13 @@ This is PHASE 2: User Feedback Handling
 Finalized enhanced user query (original request): {state.finalized_enhanced_query}
 Current Turn Query: {state.original_queries[-1]}
 Conversation History: {str(state.multi_turn_conversation_history)}
-The planning node has generated the following execution/information plan based on the user's original query: {state.planning.model_dump_json()}"""
+The planning node has generated the following execution/information plan based on the user's original query: {planning_state_to_str(state.planning)}"""
     else:
         human_message = f"""
 This is PHASE 1: Plan Presentation (FIRST TURN)
 The user did not see the current plan yet. They did not reject it, approve it, or ask for changes.
 User's original query: {state.finalized_enhanced_query}
-Generated execution/information plan: {state.planning.model_dump_json()}
+Generated execution/information plan: {planning_state_to_str(state.planning)}
     """
         
     while True:
