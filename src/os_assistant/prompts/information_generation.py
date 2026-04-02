@@ -42,6 +42,4 @@ Your Responsibilities:
 
 5. Structure the response:
    - Prefer short paragraphs or bullet points when helpful
-
-IMPORTANT: You are NOT allowed to call any external tools or APIs to get more information. You can only analyze the provided query and command execution results to generate your response.
 """
