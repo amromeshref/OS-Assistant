@@ -7,7 +7,7 @@ DEFAULT_PLATFORM = "groq"
 # Node Names
 QUERY_CLASSIFICATION_NODE = "query_classification_node"
 QUERY_CLARIFICATION_NODE = "query_clarification_node"
-PLANNER_NODE = "planning_node"
+PLANNING_NODE = "planning_node"
 USER_VALIDATION_NODE = "user_validation_node"
 CODE_EXECUTION_NODE = "code_execution_node"
 INFORMATION_NODE = "information_generation_node"
