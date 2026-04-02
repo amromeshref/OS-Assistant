@@ -160,30 +160,41 @@ class LLMModel:
 
         elif self.platform == "groq":
             try:
-                llm = ChatGroq(
-                    model=self.model_name,
-                    api_key=GROQ_API_KEY,
-                    model_kwargs={
-                        "tools": ["json"],
-                    },
-                )
                 messages = [
                     SystemMessage(content=system_message),
                     HumanMessage(content=human_message),
                 ]
+
                 if not structured_output:
+                    llm = ChatGroq(
+                        model=self.model_name,
+                        api_key=GROQ_API_KEY,
+                    )
+
                     logger.info(
                         "Generating response using Groq without structured output."
                     )
+
                     response = llm.invoke(messages)
+
                     return response.content
                 else:
                     logger.info(
                         "Generating response using Groq with structured output."
                     )
+
+                    llm = ChatGroq(
+                        model=self.model_name,
+                        api_key=GROQ_API_KEY,
+                        model_kwargs={
+                            "tools": [{"name": "json"}],
+                        },
+                    )
+
                     response = llm.with_structured_output(structured_output).invoke(
                         messages
                     )
+
                     return response
             except Exception as e:
                 logger.error(f"Error generating response with Groq: {e}")
