@@ -25,6 +25,7 @@ class ExecutionGraph:
     
     def _build_execution_graph(self) -> StateGraph[OSAssistantState]:
         """
+        Build the execution graph with nodes and conditional edges based on the state of the OS Assistant.
         """
         graph = StateGraph(OSAssistantState)
         
@@ -37,7 +38,8 @@ class ExecutionGraph:
             route_after_starting,
             {
                 CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
-                INFORMATION_NODE: INFORMATION_NODE
+                INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
             }
         )
 
@@ -59,12 +61,14 @@ class ExecutionGraph:
     
     def compile(self) -> None:
         """
+        Compile the execution graph to prepare it for execution.
         """
         self.compiled_graph = self.graph.compile()
         logger.info("Code Execution graph compiled successfully.")
     
     def execute(self, initial_state: OSAssistantState) -> OSAssistantState:
         """
+        Execute the compiled graph starting from the initial state and return the final state after execution.
         """
         logger.info("Executing Code Execution graph.")
         final_state = self.compiled_graph.invoke(initial_state)
