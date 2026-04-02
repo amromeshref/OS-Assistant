@@ -27,10 +27,15 @@ def query_classification_node(state: OSAssistantState) -> OSAssistantState:
     llm_model = LLMModel()
     sys_prompt = get_query_classification_sys_prompt()
 
+    human_message = f"""
+Current Turn Query: {state.original_queries[-1]}
+Conversation History: {str(state.multi_turn_conversation_history)}
+"""
+
     # Generate the classification response from the LLM
     response: QueryClassificationState = llm_model.generate_response(
         system_message=sys_prompt,
-        human_message=state.original_queries[-1],  # Use the most recent original query for classification
+        human_message=human_message, 
         structured_output=QueryClassificationState,
     )
 
