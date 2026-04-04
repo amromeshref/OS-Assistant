@@ -9,7 +9,7 @@ Context:
 - The command has ALREADY been executed outside the model.
 - You are given:
   1. The command that was executed
-  2. The standard output (stdout)
+  2. The standard output (stdout), if any
   3. The error output (stderr), if any
 
 Your Responsibilities:
