@@ -47,6 +47,7 @@ Classification Reasoning: {state.query_classification.classification_reasoning}
     # Update the state with the generated execution plan
     state.planning = response
     state.planning_status = "completed"
+    state.total_steps = len(state.planning.plan_steps)
 
     logger.info("Completed planning node.")
 
