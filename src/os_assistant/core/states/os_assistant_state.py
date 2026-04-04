@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Literal, List
+from typing import Literal, List, Union
 
 
 class QueryClassificationState(BaseModel):
@@ -76,9 +76,20 @@ class InformationStep(BaseModel):
         ..., description="A human-readable description of the information to provide."
     )
 
+class VariableDetails(BaseModel):
+    variable_name: str = Field(
+        ..., description="The name of the variable."
+    )
+
+    description: str = Field(
+        ..., description="A clear and concise explanation of what this variable represents and how it should be used."
+    )
 
 class CommandStep(BaseModel):
-    command: str = Field(..., description="The command to execute.")
+    command: str = Field(
+        ..., 
+        description="The command to execute."
+    )
 
     description: str = Field(
         ...,
@@ -93,6 +104,34 @@ class CommandStep(BaseModel):
         ..., description="The safety risk level of executing this command."
     )
 
+    input_variables: List[VariableDetails] = Field(
+        default_factory=list,
+        description=(
+            "A list of input variables required for executing the command, along with their descriptions. "
+            "If the command does not require any input variables, this should be an empty list."
+        ),
+    )
+
+    output_variables: List[VariableDetails] = Field(
+        default_factory=list,
+        description=(
+            "A list of output variables produced by executing the command, along with their descriptions. "
+            "If the command does not produce any output variables, this should be an empty list."
+        ),
+    )
+
+class Step(BaseModel):
+    description: str = Field(
+        ..., description="A human-readable description of the step."
+    )
+
+    step_type: Literal["information", "command"] = Field(
+        ..., description="The type of the step, either 'information' or 'command'."
+    )
+
+    step_details: Union[InformationStep, CommandStep] = Field(
+        ..., description="The details of the step, which can be either information details or command details based on the step type."
+    )
 
 class PlanningState(BaseModel):
     """
@@ -107,14 +146,12 @@ class PlanningState(BaseModel):
         ),
     )
 
-    information_steps: List[InformationStep] = Field(
-        default_factory=list,  # Empty list as default value
-        description="A list of information steps that outline the information to be provided to the user.",
-    )
-
-    command_steps: List[CommandStep] = Field(
+    plan_steps: List[Step] = Field(
         default_factory=list,
-        description="A list of command steps that outline the commands to be executed, along with their descriptions and expected outputs.",
+        description=(
+            "A list of steps that outline the plan for fulfilling the user's request. Each step includes a description, type (information or command), and relevant details. "
+            "The steps should be ordered in the sequence they will be executed or fulfilled."
+        ),
     )
 
     requires_follow_up: bool = Field(
@@ -183,10 +220,41 @@ class UserValidationState(BaseModel):
         ),
     )
 
+class VariableExecutionContext(BaseModel):
+    variable_name: str = Field(
+        ..., description="The name of the variable."
+    )
+
+    description: str = Field(
+        ..., description="A clear and concise explanation of what this variable represents in the context of command execution."
+    )
+
+    value: str = Field(
+        ..., description="The value of the variable in the context of command execution after running."
+    )
+
+class ExecutionOrchestratorState(BaseModel):
+    """ 
+    Represents the state of the execution orchestrator, which is responsible for managing the execution of commands and information retrieval based on the generated plan.
+    """
+    next_step: Step = Field(
+        ...,
+        description=(
+            "The next step to execute or fulfill, which is determined based on the generated plan and user validation feedback. This should be populated with the details of the next step, including its type (information or command) and relevant details for execution or fulfillment."
+        ),
+    )
+
+    variable_execution_contexts: List[VariableExecutionContext] = Field(
+        default_factory=list,
+        description=(
+          "A list of variable execution contexts that provide details about the output variables of command executions or information retrieval operations. "
+          "This should be updated after each command execution or information retrieval to include the output variables produced by that step and their current values. If no steps have been executed yet or if the executed steps do not produce any output variables, this should be an empty list."
+        ),
+    )
 
 
 class CommandExecution(BaseModel):
-    command_line: str = Field(
+    command: str = Field(
         ..., description="The exact command-line instruction that was executed."
     )
 
@@ -328,7 +396,34 @@ class OSAssistantState(BaseModel):
         description="The status of the user validation process (e.g., 'pending', 'completed', 'error')."
     )
 
-    # =========== Execution ===========
+    # =========== Execution & ExecutionOrchestrator ===========
+
+    current_step_index: int = Field(
+        default=0,
+        description=(
+            "The index of the current step being executed in the steps list of the PlanningState. This should be updated after each step execution to reflect the next step to execute. "
+        )
+    )
+
+    total_steps: int = Field(
+        default=0,
+        description=(
+            "The total number of steps in the plan that need to be executed. This should be set after the planning process is completed and should reflect the length of the steps list in the PlanningState."
+        )
+    )
+
+    execution_orchestrator: ExecutionOrchestratorState = Field(
+        default=None,
+        description="The state of the execution orchestrator, which manages the execution of commands."
+    )
+
+    variable_execution_contexts: List[VariableExecutionContext] = Field(
+        default_factory=list,
+        description=(
+            "A list of variable execution contexts that provide details about the output variables of command executions. "
+            "This should be updated after each command execution to include the output variables produced by that command and their current values. If no commands have been executed yet or if the executed commands do not produce any output variables, this should be an empty list."
+        ),
+     )
 
     command_executions: List[CommandExecution] = Field(
         default_factory=list,
@@ -356,9 +451,9 @@ class OSAssistantState(BaseModel):
     )
 
     # =========== Final Response ===========
-    final_response: FinalResponse = Field(
-        default = None,
-        description="Final response sent to the user"
+    generated_final_response: str = Field(
+        default=None,
+        description="The final response generated to be sent to the user after completing all steps of the plan execution. This should be a clear and user-friendly response"
     )
 
     final_response_status: str = Field(
