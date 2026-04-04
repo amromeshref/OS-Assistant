@@ -2,14 +2,17 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.execution.nodes.code_execution import code_execution_node
 from os_assistant.core.graphs.execution.nodes.information_generation import information_generation_node
 from os_assistant.core.graphs.execution.nodes.final_response import final_response_node
+from os_assistant.core.graphs.execution.nodes.execution_orchestrator import execution_orchestrator_node
 from os_assistant.core.graphs.execution.routing.logic import (
-    route_after_code_execution,
+    route_after_orchestrator,
     route_after_starting,
+    route_to_final_response
 )
 from os_assistant.core.settings import (
     CODE_EXECUTION_NODE,
     INFORMATION_NODE,
     FINAL_RESPONSE_NODE,
+    EXECUTION_ORCHESTRATOR_NODE,
 )
 
 from os_assistant.utils.logger import get_logger
@@ -32,27 +35,44 @@ class ExecutionGraph:
         graph.add_node(CODE_EXECUTION_NODE, code_execution_node)
         graph.add_node(INFORMATION_NODE, information_generation_node)
         graph.add_node(FINAL_RESPONSE_NODE, final_response_node)
+        graph.add_node(EXECUTION_ORCHESTRATOR_NODE, execution_orchestrator_node)
 
         graph.add_conditional_edges(
             START,
             route_after_starting,
             {
-                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
-                INFORMATION_NODE: INFORMATION_NODE,
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
                 FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
             }
         )
 
         graph.add_conditional_edges(
-            CODE_EXECUTION_NODE,
-            route_after_code_execution,
+            EXECUTION_ORCHESTRATOR_NODE,
+            route_after_orchestrator,
             {
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
-                INFORMATION_NODE: INFORMATION_NODE
+                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
+                INFORMATION_NODE: INFORMATION_NODE,
             }
         )
 
-        graph.add_edge(INFORMATION_NODE, FINAL_RESPONSE_NODE)
+        graph.add_conditional_edges(
+            CODE_EXECUTION_NODE,
+            route_to_final_response,
+            {
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+            }
+        )
+
+        graph.add_conditional_edges(
+            INFORMATION_NODE,
+            route_to_final_response,
+            {
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+            }
+        )
+        
         graph.add_edge(FINAL_RESPONSE_NODE, END)
 
         logger.info("Code Execution graph built successfully.")
