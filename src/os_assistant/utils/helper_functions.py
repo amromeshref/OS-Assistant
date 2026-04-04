@@ -1,4 +1,11 @@
-from os_assistant.core.states.os_assistant_state import CommandExecution, PlanningState, InformationResponse
+from os_assistant.core.states.os_assistant_state import (
+    CommandExecution,
+    PlanningState,
+    InformationResponse,
+    VariableExecutionContext,
+    InformationStep,
+    CommandStep,
+)
 import json
 from pathlib import Path
 from datetime import datetime
@@ -6,6 +13,7 @@ from typing import Union, List
 import subprocess
 
 DEBUG_STATE_PATH = "logs/debug_state.json"
+
 
 def check_ollama_installed() -> bool:
     """
@@ -35,9 +43,10 @@ def check_installed_ollama_model(model_name: str) -> bool:
     return False
 
 
-def save_debug_state(state, title: str, path: Union[str, Path] = DEBUG_STATE_PATH) -> None:
-    """
-    """
+def save_debug_state(
+    state, title: str, path: Union[str, Path] = DEBUG_STATE_PATH
+) -> None:
+    """ """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -65,13 +74,16 @@ def save_debug_state(state, title: str, path: Union[str, Path] = DEBUG_STATE_PAT
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
 
+
 def planning_state_to_str(state: PlanningState) -> str:
     """
     Convert a PlanningState object into a human-readable string format for debugging or prompting purposes.
+
     Args:
         state (PlanningState): The PlanningState object to convert.
+
     Returns:
-        str: A human-readable string representation of the PlanningState.    
+        str: A human-readable string representation of the PlanningState.
     """
     lines = []
 
@@ -79,22 +91,44 @@ def planning_state_to_str(state: PlanningState) -> str:
     if state.fulfillment_summary:
         lines.append(f"Fulfillment Summary:\n{state.fulfillment_summary}\n")
 
-    # Information steps
-    if state.information_steps:
-        lines.append("Information Steps:")
-        for i, step in enumerate(state.information_steps, start=1):
-            lines.append(f"  {i}. {step.description}")
-        lines.append("")  # empty line
+    # Plan steps
+    if state.plan_steps:
+        lines.append("Plan Steps:")
+        for i, step in enumerate(state.plan_steps, start=1):
+            lines.append(f"{i}. Step Description: {step.description}")
+            lines.append(f"   Step Type: {step.step_type}")
 
-    # Command steps
-    if state.command_steps:
-        lines.append("Command Steps:")
-        for i, step in enumerate(state.command_steps, start=1):
-            lines.append(f"  {i}. Command: {step.command}")
-            lines.append(f"     Description: {step.description}")
-            lines.append(f"     Expected Output: {step.expected_output}")
-            lines.append(f"     Safety Risk: {step.safety_risk}")
-        lines.append("")
+            # Information step
+            if step.step_type == "information" and isinstance(
+                step.step_details, InformationStep
+            ):
+                lines.append(f"   Details: {step.step_details.description}")
+
+            # Command step
+            elif step.step_type == "command" and isinstance(
+                step.step_details, CommandStep
+            ):
+                cmd = step.step_details
+                lines.append(f"   Command: {cmd.command}")
+                lines.append(f"   Description: {cmd.description}")
+                lines.append(
+                    f"   Expected Output: {cmd.expected_output or 'no output'}"
+                )
+                lines.append(f"   Safety Risk: {cmd.safety_risk}")
+
+                # Input variables
+                if cmd.input_variables:
+                    lines.append("   Input Variables:")
+                    for var in cmd.input_variables:
+                        lines.append(f"      - {var.variable_name}: {var.description}")
+
+                # Output variables
+                if cmd.output_variables:
+                    lines.append("   Output Variables:")
+                    for var in cmd.output_variables:
+                        lines.append(f"      - {var.variable_name}: {var.description}")
+
+            lines.append("")  # empty line between steps
 
     # Follow-up reasoning
     if state.requires_follow_up:
@@ -106,20 +140,21 @@ def planning_state_to_str(state: PlanningState) -> str:
 
     return "\n".join(lines)
 
+
 def command_executions_to_str(executions: List[CommandExecution]) -> str:
     """
     Convert a list of CommandExecution objects into a human-readable string format for debugging or prompting purposes.
-    Args:        
+    Args:
         executions (List[CommandExecution]): The list of CommandExecution objects to convert.
-    Returns:        
-        str: A human-readable string representation of the command executions.    
+    Returns:
+        str: A human-readable string representation of the command executions.
     """
     if not executions:
         return "No command executions."
 
     lines = []
     for i, exec in enumerate(executions, start=1):
-        lines.append(f"Command {i}: {exec.command_line}")
+        lines.append(f"Command {i}: {exec.command}")
         lines.append(f"  Success: {'Yes' if exec.success else 'No'}")
         lines.append(f"  Output: {exec.output or 'no output'}")
         lines.append(f"  Error: {exec.error or 'no errors'}")
@@ -127,13 +162,14 @@ def command_executions_to_str(executions: List[CommandExecution]) -> str:
 
     return "\n".join(lines)
 
+
 def information_responses_to_str(responses: List[InformationResponse]) -> str:
     """
     Convert a list of InformationResponse objects into a human-readable string format for debugging or prompting purposes.
-    Args:        
+    Args:
         responses (List[InformationResponse]): The list of InformationResponse objects to convert.
-    Returns:        
-        str: A human-readable string representation of the information responses.       
+    Returns:
+        str: A human-readable string representation of the information responses.
     """
     if not responses:
         return "No information responses."
@@ -144,5 +180,28 @@ def information_responses_to_str(responses: List[InformationResponse]) -> str:
         lines.append(f"  Query: {response.query or 'N/A'}")
         lines.append(f"  Answer: {response.answer or 'N/A'}")
         lines.append("")  # empty line for readability
+
+    return "\n".join(lines)
+
+
+def variable_execution_contexts_to_str(contexts: List[VariableExecutionContext]) -> str:
+    """
+    Convert a list of VariableExecutionContext objects into a human-readable string.
+
+    Args:
+        contexts (List[VariableExecutionContext]): List of variable execution contexts.
+
+    Returns:
+        str: Human-readable string representation.
+    """
+    if not contexts:
+        return "No variables executed."
+
+    lines = []
+    for i, var in enumerate(contexts, start=1):
+        lines.append(f"Variable {i}: {var.variable_name}")
+        lines.append(f"  Description: {var.description}")
+        lines.append(f"  Value: {var.value}")
+        lines.append("")  # Empty line for readability
 
     return "\n".join(lines)
