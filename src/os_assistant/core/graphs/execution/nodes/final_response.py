@@ -1,6 +1,5 @@
 from os_assistant.core.states.os_assistant_state import (
     OSAssistantState,
-    FinalResponse
 )
 from os_assistant.prompts.final_response import get_final_response_sys_prompt
 
@@ -12,6 +11,8 @@ logger = get_logger(__name__)
 
 def final_response_node(state: OSAssistantState) -> OSAssistantState:
     """
+    Node responsible for generating the final response to the user after all planning, code execution, and information generation steps are completed.
+    This node takes into account the entire execution process, including any user feedback during validation, to generate a comprehensive final response.
     """
     logger.info("Starting final response node.")
 
@@ -35,10 +36,10 @@ Information Responses:
 {information_responses_to_str(state.generated_information_responses)}
 """
     
-    response: FinalResponse = llm_model.generate_response(
+    response: str = llm_model.generate_response(
         human_message=human_message,
         system_message=sys_prompt,
-        structured_output=FinalResponse,
+        structured_output=None,
     )
 
     # TODO: Add parse logic here
@@ -46,6 +47,6 @@ Information Responses:
     state.final_response_status = "completed"
     logger.info("Completed final response node.")
 
-    state.final_response = response
+    state.generated_final_response = response
 
     return state
