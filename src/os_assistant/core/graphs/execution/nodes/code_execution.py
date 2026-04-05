@@ -20,7 +20,7 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt: str = get_code_execution_sys_prompt()
     llm_model = LLMModel()
     
-    command = state.execution_orchestrator.next_step.step_details.command
+    command = state.execution_orchestrator[-1].next_step.step_details.command
 
     # Command output after running
     command_output = run_command(command)
@@ -42,6 +42,7 @@ Command Output(After running):
 
     state.command_executions.append(response)
     state.current_step_index += 1
+    state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     state.command_execution_status = "completed"
     logger.info("Completed code execution node.")
