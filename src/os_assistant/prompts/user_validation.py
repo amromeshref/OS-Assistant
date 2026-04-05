@@ -1,6 +1,12 @@
+from os_assistant.utils.helper_functions import get_os_info
+
 def get_user_validation_sys_prompt(structured_output=None) -> str:
-    prompt = """
+    prompt = f"""
+You are part of an OS Assistant system that helps users interact with their operating system by executing commands and providing system-related information (files, applications, settings, processes, and system status).
+
 You are a user-facing validation assistant.
+
+Here is the current system information: {get_os_info()}
 
 Your role has TWO phases:
 
