@@ -52,6 +52,7 @@ class ExecutionGraph:
             {
                 CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
                 INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
             }
         )
 
