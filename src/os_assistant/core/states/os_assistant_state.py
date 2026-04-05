@@ -235,22 +235,52 @@ class VariableExecutionContext(BaseModel):
 
 class ExecutionOrchestratorState(BaseModel):
     """ 
-    Represents the state of the execution orchestrator, which is responsible for managing the execution of commands and information retrieval based on the generated plan.
+    Represents the state of the execution orchestrator, which is responsible for managing 
+    the execution of steps from the plan and controlling whether execution should continue.
     """
-    next_step: Step = Field(
+
+    should_proceed: bool = Field(
         ...,
         description=(
-            "The next step to execute or fulfill, which is determined based on the generated plan and user validation feedback. This should be populated with the details of the next step, including its type (information or command) and relevant details for execution or fulfillment."
+            "Indicates whether execution should continue to the next step. "
+            "Set to False if an error occurred, a dependency is missing, or execution cannot safely proceed. "
+            "Set to True only if the next step is valid and all required conditions are satisfied."
+        )
+    )
+
+    should_proceed_reasoning: str = Field(
+        default="",
+        description=(
+            "A clear explanation of why execution should or should not proceed. "
+            "If should_proceed is False, this MUST explain the error, missing dependency, "
+            "or unsafe condition preventing further execution."
+        )
+    )
+
+    next_step: Step = Field(
+        default=None,
+        description=(
+            "The next step to execute. This must ONLY be populated if should_proceed is True. "
+            "If should_proceed is False, this must remain None."
         ),
     )
 
-    variable_execution_contexts: List[VariableExecutionContext] = Field(
-        default_factory=list,
+    next_step_index: int = Field(
+        default=0,
         description=(
-          "A list of variable execution contexts that provide details about the output variables of command executions or information retrieval operations. "
-          "This should be updated after each command execution or information retrieval to include the output variables produced by that step and their current values. If no steps have been executed yet or if the executed steps do not produce any output variables, this should be an empty list."
+            "The index of the next step to execute in the plan. "
+            "This must ONLY be updated if should_proceed is True. "
+            "If should_proceed is False, this must remain unchanged (default = 0)."
         ),
     )
+
+    # variable_execution_contexts: List[VariableExecutionContext] = Field(
+    #     default_factory=list,
+    #     description=(
+    #       "A list of variable execution contexts that provide details about the output variables of command executions or information retrieval operations. "
+    #       "This should be updated after each command execution or information retrieval to include the output variables produced by that step and their current values. If no steps have been executed yet or if the executed steps do not produce any output variables, this should be an empty list."
+    #     ),
+    # )
 
 
 class CommandExecution(BaseModel):
@@ -324,7 +354,7 @@ class OSAssistantState(BaseModel):
     )
 
     finalized_enhanced_query: str = Field(
-        default=None,
+        default="",
         description=(
             "The finalized enhanced query after any necessary clarifications. This should be the version of the user's query that is clear and ready for processing, incorporating any enhancements made during classification and clarification."
         ),
@@ -396,7 +426,7 @@ class OSAssistantState(BaseModel):
         description="The status of the user validation process (e.g., 'pending', 'completed', 'error')."
     )
 
-    # =========== Execution & ExecutionOrchestrator ===========
+    # =========== ExecutionOrchestrator ===========
 
     current_step_index: int = Field(
         default=0,
@@ -412,18 +442,31 @@ class OSAssistantState(BaseModel):
         )
     )
 
-    execution_orchestrator: ExecutionOrchestratorState = Field(
-        default=None,
-        description="The state of the execution orchestrator, which manages the execution of commands."
-    )
-
-    variable_execution_contexts: List[VariableExecutionContext] = Field(
+    execution_orchestrator: List[ExecutionOrchestratorState] = Field(
         default_factory=list,
         description=(
-            "A list of variable execution contexts that provide details about the output variables of command executions. "
-            "This should be updated after each command execution to include the output variables produced by that command and their current values. If no commands have been executed yet or if the executed commands do not produce any output variables, this should be an empty list."
+            "A list of execution orchestrator states, which manage the execution of commands and information retrieval based on the generated plan."
+            "Each state in the list corresponds to a step in the plan and includes details about the next step to execute and the variable execution contexts for that step."
         ),
-     )
+    )
+
+    steps_done_indicies: List[int] = Field(
+        default_factory=list,
+        description=(
+            "A list of indices of the steps that have been completed."
+        ),
+    )
+
+
+    # variable_execution_contexts: List[VariableExecutionContext] = Field(
+    #     default_factory=list,
+    #     description=(
+    #         "A list of variable execution contexts that provide details about the output variables of command executions. "
+    #         "This should be updated after each command execution to include the output variables produced by that command and their current values. If no commands have been executed yet or if the executed commands do not produce any output variables, this should be an empty list."
+    #     ),
+    #  )
+
+    # =========== Command Execution ===========
 
     command_executions: List[CommandExecution] = Field(
         default_factory=list,
