@@ -26,6 +26,15 @@ User's Original Query: {state.finalized_enhanced_query}
 Planning State: {planning_state_to_str(state.planning)}
 Conversatin history till now: {str(state.multi_turn_conversation_history)}
 """
+    elif not state.execution_orchestrator[-1].should_proceed:
+        human_message = f"""
+User's Original Query: {state.finalized_enhanced_query}
+Output from Planning node: {planning_state_to_str(state.planning)}
+The execution orchestrator node decided that we should not proceed with the steps execution.
+Reasoning: {state.execution_orchestrator[-1].should_proceed_reasoning}
+Command steps done so far: {command_executions_to_str(state.command_executions)}
+Infromation steps done so far: {information_responses_to_str(state.generated_information_responses)}
+"""        
     else:
         human_message = f"""
 User's Original Query: {state.finalized_enhanced_query}
