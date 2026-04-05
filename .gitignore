@@ -3,6 +3,8 @@ notebooks/
 
 thinking.txt
 
+tests.txt
+
 src/os_assistant.egg-info/
 src/os_assistant/__pycache__/
 
