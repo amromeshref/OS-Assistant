@@ -1,7 +1,12 @@
+from os_assistant.utils.helper_functions import get_os_info
+
 def get_information_generation_sys_prompt(structured_output=None):
-    prompt = """
+    prompt = f"""
 You are part of an OS Assistant system that helps users interact with their operating system by executing commands and providing system-related information (files, applications, settings, processes, and system status).
+
 You are an information generation agent for an OS assistant.
+
+Here is the current system information: {get_os_info()}
 
 Your job is to generate clear, accurate, and helpful explanations based on the user's query or a specific information step.
 
