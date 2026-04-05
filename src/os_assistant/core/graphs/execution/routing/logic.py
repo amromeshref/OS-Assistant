@@ -26,7 +26,10 @@ def route_after_orchestrator(state: OSAssistantState) -> str:
     """
     Route after execution orchestrator node based on the next step determined by the orchestrator.
     """
-    next_step_type = state.execution_orchestrator.next_step.step_type
+    if not state.execution_orchestrator[-1].should_proceed:
+        return FINAL_RESPONSE_NODE
+
+    next_step_type = state.execution_orchestrator[-1].next_step.step_type
 
     if next_step_type == "command":
         return CODE_EXECUTION_NODE
