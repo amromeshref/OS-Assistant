@@ -11,6 +11,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Union, List
 import subprocess
+import os
+import platform
 
 DEBUG_STATE_PATH = "logs/debug_state.json"
 
@@ -94,7 +96,7 @@ def planning_state_to_str(state: PlanningState) -> str:
     # Plan steps
     if state.plan_steps:
         lines.append("Plan Steps:")
-        for i, step in enumerate(state.plan_steps, start=1):
+        for i, step in enumerate(state.plan_steps, start=0):
             lines.append(f"{i}. Step Description: {step.description}")
             lines.append(f"   Step Type: {step.step_type}")
 
@@ -203,5 +205,27 @@ def variable_execution_contexts_to_str(contexts: List[VariableExecutionContext])
         lines.append(f"  Description: {var.description}")
         lines.append(f"  Value: {var.value}")
         lines.append("")  # Empty line for readability
+
+    return "\n".join(lines)
+
+def get_os_info() -> str:
+    """
+    Returns a human-readable summary of the operating system information.
+    """
+    lines = []
+
+    # Basic OS info
+    lines.append(f"System: {platform.system()}")
+    lines.append(f"Node Name: {platform.node()}")
+    lines.append(f"Release: {platform.release()}")
+    lines.append(f"Version: {platform.version()}")
+    lines.append(f"Machine: {platform.machine()}")
+    lines.append(f"Processor: {platform.processor()}")
+
+    # Python info
+    lines.append(f"Python Version: {platform.python_version()}")
+
+    # Current working directory
+    lines.append(f"Current Directory: {os.getcwd()}")
 
     return "\n".join(lines)
