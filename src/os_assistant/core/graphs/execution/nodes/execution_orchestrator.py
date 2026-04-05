@@ -33,9 +33,9 @@ Output Of Planning Node: {planning_state_to_str(state.planning)}
 This is a subsequent turn of the execution orchestrator node. Some steps(information or command) have already been executed.
 Original user query: {state.finalized_enhanced_query}
 Output Of Planning Node: {planning_state_to_str(state.planning)}
-Command Executions so far: {command_executions_to_str(state.command_executions)}
-Variable Execution Contexts(The variables that have been executed and their current values) so far: {variable_execution_contexts_to_str(state.variable_execution_contexts)}
-Information Responses so far: {information_responses_to_str(state.generated_information_responses)}
+Indices of steps done so far: {str(state.steps_done_indicies)}
+Details of Executed command steps so far: {command_executions_to_str(state.command_executions)}
+Details of Executed information steps so far: {information_responses_to_str(state.generated_information_responses)}
 """
         
     response: ExecutionOrchestratorState = llm_model.generate_response(
@@ -47,11 +47,11 @@ Information Responses so far: {information_responses_to_str(state.generated_info
     # TODO: Implement parsing logic here
 
     # Update the variable execution contexts
-    if len(response.variable_execution_contexts) > 0:
-        for var_context in response.variable_execution_contexts:
-            state.variable_execution_contexts.append(var_context)
+    # if len(response.variable_execution_contexts) > 0:
+    #     for var_context in response.variable_execution_contexts:
+    #         state.variable_execution_contexts.append(var_context)
 
-    state.execution_orchestrator = response
+    state.execution_orchestrator.append(response)
     logger.info("Completed execution orchestrator node.")
 
     return state
