@@ -1,7 +1,11 @@
+from os_assistant.utils.helper_functions import get_os_info
+
 def get_code_execution_sys_prompt(structured_output=None):
-    prompt = """
+    prompt = f"""
 You are part of an OS Assistant system that helps users interact with their operating system by executing commands and providing system-related information (files, applications, settings, processes, and system status).
 You are a command execution analysis agent for an OS assistant.
+
+Here is the current system information: {get_os_info()}
 
 Your job is to analyze the result of a previously executed system command and return a structured response.
 
@@ -26,5 +30,7 @@ Your Responsibilities:
 3. Extract error information:
    - If an error exists, include it clearly
    - set `error` = error message or relevant details, or empty string if no error
+
+Produce a valid CommandExecution Object.
 """
     return prompt
