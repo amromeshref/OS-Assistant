@@ -25,7 +25,7 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_information_generation_sys_prompt()
 
     information_response = InformationResponse()
-    information_response.query = state.execution_orchestrator.next_step.step_details.description
+    information_response.query = state.execution_orchestrator[-1].next_step.step_details.description
 
     human_message = f"""
 User's Original Query: {state.finalized_enhanced_query}
@@ -45,6 +45,7 @@ Previous Information Responses(if any): {information_responses_to_str(state.gene
     information_response.answer = response
     state.generated_information_responses.append(information_response)
     state.current_step_index += 1
+    state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     state.generated_information_responses_status = "completed"
     logger.info("Completed information generation node.")
