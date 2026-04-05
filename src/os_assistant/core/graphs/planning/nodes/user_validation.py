@@ -31,6 +31,7 @@ This is PHASE 1: Plan Presentation (FIRST TURN)
 The user did not see the current plan yet. They did not reject it, approve it, or ask for changes.
 User's original query: {state.finalized_enhanced_query}
 Generated execution/information plan: {planning_state_to_str(state.planning)}
+Multi-turn conversation history (if any): {str(state.multi_turn_conversation_history)}
     """
         
     while True:
