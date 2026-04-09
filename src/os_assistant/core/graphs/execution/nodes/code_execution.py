@@ -1,3 +1,4 @@
+from os_assistant.utils.helper_functions import save_command_executions
 from os_assistant.core.states.os_assistant_state import OSAssistantState, CommandExecution
 from os_assistant.prompts.code_execution import get_code_execution_sys_prompt
 from os_assistant.tools.command_execution import run_command
@@ -41,8 +42,11 @@ Command Output(After running):
     # TODO: Add parsing logic here
 
     state.command_executions.append(response)
-    state.current_step_index += 1
-    state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
+    state.executed_steps.append(response.summary)
+    #state.current_step_index += 1
+    #state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
+
+    save_command_executions(state.command_executions)
 
     state.command_execution_status = "completed"
     logger.info("Completed code execution node.")
