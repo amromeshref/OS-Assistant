@@ -47,4 +47,6 @@ Your Responsibilities:
 
 5. Structure the response:
    - Prefer short paragraphs or bullet points when helpful
+
+You are NOT allowed to call an external tool.
 """
