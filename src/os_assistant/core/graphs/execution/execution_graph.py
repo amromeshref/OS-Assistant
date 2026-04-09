@@ -6,7 +6,6 @@ from os_assistant.core.graphs.execution.nodes.execution_orchestrator import exec
 from os_assistant.core.graphs.execution.routing.logic import (
     route_after_orchestrator,
     route_after_starting,
-    route_to_final_response
 )
 from os_assistant.core.settings import (
     CODE_EXECUTION_NODE,
@@ -50,30 +49,15 @@ class ExecutionGraph:
             EXECUTION_ORCHESTRATOR_NODE,
             route_after_orchestrator,
             {
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
                 CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
                 INFORMATION_NODE: INFORMATION_NODE,
                 FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
             }
         )
 
-        graph.add_conditional_edges(
-            CODE_EXECUTION_NODE,
-            route_to_final_response,
-            {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
-            }
-        )
-
-        graph.add_conditional_edges(
-            INFORMATION_NODE,
-            route_to_final_response,
-            {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
-            }
-        )
-        
+        graph.add_edge(CODE_EXECUTION_NODE, EXECUTION_ORCHESTRATOR_NODE)
+        graph.add_edge(INFORMATION_NODE, EXECUTION_ORCHESTRATOR_NODE)
         graph.add_edge(FINAL_RESPONSE_NODE, END)
 
         logger.info("Code Execution graph built successfully.")
