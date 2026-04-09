@@ -245,6 +245,7 @@ class ExecutionOrchestratorState(BaseModel):
             "Indicates whether execution should continue to the next step. "
             "Set to False if an error occurred, a dependency is missing, or execution cannot safely proceed. "
             "Set to True only if the next step is valid and all required conditions are satisfied."
+            "If all steps have been executed, set it to False."
         )
     )
 
@@ -257,22 +258,29 @@ class ExecutionOrchestratorState(BaseModel):
         )
     )
 
+    is_execution_completed: bool = Field(
+        default=False,
+        description="Indicates whether all steps have been executed. Set it to True if all steps have been executed. Otherwise, set it to False"
+
+    )
+
     next_step: Step = Field(
         default=None,
         description=(
             "The next step to execute. This must ONLY be populated if should_proceed is True. "
-            "If should_proceed is False, this must remain None."
+            "If should_proceed is False, this must remain None. "
+            "If is_execution_completed is True, this must remain None."
         ),
     )
 
-    next_step_index: int = Field(
-        default=0,
-        description=(
-            "The index of the next step to execute in the plan. "
-            "This must ONLY be updated if should_proceed is True. "
-            "If should_proceed is False, this must remain unchanged (default = 0)."
-        ),
-    )
+    # next_step_index: int = Field(
+    #     default=0,
+    #     description=(
+    #         "The index of the next step to execute in the plan. "
+    #         "This must ONLY be updated if should_proceed is True. "
+    #         "If should_proceed is False, this must remain unchanged (default = 0)."
+    #     ),
+    # )
 
     # variable_execution_contexts: List[VariableExecutionContext] = Field(
     #     default_factory=list,
@@ -298,6 +306,10 @@ class CommandExecution(BaseModel):
 
     error: str = Field(
         default="", description="The error output produced by the command, if any. If no errors, set it as 'no errors'."
+    )
+
+    summary: str = Field(
+        default="", description="A short summary of the details of this command execution step"
     )
     # messages: Optional[List[str]] = Field(default_factory=list),
     # remaining_steps: Optional[List[str]] = Field(default_factory=list)
@@ -428,18 +440,23 @@ class OSAssistantState(BaseModel):
 
     # =========== ExecutionOrchestrator ===========
 
-    current_step_index: int = Field(
-        default=0,
-        description=(
-            "The index of the current step being executed in the steps list of the PlanningState. This should be updated after each step execution to reflect the next step to execute. "
-        )
-    )
+    # current_step_index: int = Field(
+    #     default=0,
+    #     description=(
+    #         "The index of the current step being executed in the steps list of the PlanningState. This should be updated after each step execution to reflect the next step to execute. "
+    #     )
+    # )
 
-    total_steps: int = Field(
-        default=0,
-        description=(
-            "The total number of steps in the plan that need to be executed. This should be set after the planning process is completed and should reflect the length of the steps list in the PlanningState."
-        )
+    # total_steps: int = Field(
+    #     default=0,
+    #     description=(
+    #         "The total number of steps in the plan that need to be executed. This should be set after the planning process is completed and should reflect the length of the steps list in the PlanningState."
+    #     )
+    # )
+
+    executed_steps: List[str] = Field(
+        default_factory=list,
+        description="A short summary of the executed(info/command) steps"
     )
 
     execution_orchestrator: List[ExecutionOrchestratorState] = Field(
@@ -450,12 +467,12 @@ class OSAssistantState(BaseModel):
         ),
     )
 
-    steps_done_indicies: List[int] = Field(
-        default_factory=list,
-        description=(
-            "A list of indices of the steps that have been completed."
-        ),
-    )
+    # steps_done_indicies: List[int] = Field(
+    #     default_factory=list,
+    #     description=(
+    #         "A list of indices of the steps that have been completed."
+    #     ),
+    # )
 
 
     # variable_execution_contexts: List[VariableExecutionContext] = Field(
