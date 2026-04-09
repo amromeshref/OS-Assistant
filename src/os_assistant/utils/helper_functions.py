@@ -13,9 +13,11 @@ from typing import Union, List
 import subprocess
 import os
 import platform
+import tempfile
 
 DEBUG_STATE_PATH = "logs/debug_state.json"
-
+COMMAND_EXECUTIONS_JSON_FILE = "command_executions.json"
+INFORMATION_RESPONSES_JSON_FILE = "information_responses.json"
 
 def check_ollama_installed() -> bool:
     """
@@ -229,3 +231,140 @@ def get_os_info() -> str:
     lines.append(f"Current Directory: {os.getcwd()}")
 
     return "\n".join(lines)
+
+
+def get_temp_dir() -> Path:
+    """
+    Returns the system temporary directory as a Path object.
+    """
+    return Path(tempfile.gettempdir())
+
+
+def save_command_executions(
+    executions: List[CommandExecution],
+    filename: str = COMMAND_EXECUTIONS_JSON_FILE
+) -> None:
+    """
+    Saves a list of CommandExecution objects to a JSON file in the temp directory.
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    # Convert to dicts
+    data = [exec.dict() for exec in executions]
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
+
+def load_command_executions(
+    filename: str = COMMAND_EXECUTIONS_JSON_FILE
+) -> List[CommandExecution]:
+    """
+    Loads CommandExecution objects from a JSON file in the temp directory.
+
+    Returns:
+        List[CommandExecution]
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    if not file_path.exists():
+        return []
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+
+            # Handle empty file
+            if not content:
+                return []
+
+            data = json.loads(content)
+
+    except json.JSONDecodeError:
+        # Handle corrupted / invalid JSON
+        return []
+
+    return [CommandExecution(**item) for item in data]
+
+def save_information_responses(
+    responses: List[InformationResponse],
+    filename: str = INFORMATION_RESPONSES_JSON_FILE
+) -> None:
+    """
+    Saves a list of InformationResponse objects to a JSON file in the temp directory.
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    data = [res.dict() for res in responses]
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
+def load_information_responses(
+    filename: str = INFORMATION_RESPONSES_JSON_FILE
+) -> List[InformationResponse]:
+    """
+    Loads InformationResponse objects from a JSON file in the temp directory.
+
+    Returns:
+        List[InformationResponse]
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    if not file_path.exists():
+        return []
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read().strip()
+
+            # Handle empty file
+            if not content:
+                return []
+
+            data = json.loads(content)
+
+    except json.JSONDecodeError:
+        # Handle invalid/corrupted JSON
+        return []
+
+    return [InformationResponse(**item) for item in data]
+
+def delete_command_executions_file(filename: str = COMMAND_EXECUTIONS_JSON_FILE) -> bool:
+    """
+    Deletes the JSON file containing CommandExecution objects in the temp directory.
+
+    Returns:
+        bool: True if file was deleted, False if file did not exist.
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    if file_path.exists():
+        file_path.unlink()
+        return True
+    return False
+
+
+def delete_information_responses_file(
+    filename: str = INFORMATION_RESPONSES_JSON_FILE
+) -> bool:
+    """
+    Deletes the JSON file containing InformationResponse objects in the temp directory.
+
+    Returns:
+        bool: True if file was deleted, False if file did not exist.
+    """
+    temp_dir = get_temp_dir()
+    file_path = temp_dir / filename
+
+    if file_path.exists():
+        file_path.unlink()
+        return True
+    return False
