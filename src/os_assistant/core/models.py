@@ -1,5 +1,8 @@
 from langchain_groq.chat_models import ChatGroq
+from langchain.prompts import PromptTemplate
+# from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import SystemMessage, HumanMessage
+from langchain.agents import create_react_agent, AgentExecutor
 from groq import Groq
 import ollama
 from os_assistant.core.settings import (
@@ -14,6 +17,7 @@ from os_assistant.utils.helper_functions import (
     check_installed_ollama_model,
 )
 from os_assistant.utils.logger import get_logger
+from langchain import hub
 
 logger = get_logger(__name__)
 
@@ -122,7 +126,7 @@ class LLMModel:
         return model_name
 
     def generate_response(
-        self, human_message: str, system_message: str = None, structured_output=None
+        self, human_message: str, system_message: str = None, structured_output=None,
     ):
         """ "
         Generate a response from the LLM based on the provided system and human messages.
@@ -196,6 +200,54 @@ class LLMModel:
                     )
 
                     return response
+            except Exception as e:
+                logger.error(f"Error generating response with Groq: {e}")
+                raise RuntimeError(f"Error generating response with Groq: {e}")
+
+    def generate_response_react_agent(
+        self,
+        human_message: str,
+        system_message: str = None,
+        structured_output=None,
+        tools: list = None,
+    ):
+        """
+        """
+        if system_message is None:
+            system_message = "You are a helpful assistant."
+
+        if self.platform == "ollama":
+            pass
+        elif self.platform == "groq":
+            try:
+                # messages=[
+                #     {"role": "system", "content": system_message},
+                #     {"role": "user", "content": human_message},
+                # ]
+
+                agent_prompt = hub.pull("hwchase17/react")
+                agent_prompt.template = system_message
+            
+                llm = ChatGroq(
+                    model=self.model_name,
+                    api_key=GROQ_API_KEY,
+                    model_kwargs={"tool_choice": "auto"}
+                )
+
+                if tools is None:
+                    agent = create_react_agent(llm=llm, prompt=agent_prompt)
+                else:
+                    agent = create_react_agent(
+                        llm=llm, prompt=agent_prompt, tools=tools
+                    )
+
+                logger.info("Generating response using Groq, ReactAgent")
+
+                agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True, handle_parsing_errors=True)
+                agent_response = agent_executor.invoke({"input": human_message})["output"]
+
+                return agent_response
+
             except Exception as e:
                 logger.error(f"Error generating response with Groq: {e}")
                 raise RuntimeError(f"Error generating response with Groq: {e}")
