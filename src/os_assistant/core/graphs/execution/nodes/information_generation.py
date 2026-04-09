@@ -1,3 +1,4 @@
+from os_assistant.utils.helper_functions import save_information_responses
 from os_assistant.core.states.os_assistant_state import (
     OSAssistantState,
     InformationResponse,
@@ -44,8 +45,13 @@ Previous Information Responses(if any): {information_responses_to_str(state.gene
 
     information_response.answer = response
     state.generated_information_responses.append(information_response)
-    state.current_step_index += 1
-    state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
+    state.executed_steps.append(
+        f"The information step involving the query '{information_response.query}' is done."
+    )
+    # state.current_step_index += 1
+    # state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
+
+    save_information_responses(state.generated_information_responses)
 
     state.generated_information_responses_status = "completed"
     logger.info("Completed information generation node.")
