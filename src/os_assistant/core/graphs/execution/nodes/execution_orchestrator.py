@@ -10,7 +10,7 @@ from os_assistant.tools.retrieve_execution_details import retrieve_execution_det
 from os_assistant.tools.retrieve_information_details import retrieve_information_details_tool
 from os_assistant.tools.orchestrator_final_answer import orchestrator_final_answer_tool
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 
 logger = get_logger(__name__)
 
@@ -138,7 +138,6 @@ What is the NEXT step?
     react_agent_response: str = llm_model.generate_response_react_agent(
         system_message=sys_prompt,
         human_message=human_message,
-        structured_output=None,
         tools=tools,
     )
 
