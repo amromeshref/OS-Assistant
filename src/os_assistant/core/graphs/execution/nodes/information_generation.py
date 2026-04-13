@@ -7,7 +7,7 @@ from os_assistant.prompts.information_generation import (
     get_information_generation_sys_prompt,
 )
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str
 
 logger = get_logger(__name__)
