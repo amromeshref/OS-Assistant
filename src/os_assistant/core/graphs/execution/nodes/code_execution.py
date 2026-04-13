@@ -3,7 +3,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState, Comman
 from os_assistant.prompts.code_execution import get_code_execution_sys_prompt
 from os_assistant.tools.command_execution import run_command
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 
 logger = get_logger(__name__)
 
