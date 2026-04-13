@@ -4,7 +4,7 @@ from os_assistant.core.states.os_assistant_state import (
 from os_assistant.prompts.final_response import get_final_response_sys_prompt
 
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str, planning_state_to_str
 
 logger = get_logger(__name__)
