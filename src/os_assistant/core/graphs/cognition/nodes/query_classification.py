@@ -7,7 +7,7 @@ from os_assistant.prompts.query_classification import (
 )
 from os_assistant.core.settings import CLARIFICATION_NODE_MAX_ATTEMPTS
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 
 logger = get_logger(__name__)
 
