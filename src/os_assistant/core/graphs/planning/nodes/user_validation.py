@@ -1,5 +1,5 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, UserValidationState
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 from os_assistant.prompts.user_validation import get_user_validation_sys_prompt
 from os_assistant.utils.logger import get_logger
 from os_assistant.utils.helper_functions import planning_state_to_str
