@@ -1,7 +1,7 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, QueryClarificationState
 from os_assistant.prompts.query_clarification import get_query_clarification_sys_prompt
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 
 logger = get_logger(__name__)
 
