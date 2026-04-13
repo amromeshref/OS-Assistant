@@ -2,7 +2,7 @@ from os_assistant.prompts.retrieve_information_details_tool import get_retrieve_
 from os_assistant.utils.helper_functions import load_information_responses, information_responses_to_str
 from langchain.tools import tool
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 from langchain.tools import Tool
 
 logger = get_logger(__name__)
