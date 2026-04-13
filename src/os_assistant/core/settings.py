@@ -20,7 +20,7 @@ CLARIFICATION_NODE_MAX_ATTEMPTS = 10
 
 
 # Ollama settings
-DEFAULT_OLLAMA_MODEL_NAME = "llama3:8b"
+DEFAULT_OLLAMA_MODEL_NAME = "qwen2.5:14b-instruct-q5_K_M"
 
 
 # Groq settings
