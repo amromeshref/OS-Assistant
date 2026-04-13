@@ -2,7 +2,7 @@ from os_assistant.prompts.retrieve_execution_details_tool import get_retrieve_ex
 from os_assistant.utils.helper_functions import load_command_executions, command_executions_to_str
 from langchain.tools import tool
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models import LLMModel
+from os_assistant.core.models.main import LLMModel
 from langchain.tools import Tool
 
 logger = get_logger(__name__)
