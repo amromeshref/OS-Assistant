@@ -8,6 +8,8 @@ tests.txt
 src/os_assistant.egg-info/
 src/os_assistant/__pycache__/
 
+src/os_assistant/core/models/__pycache__
+
 src/os_assistant/config/__pycache__
 src/os_assistant/core/__pycache__/
 src/os_assistant/prompts/__pycache__
