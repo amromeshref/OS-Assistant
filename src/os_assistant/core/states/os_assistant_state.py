@@ -1,5 +1,5 @@
-from pydantic import BaseModel, Field
-from typing import Literal, List, Union
+from pydantic import BaseModel, Field, ConfigDict
+from typing import Literal, List, Union, Optional
 
 
 class QueryClassificationState(BaseModel):
@@ -234,42 +234,80 @@ class VariableExecutionContext(BaseModel):
     )
 
 class ExecutionOrchestratorState(BaseModel):
-    """ 
-    Represents the state of the execution orchestrator, which is responsible for managing 
-    the execution of steps from the plan and controlling whether execution should continue.
+    """
+    Controls step-by-step execution of the plan.
+    Decides what to do next OR whether more information is needed.
     """
 
-    should_proceed: bool = Field(
-        ...,
-        description=(
-            "Indicates whether execution should continue to the next step. "
-            "Set to False if an error occurred, a dependency is missing, or execution cannot safely proceed. "
-            "Set to True only if the next step is valid and all required conditions are satisfied."
-            "If all steps have been executed, set it to False."
-        )
-    )
-
-    should_proceed_reasoning: str = Field(
-        default="",
-        description=(
-            "A clear explanation of why execution should or should not proceed. "
-            "If should_proceed is False, this MUST explain the error, missing dependency, "
-            "or unsafe condition preventing further execution."
-        )
-    )
-
-    is_execution_completed: bool = Field(
-        default=False,
-        description="Indicates whether all steps have been executed. Set it to True if all steps have been executed. Otherwise, set it to False"
-
-    )
-
-    next_step: Step = Field(
+    # ===== Execution Progress =====
+    next_step: Union[Step, None] = Field(
         default=None,
         description=(
-            "The next step to execute. This must ONLY be populated if should_proceed is True. "
-            "If should_proceed is False, this must remain None. "
-            "If is_execution_completed is True, this must remain None."
+            "The next step to execute. If action_required is True, set this field to the default value. "
+            "If is_final_step is True, set this field to the default value. "
+            "If action_required is True, set this field to default value."
+        ),
+    )
+
+    next_step_index: int = Field(
+        default=-1,
+        description="Index of the next step in the PlanningState. plan_steps list."
+    )
+
+    is_final_step: bool = Field(
+        default=False,
+        description=(
+            "Set to True if the next_step is the last step in the plan. "
+            "If True, no further steps should be selected afterward."
+        ),
+    )
+
+    # ===== Tool Action Control =====
+    action_required: bool = Field(
+        default=False,
+        description=(
+            "Indicates whether the orchestrator needs to get details before deciding the next step."
+        ),
+    )
+
+    action_type: Literal[
+        "retrieve_execution_details",
+        "retrieve_information_details",
+        "no action"
+    ] = Field(
+        default="no action",
+        description=(
+            "The type of action to call if action_required is True. "
+            "If action_required is False, set this field to 'no action'."
+        ),
+    )
+
+    action_input: int = Field(
+        default=-1,
+        description=(
+            "The index of the step whose details should be retrieved. "
+            "If action_required is False, set this field to -1."
+        ),
+    )
+
+    action_reasoning: str = Field(
+        default="",
+        description="Why the selected action is needed before proceeding."
+    )
+
+    # ===== Failure Handling =====
+    is_blocked: bool = Field(
+        default=False,
+        description=(
+            "Set to True if a specific step cannot be executed due to missing dependencies "
+            "or an unrecoverable error."
+        ),
+    )
+
+    blocked_reasoning: str = Field(
+        default="",
+        description=(
+            "Explanation of why execution of the blocked step cannot proceed."
         ),
     )
 
@@ -311,6 +349,9 @@ class CommandExecution(BaseModel):
     summary: str = Field(
         default="", description="A short summary of the details of this command execution step"
     )
+
+    model_config = ConfigDict(extra="allow")
+
     # messages: Optional[List[str]] = Field(default_factory=list),
     # remaining_steps: Optional[List[str]] = Field(default_factory=list)
 
@@ -324,6 +365,8 @@ class InformationResponse(BaseModel):
         default="",
         description="Clear and user-friendly explanation"
     )
+
+    model_config = ConfigDict(extra="allow")
 
 class FinalResponse(BaseModel):
     """
