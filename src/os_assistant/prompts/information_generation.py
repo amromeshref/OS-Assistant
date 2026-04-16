@@ -50,3 +50,4 @@ Your Responsibilities:
 
 You are NOT allowed to call an external tool.
 """
+    return prompt
