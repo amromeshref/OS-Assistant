@@ -1,14 +1,10 @@
 from langchain_ollama import ChatOllama
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain.agents import create_react_agent, AgentExecutor
-from os_assistant.utils.helper_functions import (
-    check_ollama_installed,
-    check_installed_ollama_model,
-)
 from os_assistant.utils.logger import get_logger
 from langchain import hub
 from os_assistant.core.settings import DEFAULT_OLLAMA_MODEL_NAME
-
+import subprocess
 
 logger = get_logger(__name__)
 
@@ -16,6 +12,33 @@ logger = get_logger(__name__)
 class OllamaModel:
     def __init__(self, model_name):
         self.model_name = self._resolve_ollama_model(model_name)
+
+    def _check_ollama_installed(self) -> bool:
+        """
+        Check if Ollama is installed by trying to run 'ollama --version'.
+        Returns True if Ollama is installed, False otherwise.
+        """
+        try:
+            subprocess.run(
+                ["ollama", "--version"],
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            return True
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            return False
+
+
+    def _check_installed_ollama_model(self, model_name: str) -> bool:
+        """
+        Check if a specific Ollama model is installed by running 'ollama list'.
+        Returns True if the model is found in the list, False otherwise.
+        """
+        result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
+        if model_name in result.stdout:
+            return True
+        return False
 
     def _resolve_ollama_model(self, model_name: str) -> str:
         """
@@ -28,7 +51,7 @@ class OllamaModel:
         Raises:
             EnvironmentError: If Ollama or the specified model is not installed.
         """
-        if not check_ollama_installed():
+        if not self._check_ollama_installed():
             logger.error("Ollama is not installed.")
             raise EnvironmentError(
                 "Ollama is not installed. Please install Ollama to use this model."
@@ -36,7 +59,7 @@ class OllamaModel:
 
         if model_name is None:
             # Check if the default model name is installed
-            if not check_installed_ollama_model(DEFAULT_OLLAMA_MODEL_NAME):
+            if not self._check_installed_ollama_model(DEFAULT_OLLAMA_MODEL_NAME):
                 logger.error(
                     f"Default Ollama model '{DEFAULT_OLLAMA_MODEL_NAME}' is not installed. Please install it to use this model or specify a different model name."
                 )
@@ -51,12 +74,12 @@ class OllamaModel:
 
         else:
             # Check if the specified model name is installed
-            if not check_installed_ollama_model(model_name):
+            if not self._check_installed_ollama_model(model_name):
                 logger.error(
                     f"Ollama model '{model_name}' is not installed. Switching to default model name '{DEFAULT_OLLAMA_MODEL_NAME}' if available."
                 )
                 # Check if the default model name is installed
-                if check_installed_ollama_model(DEFAULT_OLLAMA_MODEL_NAME):
+                if self._check_installed_ollama_model(DEFAULT_OLLAMA_MODEL_NAME):
                     logger.info(
                         f"Using default Ollama model name: {DEFAULT_OLLAMA_MODEL_NAME}"
                     )
