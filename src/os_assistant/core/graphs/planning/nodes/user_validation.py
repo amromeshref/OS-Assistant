@@ -21,7 +21,6 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
     if state.user_validation.is_validation_required:
         human_message = f"""
 This is PHASE 2: User Feedback Handling
-Finalized enhanced user query (original request): {state.finalized_enhanced_query}
 Current Turn Query: {state.original_queries[-1]}
 Conversation History: {str(state.multi_turn_conversation_history)}
 The planning node has generated the following execution/information plan based on the user's original query: {planning_state_to_str(state.planning)}"""
