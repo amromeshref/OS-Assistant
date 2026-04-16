@@ -6,6 +6,7 @@ from os_assistant.core.graphs.execution.nodes.execution_orchestrator import exec
 from os_assistant.core.graphs.execution.routing.logic import (
     route_after_orchestrator,
     route_after_starting,
+    route_after_step_execution
 )
 from os_assistant.core.settings import (
     CODE_EXECUTION_NODE,
@@ -52,15 +53,30 @@ class ExecutionGraph:
                 EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
                 CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
                 INFORMATION_NODE: INFORMATION_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
             }
         )
 
-        graph.add_edge(CODE_EXECUTION_NODE, EXECUTION_ORCHESTRATOR_NODE)
-        graph.add_edge(INFORMATION_NODE, EXECUTION_ORCHESTRATOR_NODE)
+        graph.add_conditional_edges(
+            CODE_EXECUTION_NODE,
+            route_after_step_execution,
+            {
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+            }
+        )
+
+        graph.add_conditional_edges(
+            INFORMATION_NODE,
+            route_after_step_execution,
+            {
+                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+            }
+        )
+
         graph.add_edge(FINAL_RESPONSE_NODE, END)
 
-        logger.info("Code Execution graph built successfully.")
+        logger.info("Execution graph built successfully.")
 
         return graph
     
@@ -69,14 +85,14 @@ class ExecutionGraph:
         Compile the execution graph to prepare it for execution.
         """
         self.compiled_graph = self.graph.compile()
-        logger.info("Code Execution graph compiled successfully.")
+        logger.info("Execution graph compiled successfully.")
     
     def execute(self, initial_state: OSAssistantState) -> OSAssistantState:
         """
         Execute the compiled graph starting from the initial state and return the final state after execution.
         """
-        logger.info("Executing Code Execution graph.")
+        logger.info("Executing the Execution graph.")
         final_state = self.compiled_graph.invoke(initial_state)
         final_state = OSAssistantState(**final_state)
-        logger.info("Code Execution Graph execution completed.")
+        logger.info("The Execution Graph execution completed.")
         return final_state
