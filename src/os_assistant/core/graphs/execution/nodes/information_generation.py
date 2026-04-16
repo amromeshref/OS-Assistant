@@ -44,6 +44,7 @@ Previous Information Responses(if any): {information_responses_to_str(state.gene
     # TODO: Add parsing logic here
 
     information_response.answer = response
+    information_response.step_index = state.execution_orchestrator[-1].next_step_index
     state.generated_information_responses.append(information_response)
     state.executed_steps.append(
         f"The information step involving the query '{information_response.query}' is done."
@@ -51,7 +52,7 @@ Previous Information Responses(if any): {information_responses_to_str(state.gene
     # state.current_step_index += 1
     # state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
-    save_information_responses(state.generated_information_responses)
+    #save_information_responses(state.generated_information_responses)
 
     state.generated_information_responses_status = "completed"
     logger.info("Completed information generation node.")
