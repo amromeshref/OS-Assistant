@@ -1,50 +1,39 @@
-from os_assistant.prompts.retrieve_execution_details_tool import get_retrieve_execution_details_sys_prompt
-from os_assistant.utils.helper_functions import load_command_executions, command_executions_to_str
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import command_executions_to_str
 from langchain.tools import tool
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models.main import LLMModel
 from langchain.tools import Tool
 
 logger = get_logger(__name__)
 
 
-@tool
-def retrieve_execution_details(query: str) -> str:
+
+def retrieve_execution_details(state: OSAssistantState) -> str:
     """
-    Retrieve the execution details of a specific command based on a the given query.
+    Retrieve the execution details of a specific command.
     Args:
-        query (str): A natural language query describing which command execution
-                     details to retrieve.
+        state: OSAssistantState
     Returns:
         str: The execution details of the command.
     """
     logger.info("Starting retrieval of command execution details tool")
 
-    # Load the system prompt
-    sys_prompt = get_retrieve_execution_details_sys_prompt()
+    try:
+        step_index = state.execution_orchestrator[-1].action_input
 
-    # Initialize the LLM model
-    llm = LLMModel()
+        command_execution = None
+        for command_exe in state.command_executions:
+            if command_exe.step_index == step_index:
+                command_execution = command_exe
+                break
 
-    # Load all existing command execution records
-    command_executions = load_command_executions()
+        command_execution_str = command_executions_to_str([command_execution])
 
-    human_message = f"""
-Query: {query}
-Existing Command Execution Details: {command_executions_to_str(command_executions)}
-"""
+        logger.info("Completed retrieval of command execution details tool")
+        return command_execution_str
+    except:
+        return "No command executions found. Check the step index or try the 'retrieve_information_details'"
 
-    response: str = llm.generate_response(
-        system_message=sys_prompt,
-        human_message=human_message,
-        structured_output=None
-    )
-
-    # TODO: Implement parsing logic
-
-    logger.info("Completed retrieval of command execution details tool")
-
-    return response
 
 retrieve_execution_details_tool =  Tool(
     name="RetrieveExecutionDetails",
