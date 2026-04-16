@@ -19,34 +19,6 @@ DEBUG_STATE_PATH = "logs/debug_state.json"
 COMMAND_EXECUTIONS_JSON_FILE = "command_executions.json"
 INFORMATION_RESPONSES_JSON_FILE = "information_responses.json"
 
-def check_ollama_installed() -> bool:
-    """
-    Check if Ollama is installed by trying to run 'ollama --version'.
-    Returns True if Ollama is installed, False otherwise.
-    """
-    try:
-        subprocess.run(
-            ["ollama", "--version"],
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-        )
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        return False
-
-
-def check_installed_ollama_model(model_name: str) -> bool:
-    """
-    Check if a specific Ollama model is installed by running 'ollama list'.
-    Returns True if the model is found in the list, False otherwise.
-    """
-    result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
-    if model_name in result.stdout:
-        return True
-    return False
-
-
 def save_debug_state(
     state, title: str, path: Union[str, Path] = DEBUG_STATE_PATH
 ) -> None:
@@ -158,7 +130,8 @@ def command_executions_to_str(executions: List[CommandExecution]) -> str:
 
     lines = []
     for i, exec in enumerate(executions, start=1):
-        lines.append(f"Command {i}: {exec.command}")
+        lines.append(f"Step Index: {exec.step_index}")
+        lines.append(f"Command: {exec.command}")
         lines.append(f"  Success: {'Yes' if exec.success else 'No'}")
         lines.append(f"  Output: {exec.output or 'no output'}")
         lines.append(f"  Error: {exec.error or 'no errors'}")
@@ -180,7 +153,7 @@ def information_responses_to_str(responses: List[InformationResponse]) -> str:
 
     lines = []
     for i, response in enumerate(responses, start=1):
-        lines.append(f"Response {i}:")
+        lines.append(f"Step Index: {response.step_index}")
         lines.append(f"  Query: {response.query or 'N/A'}")
         lines.append(f"  Answer: {response.answer or 'N/A'}")
         lines.append("")  # empty line for readability
