@@ -1,51 +1,39 @@
-from os_assistant.prompts.retrieve_information_details_tool import get_retrieve_information_details_sys_prompt
-from os_assistant.utils.helper_functions import load_information_responses, information_responses_to_str
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import information_responses_to_str
 from langchain.tools import tool
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.models.main import LLMModel
 from langchain.tools import Tool
 
 logger = get_logger(__name__)
 
 
-@tool
-def retrieve_information_details(query: str) -> str:
+def retrieve_information_details(state: OSAssistantState) -> str:
     """
-    Retrieve previously generated information response details based on a query.
+    Retrieve previously generated information response.
     Args:
-        query (str): A natural language query describing which information
-                     response to retrieve.
+        state: OSAssistantState
     Returns:
         str: The information responses details
     """
     logger.info("Starting retrieval of information details tool")
 
-    # Load the system prompt
-    sys_prompt = get_retrieve_information_details_sys_prompt()
+    step_index = state.execution_orchestrator[-1].action_input
 
-    # Initialize the LLM model
-    llm = LLMModel()
+    try:
+        information_response = None
+        for info_resp in state.generated_information_responses:
+            if info_resp.step_index == step_index:
+                information_response = info_resp
+                break
 
-    # Load all existing information responses records
-    information_responses = load_information_responses()
+        information_response_str = information_responses_to_str([information_response])
 
-    human_message = f"""
-Query: {query}
-Existing Information Responses Details: {information_responses_to_str(information_responses)}
-"""
+        logger.info("Completed retrieval of information details tool")
 
-    response: str = llm.generate_response(
-        system_message=sys_prompt,
-        human_message=human_message,
-        structured_output=None
-    )
-
-    # TODO: Implement parsing logic
-
-    logger.info("Completed retrieval of information details tool")
-
-    return response
-
+        return information_response_str
+    except:
+        return "No information responses found. Check the step index or try the 'retrieve_execution_details'"
+    
 retrieve_information_details_tool =  Tool(
     name="RetrieveInformationDetails",
     func=retrieve_information_details,
