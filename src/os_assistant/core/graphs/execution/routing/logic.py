@@ -26,10 +26,7 @@ def route_after_orchestrator(state: OSAssistantState) -> str:
     """
     Route after execution orchestrator node based on the next step determined by the orchestrator.
     """
-    if state.execution_orchestrator[-1].is_execution_completed:
-        return FINAL_RESPONSE_NODE
-    
-    if not state.execution_orchestrator[-1].should_proceed:
+    if state.execution_orchestrator[-1].is_blocked:
         return EXECUTION_ORCHESTRATOR_NODE
 
     next_step_type = state.execution_orchestrator[-1].next_step.step_type
@@ -48,3 +45,12 @@ def route_after_orchestrator(state: OSAssistantState) -> str:
     
 #     return FINAL_RESPONSE_NODE
 
+
+def route_after_step_execution(state: OSAssistantState) -> str:
+    """
+    Route after executing a step(command/info).
+    """
+    #add logging
+    if state.execution_orchestrator[-1].is_final_step:
+        return FINAL_RESPONSE_NODE
+    return EXECUTION_ORCHESTRATOR_NODE
