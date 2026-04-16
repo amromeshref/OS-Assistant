@@ -39,6 +39,8 @@ Command Output(After running):
         structured_output=CommandExecution
     )
 
+    response.step_index = state.execution_orchestrator[-1].next_step_index
+
     # TODO: Add parsing logic here
 
     state.command_executions.append(response)
@@ -46,7 +48,7 @@ Command Output(After running):
     #state.current_step_index += 1
     #state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
-    save_command_executions(state.command_executions)
+    #save_command_executions(state.command_executions)
 
     state.command_execution_status = "completed"
     logger.info("Completed code execution node.")
