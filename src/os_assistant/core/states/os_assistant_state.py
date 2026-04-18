@@ -346,6 +346,13 @@ class StepResolverState(BaseModel):
     """
     Represents the state of the Step Resolver, which is responsible for resolving a step in the plan by replacing any placeholders with actual values from dependencies.
     """
+    is_resolution_successful: bool = Field(
+        default=False,
+        description=(
+            "Indicates whether the step was successfully resolved with all placeholders replaced by actual values from dependencies. "
+            "This should be set to True if the step can be executed after resolution, and False if the step cannot be executed due to missing variables, invalid/empty inputs, or logical impossibility."
+        ),
+    )
 
     resolved_steps: List[Step] = Field(
         ..., description="The steps after resolving all placeholders with actual values from dependencies."
@@ -561,6 +568,20 @@ class OSAssistantState(BaseModel):
         default_factory=list,
         description=(
             "A list of step resolver states, which represent the resolved steps after replacing any placeholders with actual values from dependencies."
+        )
+    )
+
+    steps_resolver_active: bool = Field(
+        default=False,
+        description=(
+            "Indicates whether the step resolver is currently active and processing a step for resolution. "
+        )
+    )
+
+    current_resolving_step_index: int = Field(
+        default=0,
+        description=(
+            "The index of the step currently being processed for resolution in the steps list of the StepResolverState."
         )
     )
 
