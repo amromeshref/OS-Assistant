@@ -35,7 +35,7 @@ Step Guidelines (Both Modes):
 2. Logical Ordering:
    - Steps must be created in logical order, regardless of type.
    - A command step may depend on another command step or an information step.
-   - An information step may depend on a prior command step.
+   - An information step may depend on a prior command step or another information step.
    - Always order steps so that dependencies appear before dependent steps.
    - Ensure that input_variables reference outputs from prior steps, and output_variables are clearly defined.
 
