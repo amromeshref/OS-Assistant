@@ -13,6 +13,7 @@ EXECUTION_ORCHESTRATOR_NODE = "execution_orchestrator_node"
 CODE_EXECUTION_NODE = "code_execution_node"
 INFORMATION_NODE = "information_generation_node"
 FINAL_RESPONSE_NODE = "final_response_node"
+STEP_RESOLVER_NODE = "step_resolver_node"
 
 # Configuration for the clarification node
 # shourd be added to config dir
