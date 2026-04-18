@@ -19,17 +19,17 @@ def retrieve_information_details(state: OSAssistantState, step_index: int) -> st
     logger.info("Starting retrieval of information details tool")
 
     try:
-        information_response = None
+        information_responses = []
         for info_resp in state.generated_information_responses:
             if info_resp.step_index == step_index:
-                information_response = info_resp
-                break
+                information_responses.append(info_resp)
+       
 
-        information_response_str = information_responses_to_str([information_response])
+        information_responses_str = information_responses_to_str(information_responses)
 
         logger.info("Completed retrieval of information details tool")
 
-        return information_response_str
+        return information_responses_str
     except:
         return "No information responses found. Check the step index or try the 'retrieve_execution_details'"
     
