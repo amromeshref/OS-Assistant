@@ -21,7 +21,15 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt: str = get_code_execution_sys_prompt()
     llm_model = LLMModel()
     
-    command = state.execution_orchestrator[-1].next_step.step_details.command
+    step_index = state.current_step_index
+
+    if state.steps_resolver_active:
+        current_resolving_step_index = state.current_resolving_step_index
+        current_resolving_step = state.steps_resolver[-1].resolved_steps[current_resolving_step_index]
+        command = current_resolving_step.step_details.command
+        state.current_resolving_step_index += 1
+    else:
+        command = state.planning.plan_steps[step_index].step_details.command
 
     # Command output after running
     command_output = run_command(command)
@@ -39,16 +47,32 @@ Command Output(After running):
         structured_output=CommandExecution
     )
 
-    response.step_index = state.execution_orchestrator[-1].next_step_index
+    response.step_index = step_index
 
     # TODO: Add parsing logic here
 
     state.command_executions.append(response)
-    state.executed_steps.append(response.summary)
+    state.executed_steps.append(response.summary)    
+    
     #state.current_step_index += 1
     #state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     #save_command_executions(state.command_executions)
+
+    if state.steps_resolver_active:
+        print("="*90)
+        print("debug me", state.current_resolving_step_index)
+        print("="*90)
+        current_resolving_step_index = state.current_resolving_step_index
+        total_resolved_steps = len(state.steps_resolver[-1].resolved_steps)
+
+        if current_resolving_step_index >= total_resolved_steps:
+            logger.info("All resolved steps have been executed.")
+            state.steps_resolver_active = False
+            state.current_resolving_step_index = 0
+            state.current_step_index += 1
+    else:
+        state.current_step_index += 1
 
     state.command_execution_status = "completed"
     logger.info("Completed code execution node.")
