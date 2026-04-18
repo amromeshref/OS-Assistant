@@ -3,16 +3,19 @@ from os_assistant.core.graphs.execution.nodes.code_execution import code_executi
 from os_assistant.core.graphs.execution.nodes.information_generation import information_generation_node
 from os_assistant.core.graphs.execution.nodes.final_response import final_response_node
 from os_assistant.core.graphs.execution.nodes.execution_orchestrator import execution_orchestrator_node
+from os_assistant.core.graphs.execution.nodes.step_resolver import step_resolver_node
 from os_assistant.core.graphs.execution.routing.logic import (
     route_after_orchestrator,
     route_after_starting,
-    route_after_step_execution
+    route_after_step_execution,
+    router
 )
 from os_assistant.core.settings import (
     CODE_EXECUTION_NODE,
     INFORMATION_NODE,
     FINAL_RESPONSE_NODE,
     EXECUTION_ORCHESTRATOR_NODE,
+    STEP_RESOLVER_NODE,
 )
 
 from os_assistant.utils.logger import get_logger
@@ -35,44 +38,53 @@ class ExecutionGraph:
         graph.add_node(CODE_EXECUTION_NODE, code_execution_node)
         graph.add_node(INFORMATION_NODE, information_generation_node)
         graph.add_node(FINAL_RESPONSE_NODE, final_response_node)
-        graph.add_node(EXECUTION_ORCHESTRATOR_NODE, execution_orchestrator_node)
+        #graph.add_node(EXECUTION_ORCHESTRATOR_NODE, execution_orchestrator_node)
+        graph.add_node(STEP_RESOLVER_NODE, step_resolver_node)
 
         graph.add_conditional_edges(
             START,
             route_after_starting,
             {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
-            }
-        )
-
-        graph.add_conditional_edges(
-            EXECUTION_ORCHESTRATOR_NODE,
-            route_after_orchestrator,
-            {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
                 CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
                 INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
             }
         )
 
         graph.add_conditional_edges(
             CODE_EXECUTION_NODE,
-            route_after_step_execution,
+            router,
             {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
+                INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
+                STEP_RESOLVER_NODE: STEP_RESOLVER_NODE
+            }
+        )
+    
+
+        graph.add_conditional_edges(
+            INFORMATION_NODE,
+            router,
+            {
+                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
+                INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
+                STEP_RESOLVER_NODE: STEP_RESOLVER_NODE
             }
         )
 
         graph.add_conditional_edges(
-            INFORMATION_NODE,
-            route_after_step_execution,
+            STEP_RESOLVER_NODE,
+            router,
             {
-                EXECUTION_ORCHESTRATOR_NODE: EXECUTION_ORCHESTRATOR_NODE,
-                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE
+                CODE_EXECUTION_NODE: CODE_EXECUTION_NODE,
+                INFORMATION_NODE: INFORMATION_NODE,
+                FINAL_RESPONSE_NODE: FINAL_RESPONSE_NODE,
+                STEP_RESOLVER_NODE: STEP_RESOLVER_NODE
             }
         )
+
 
         graph.add_edge(FINAL_RESPONSE_NODE, END)
 
