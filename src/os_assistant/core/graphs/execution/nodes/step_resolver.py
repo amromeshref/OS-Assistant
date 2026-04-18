@@ -45,21 +45,24 @@ def step_resolver_node(state: OSAssistantState) -> OSAssistantState:
 
     llm_model = LLMModel()
     sys_prompt = get_step_resolver_sys_prompt()
-
     current_step_index = state.current_step_index
+    print("="*90)
+    print(f"Current step index in step resolver: {current_step_index}")
+    print("="*90)
     current_step = state.planning.plan_steps[current_step_index]
     dependency_outputs_str = retrieve_dependency_outputs(state)
     
     human_message = get_human_message(current_step, dependency_outputs_str)
 
     response: StepResolverState = llm_model.generate_response(
-        system_prompt=sys_prompt,
+        system_message=sys_prompt,
         human_message=human_message,
         structured_output=StepResolverState,
     )
 
     # TODO: Add parsing logic
 
+    state.steps_resolver_active = True
     state.steps_resolver.append(response)
     logger.info("Completed step resolver node.")
 
