@@ -7,17 +7,16 @@ from langchain.tools import Tool
 logger = get_logger(__name__)
 
 
-def retrieve_information_details(state: OSAssistantState) -> str:
+def retrieve_information_details(state: OSAssistantState, step_index: int) -> str:
     """
     Retrieve previously generated information response.
     Args:
         state: OSAssistantState
+        step_index: The index of the step for which to retrieve information
     Returns:
         str: The information responses details
     """
     logger.info("Starting retrieval of information details tool")
-
-    step_index = state.execution_orchestrator[-1].action_input
 
     try:
         information_response = None
