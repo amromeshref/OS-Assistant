@@ -20,16 +20,16 @@ def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
     logger.info("Starting retrieval of command execution details tool")
 
     try:
-        command_execution = None
+        command_executions = []
         for command_exe in state.command_executions:
             if command_exe.step_index == step_index:
-                command_execution = command_exe
-                break
+                command_executions.append(command_exe)
+    
 
-        command_execution_str = command_executions_to_str([command_execution])
+        command_executions_str = command_executions_to_str(command_executions)
 
         logger.info("Completed retrieval of command execution details tool")
-        return command_execution_str
+        return command_executions_str
     except:
         return "No command executions found. Check the step index or try the 'retrieve_information_details'"
 
