@@ -8,19 +8,18 @@ logger = get_logger(__name__)
 
 
 
-def retrieve_execution_details(state: OSAssistantState) -> str:
+def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
     """
     Retrieve the execution details of a specific command.
     Args:
         state: OSAssistantState
+        step_index: The index of the step for which to retrieve execution details
     Returns:
         str: The execution details of the command.
     """
     logger.info("Starting retrieval of command execution details tool")
 
     try:
-        step_index = state.execution_orchestrator[-1].action_input
-
         command_execution = None
         for command_exe in state.command_executions:
             if command_exe.step_index == step_index:
