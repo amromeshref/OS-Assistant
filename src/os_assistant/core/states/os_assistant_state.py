@@ -133,6 +133,30 @@ class Step(BaseModel):
         ..., description="The details of the step, which can be either information details or command details based on the step type."
     )
 
+    requires_iteration: bool = Field(
+        default=False,
+        description=(
+            "Indicates if this step requires multiple iterations to complete. "
+            "Set to true if the step needs to be executed multiple times with different inputs. Otherwise, set to false."
+        ),
+    )
+
+    dependencies_required: bool = Field(
+        default=False,
+        description=(
+            "Indicates if this step has dependencies on the outputs of previous steps. "
+            "Set to true if the step requires outputs from previous steps to be executed or fulfilled. Otherwise, set to false."
+        ),
+    )
+
+    dependency_step_indices: List[int] = Field(
+        default_factory=list,
+        description=(
+            "A list of indices of the previous steps that this step depends on. "
+            "This should only be populated if dependencies_required is true. Otherwise, this should be an empty list."
+        ),
+    )
+
 class PlanningState(BaseModel):
     """
     Represents the execution plan generated for a user query.
@@ -262,37 +286,27 @@ class ExecutionOrchestratorState(BaseModel):
         ),
     )
 
-    # ===== Tool Action Control =====
-    action_required: bool = Field(
+    # ===== Dependency Resolution =====
+    dependencies_required: bool = Field(
         default=False,
         description=(
-            "Indicates whether the orchestrator needs to get details before deciding the next step."
+            "Indicates whether the next step depends on outputs from previous steps "
+            "that must be retrieved before execution."
         ),
     )
 
-    action_type: Literal[
-        "retrieve_execution_details",
-        "retrieve_information_details",
-        "no action"
-    ] = Field(
-        default="no action",
+    dependency_step_indices: List[int] = Field(
+        default_factory=list,
         description=(
-            "The type of action to call if action_required is True. "
-            "If action_required is False, set this field to 'no action'."
+            "List of step indices whose outputs are required to execute the next step."
         ),
     )
 
-    action_input: int = Field(
-        default=-1,
-        description=(
-            "The index of the step whose details should be retrieved. "
-            "If action_required is False, set this field to -1."
-        ),
-    )
-
-    action_reasoning: str = Field(
+    dependency_reasoning: str = Field(
         default="",
-        description="Why the selected action is needed before proceeding."
+        description=(
+            "Explanation of which dependencies are required and why."
+        ),
     )
 
     # ===== Failure Handling =====
@@ -328,6 +342,21 @@ class ExecutionOrchestratorState(BaseModel):
     #     ),
     # )
 
+class StepResolverState(BaseModel):
+    """
+    Represents the state of the Step Resolver, which is responsible for resolving a step in the plan by replacing any placeholders with actual values from dependencies.
+    """
+
+    resolved_steps: List[Step] = Field(
+        ..., description="The steps after resolving all placeholders with actual values from dependencies."
+    )
+
+    resolution_reasoning: str = Field(
+        default="",
+        description=(
+            "The reasoning behind how the step was resolved, including how placeholders were identified and replaced with values from dependencies."
+        ),
+    )
 
 class CommandExecution(BaseModel):
     command: str = Field(
@@ -483,12 +512,12 @@ class OSAssistantState(BaseModel):
 
     # =========== ExecutionOrchestrator ===========
 
-    # current_step_index: int = Field(
-    #     default=0,
-    #     description=(
-    #         "The index of the current step being executed in the steps list of the PlanningState. This should be updated after each step execution to reflect the next step to execute. "
-    #     )
-    # )
+    current_step_index: int = Field(
+        default=0,
+        description=(
+            "The index of the current step being executed in the steps list of the PlanningState. This should be updated after each step execution to reflect the next step to execute. "
+        )
+    )
 
     # total_steps: int = Field(
     #     default=0,
@@ -525,6 +554,15 @@ class OSAssistantState(BaseModel):
     #         "This should be updated after each command execution to include the output variables produced by that command and their current values. If no commands have been executed yet or if the executed commands do not produce any output variables, this should be an empty list."
     #     ),
     #  )
+
+    # =========== Step Resolver ===========
+
+    steps_resolver: List[StepResolverState] = Field(
+        default_factory=list,
+        description=(
+            "A list of step resolver states, which represent the resolved steps after replacing any placeholders with actual values from dependencies."
+        )
+    )
 
     # =========== Command Execution ===========
 
