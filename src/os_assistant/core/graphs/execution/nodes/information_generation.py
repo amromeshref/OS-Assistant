@@ -25,14 +25,22 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
     llm_model = LLMModel()
     sys_prompt = get_information_generation_sys_prompt()
 
+    step_index = state.current_step_index
+
+
     information_response = InformationResponse()
-    information_response.query = state.execution_orchestrator[-1].next_step.step_details.description
+
+    if state.steps_resolver_active:
+        current_resolving_step_index = state.current_resolving_step_index
+        current_resolving_step = state.steps_resolver[-1].resolved_steps[current_resolving_step_index]
+        information_response.query = current_resolving_step.step_details.description
+        state.current_resolving_step_index += 1
+    else:
+        information_response.query = state.planning.plan_steps[step_index].step_details.description
 
     human_message = f"""
 User's Original Query: {state.finalized_enhanced_query}
 Information Query: {information_response.query}
-Previous Command Executions(if any): {command_executions_to_str(state.command_executions)}
-Previous Information Responses(if any): {information_responses_to_str(state.generated_information_responses)}
 """
     
     response: str = llm_model.generate_response(
@@ -44,15 +52,28 @@ Previous Information Responses(if any): {information_responses_to_str(state.gene
     # TODO: Add parsing logic here
 
     information_response.answer = response
-    information_response.step_index = state.execution_orchestrator[-1].next_step_index
+    information_response.step_index = step_index
     state.generated_information_responses.append(information_response)
     state.executed_steps.append(
         f"The information step involving the query '{information_response.query}' is done."
     )
-    # state.current_step_index += 1
+    #state.current_step_index += 1
+    
     # state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     #save_information_responses(state.generated_information_responses)
+
+    if state.steps_resolver_active:
+        current_resolving_step_index = state.current_resolving_step_index
+        total_resolved_steps = len(state.steps_resolver[-1].resolved_steps)
+
+        if current_resolving_step_index >= total_resolved_steps:
+            logger.info("All resolved steps have been executed.")
+            state.steps_resolver_active = False
+            state.current_resolving_step_index = 0
+            state.current_step_index += 1
+    else:
+        state.current_step_index += 1
 
     state.generated_information_responses_status = "completed"
     logger.info("Completed information generation node.")
