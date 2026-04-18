@@ -5,6 +5,7 @@ from os_assistant.core.states.os_assistant_state import (
     VariableExecutionContext,
     InformationStep,
     CommandStep,
+    Step
 )
 import json
 from pathlib import Path
@@ -116,6 +117,56 @@ def planning_state_to_str(state: PlanningState) -> str:
 
     return "\n".join(lines)
 
+def plan_step_to_str(step: Step) -> str:
+    """
+    Convert a Step object into a human-readable string format for debugging or prompting purposes.
+
+    Args:
+        step (Step): The Step object to convert.
+    Returns:
+        str: A human-readable string representation of the Step.
+    """
+    lines = []
+    lines.append(f"Step Description: {step.description}")
+    lines.append(f"Step Type: {step.step_type}")
+
+    lines.append("Step Details: ")
+
+    # Information step
+    if step.step_type == "information" and isinstance(
+        step.step_details, InformationStep
+    ):
+        lines.append(f"Description: {step.step_details.description}")
+
+    # Command step
+    elif step.step_type == "command" and isinstance(
+        step.step_details, CommandStep
+    ):
+        
+        cmd = step.step_details
+        lines.append(f"Command: {cmd.command}")
+        lines.append(f"Description: {cmd.description}")
+        lines.append(f"Expected Output: {cmd.expected_output or 'no output'}")
+        lines.append(f"Safety Risk: {cmd.safety_risk}")
+
+        # Input variables
+        if cmd.input_variables:
+            lines.append("Input Variables:")
+            for var in cmd.input_variables:
+                lines.append(f"   - {var.variable_name}: {var.description}")
+
+        # Output variables
+        if cmd.output_variables:
+            lines.append("Output Variables:")
+            for var in cmd.output_variables:
+                lines.append(f"   - {var.variable_name}: {var.description}")
+        
+        # Iteration Part
+        lines.append(f"Requires Iteration: {str(step.requires_iteration)}")
+        lines.append(f"Dependencies Required: {str(step.dependencies_required)}")
+        lines.append(f"Dependency Step Indices: {str(step.dependency_step_indices)}")
+
+    return "\n".join(lines)
 
 def command_executions_to_str(executions: List[CommandExecution]) -> str:
     """
