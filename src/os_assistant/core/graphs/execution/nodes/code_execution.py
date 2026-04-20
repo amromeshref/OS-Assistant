@@ -27,12 +27,14 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
         current_resolving_step_index = state.current_resolving_step_index
         current_resolving_step = state.steps_resolver[-1].resolved_steps[current_resolving_step_index]
         command = current_resolving_step.step_details.command
+        execution_mode = current_resolving_step.step_details.execution_mode
         state.current_resolving_step_index += 1
     else:
         command = state.planning.plan_steps[step_index].step_details.command
+        execution_mode = state.planning.plan_steps[step_index].step_details.execution_mode
 
     # Command output after running
-    command_output = run_command(command)
+    command_output = run_command(command, execution_mode)
 
     human_message =f"""
 User's original query: {state.finalized_enhanced_query}
