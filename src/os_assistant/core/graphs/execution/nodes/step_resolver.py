@@ -66,6 +66,12 @@ def step_resolver_node(state: OSAssistantState) -> OSAssistantState:
     state.steps_resolver.append(response)
     logger.info("Completed step resolver node.")
 
+    if not response.is_resolution_successful:
+        state.executed_steps.append(f"Could not execute the step whose index is {current_step_index} and description is {current_step.description} due to the following reason: {response.resolution_reasoning}")
+        logger.info("Step resolution failed. Moving to the next step.")
+        state.current_step_index += 1
+        state.steps_resolver_active = False
+    
     return state
 
     
