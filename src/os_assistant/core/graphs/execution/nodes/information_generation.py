@@ -2,6 +2,7 @@ from os_assistant.utils.helper_functions import save_information_responses
 from os_assistant.core.states.os_assistant_state import (
     OSAssistantState,
     InformationResponse,
+    Step
 )
 from os_assistant.prompts.information_generation import (
     get_information_generation_sys_prompt,
@@ -9,9 +10,31 @@ from os_assistant.prompts.information_generation import (
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str
+from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
+from os_assistant.tools.retrieve_information_details import retrieve_information_details
 
 logger = get_logger(__name__)
 
+def retrieve_dependency_outputs(state: OSAssistantState, current_step: Step) -> str:
+    """
+    Retrieve the outputs of the dependencies for the current step.
+    Args:
+        state: OSAssistantState
+        current_step: The current step for which to retrieve dependency outputs
+    Returns:
+        str: A string representation of the dependency outputs. 
+    """
+    dependency_outputs = []
+
+    for dep_idx in current_step.dependency_step_indices:
+        dep_output = None
+        if state.planning.plan_steps[dep_idx].step_type == "command":
+            dep_output = retrieve_execution_details(state, dep_idx)
+        elif state.planning.plan_steps[dep_idx].step_type == "information":
+            dep_output = retrieve_information_details(state, dep_idx)
+        dependency_outputs.append(dep_output)
+
+    return "\n".join(dependency_outputs)
 
 def information_generation_node(state: OSAssistantState) -> OSAssistantState:
     """ """
@@ -29,18 +52,25 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
 
 
     information_response = InformationResponse()
+    dependency_outputs_str = ""
 
     if state.steps_resolver_active:
         current_resolving_step_index = state.current_resolving_step_index
         current_resolving_step = state.steps_resolver[-1].resolved_steps[current_resolving_step_index]
         information_response.query = current_resolving_step.step_details.description
+        if current_resolving_step.dependencies_required:
+            dependency_outputs_str = retrieve_dependency_outputs(state, current_resolving_step)
         state.current_resolving_step_index += 1
     else:
-        information_response.query = state.planning.plan_steps[step_index].step_details.description
+        current_step = state.planning.plan_steps[step_index]
+        information_response.query = current_step.step_details.description
+        if current_step.dependencies_required:
+            dependency_outputs_str = retrieve_dependency_outputs(state, current_step)
 
     human_message = f"""
 User's Original Query: {state.finalized_enhanced_query}
 Information Query: {information_response.query}
+Dependency Outputs(If this step depends on output from previous steps. This may be empty if no dependencies exist): {dependency_outputs_str}
 """
     
     response: str = llm_model.generate_response(
