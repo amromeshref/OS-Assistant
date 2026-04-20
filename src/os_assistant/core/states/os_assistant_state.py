@@ -120,6 +120,14 @@ class CommandStep(BaseModel):
         ),
     )
 
+    execution_mode: Literal["blocking", "background"] = Field(
+        ..., description=(
+        "The execution mode of the command, either 'blocking' or 'background'."
+        "'blocking' should be used when the command must complete and its output is needed for subsequent steps. "
+        "'background' should be used when the command starts a long-running or GUI process and does not need to block execution of subsequent steps."
+    )
+    )
+
 class Step(BaseModel):
     description: str = Field(
         ..., description="A human-readable description of the step."
