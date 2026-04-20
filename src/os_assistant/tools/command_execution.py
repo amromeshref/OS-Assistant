@@ -4,12 +4,17 @@ import subprocess
 logger = get_logger(__name__)
 
 
-def run_command(command: str) -> str:
+def run_command(command: str, execution_mode: str) -> str:
     """
     Executes a system command and returns its output.
     """
     logger.info(f"Running the command: {command}")
     try:
+        if execution_mode == "background":
+            subprocess.Popen(command, shell=True)
+            logger.info(f"Command started in background mode.")
+            return "Command started in background mode."
+        
         result = subprocess.run(
             command, shell=True, check=True, capture_output=True, text=True
         )
