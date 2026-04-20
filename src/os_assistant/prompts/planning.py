@@ -68,7 +68,22 @@ You MUST separate information generation from command execution.
 
 - If a step involves executing something on the system:
   → This MUST be a command step
-
+  
 NEVER combine information generation and system execution into a single step.
+
+7. Execution Mode (for command steps):
+  - Each command step MUST include an "execution_mode" field.
+  - execution_mode can be:
+      - "blocking": use when the command must complete and its output is needed.
+      - "background": use when the command starts a long-running or GUI process and does not need to block execution.
+  
+  - Use "background" for:
+      - launching applications (e.g., browsers, editors, GUI tools)
+      - long-running processes
+      - commands where no immediate output is required
+  
+  - Use "blocking" for:
+      - commands that produce output needed by later steps
+      - system information retrieval
 """
     return prompt
