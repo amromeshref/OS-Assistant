@@ -396,6 +396,47 @@ class CommandExecution(BaseModel):
 
     model_config = ConfigDict(extra="allow")
 
+class CommandErrorHandlerState(BaseModel):
+    """
+    Handles failed command executions by attempting to recover
+    and generate a corrected command that fulfills the original step.
+    """
+    can_recover: bool = Field(
+        default=False,
+        description=(
+            "Indicates whether the failed command execution can be recovered by generating a corrected command. "
+            "This should be set to True if it is possible to generate a corrected command that fulfills "
+            "the original step's intent. This should be set to False if recovery is not possible due to reasons such as syntax issues, missing files, invalid inputs, or logical impossibility."
+        ),
+    )
+
+    recovery_reasoning: str = Field(
+        default="",
+        description=(
+            "The reasoning behind whether recovery is possible or not." 
+            "If recovery is possible, this should explain how a corrected command can be generated to fulfill the original step's intent." 
+            "If recovery is not possible, this should explain why recovery cannot be achieved."
+        ),
+    )
+
+    suggested_command: str = Field(
+        default="",
+        description=(
+            "If can_recover = True, this should be the corrected command that is suggested to be executed to fulfill the original step's intent."
+        ),
+    )
+
+    safety_risk: Literal["low", "medium", "high"] = Field(
+        default="low",
+        description=(
+            "The safety risk level of executing the suggested command, if recovery is possible. "
+            "This should be set to 'low' if the suggested command is safe to execute with minimal risk of causing harm or unintended consequences. "
+            "This should be set to 'medium' if the suggested command carries some risk and should be executed with caution, potentially after reviewing the command and its implications. "
+            "This should be set to 'high' if the suggested command carries a significant risk of causing harm or unintended consequences, and should only be executed after careful consideration and review."
+        ),
+    )
+
+
     # messages: Optional[List[str]] = Field(default_factory=list),
     # remaining_steps: Optional[List[str]] = Field(default_factory=list)
 
@@ -606,6 +647,14 @@ class OSAssistantState(BaseModel):
     command_execution_status: str = Field(
         default=None,
         description="The status of the command execution process (e.g., 'pending', 'completed', 'error')."
+    )
+
+    num_error_executions: int = Field(
+        default=0,
+        description=(
+            "A counter for the number of command executions that resulted in an error. "
+            "This can be used to determine if we should retry executing a command or if we should consider the command as failed after reaching a certain threshold."
+        ),
     )
 
     # =========== Information Response ===========
