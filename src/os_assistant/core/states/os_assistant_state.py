@@ -379,7 +379,12 @@ class CommandExecution(BaseModel):
     )
 
     success: bool = Field(
-        ..., description="Indicates whether the command executed successfully."
+        ..., 
+        description=(
+            "Indicates whether the command executed successfully. "
+            "This should be set to true if the command executed without any errors and produced the expected output. "
+            "This should be set to false if the command execution resulted in any errors, produced unexpected output, or failed to execute."
+            )
     )
 
     output: str = Field(
@@ -434,6 +439,14 @@ class CommandErrorHandlerState(BaseModel):
             "This should be set to 'medium' if the suggested command carries some risk and should be executed with caution, potentially after reviewing the command and its implications. "
             "This should be set to 'high' if the suggested command carries a significant risk of causing harm or unintended consequences, and should only be executed after careful consideration and review."
         ),
+    )
+
+    execution_mode: Literal["blocking", "background"] = Field(
+        ..., description=(
+        "The execution mode of the command, either 'blocking' or 'background'."
+        "'blocking' should be used when the command must complete and its output is needed for subsequent steps. "
+        "'background' should be used when the command starts a long-running or GUI process and does not need to block execution of subsequent steps."
+    )
     )
 
 
@@ -649,12 +662,28 @@ class OSAssistantState(BaseModel):
         description="The status of the command execution process (e.g., 'pending', 'completed', 'error')."
     )
 
+    # =========== Error Handling ===========
+
+    command_error_handlers: List[CommandErrorHandlerState] = Field(
+        default_factory=list,
+        description=(
+            "A list of command error handler states, which manage the recovery process for failed command executions."
+        )
+    )
+
     num_error_executions: int = Field(
         default=0,
         description=(
             "A counter for the number of command executions that resulted in an error. "
             "This can be used to determine if we should retry executing a command or if we should consider the command as failed after reaching a certain threshold."
         ),
+    )
+
+    command_error_handler_active: bool = Field(
+        default=False,
+        description=(
+            "Indicates whether the command error handler is currently active and processing a failed command execution for recovery."
+        )
     )
 
     # =========== Information Response ===========
