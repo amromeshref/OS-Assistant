@@ -1,3 +1,5 @@
+from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
+from os_assistant.tools.retrieve_information_details import retrieve_information_details
 from os_assistant.core.states.os_assistant_state import (
     CommandExecution,
     PlanningState,
@@ -5,7 +7,9 @@ from os_assistant.core.states.os_assistant_state import (
     VariableExecutionContext,
     InformationStep,
     CommandStep,
-    Step
+    Step,
+    OSAssistantState,
+    CommandErrorHandlerState,
 )
 import json
 from pathlib import Path
@@ -392,3 +396,52 @@ def delete_information_responses_file(
         file_path.unlink()
         return True
     return False
+
+def command_error_handler_state_to_str(state: CommandErrorHandlerState) -> str:
+    """
+    Convert a CommandErrorHandlerState object into a human-readable string.
+
+    Args:
+        state (CommandErrorHandlerState): The error handler state.
+
+    Returns:
+        str: Human-readable string representation.
+    """
+    lines = []
+
+    # Recovery status
+    lines.append(f"Can Recover: {'Yes' if state.can_recover else 'No'}")
+
+    # Reasoning
+    if state.recovery_reasoning:
+        lines.append(f"Reasoning: {state.recovery_reasoning}")
+
+    # Suggested command (only if recoverable)
+    if state.can_recover:
+        lines.append(f"Suggested Command: {state.suggested_command or 'N/A'}")
+        lines.append(f"Safety Risk: {state.safety_risk}")
+
+    return "\n".join(lines)
+
+def retrieve_dependency_outputs(state: OSAssistantState) -> str:
+    """
+    Retrieve the outputs of the dependencies for the current step.
+    Args:
+        state: OSAssistantState
+    Returns:
+        str: A string representation of the dependency outputs. 
+    """
+    current_step_index = state.current_step_index
+    current_step = state.planning.plan_steps[current_step_index]
+
+    dependency_outputs = []
+
+    for dep_idx in current_step.dependency_step_indices:
+        dep_output = None
+        if state.planning.plan_steps[dep_idx].step_type == "command":
+            dep_output = retrieve_execution_details(state, dep_idx)
+        elif state.planning.plan_steps[dep_idx].step_type == "information":
+            dep_output = retrieve_information_details(state, dep_idx)
+        dependency_outputs.append(dep_output)
+
+    return "\n".join(dependency_outputs)
