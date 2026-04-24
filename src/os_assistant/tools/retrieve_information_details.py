@@ -1,10 +1,29 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.utils.helper_functions import information_responses_to_str
-from langchain.tools import tool
+from os_assistant.core.states.os_assistant_state import InformationResponse, OSAssistantState
 from os_assistant.utils.logger import get_logger
 from langchain.tools import Tool
+from typing import List
 
 logger = get_logger(__name__)
+
+def information_responses_to_str(responses: List[InformationResponse]) -> str:
+    """
+    Convert a list of InformationResponse objects into a human-readable string format for debugging or prompting purposes.
+    Args:
+        responses (List[InformationResponse]): The list of InformationResponse objects to convert.
+    Returns:
+        str: A human-readable string representation of the information responses.
+    """
+    if not responses:
+        return "No information responses."
+
+    lines = []
+    for i, response in enumerate(responses, start=1):
+        lines.append(f"Step Index: {response.step_index}")
+        lines.append(f"  Query: {response.query or 'N/A'}")
+        lines.append(f"  Answer: {response.answer or 'N/A'}")
+        lines.append("")  # empty line for readability
+
+    return "\n".join(lines)
 
 
 def retrieve_information_details(state: OSAssistantState, step_index: int) -> str:
