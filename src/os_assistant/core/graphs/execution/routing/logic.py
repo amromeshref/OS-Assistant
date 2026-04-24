@@ -3,11 +3,12 @@ from flask import logging
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.settings import (
+    CODE_ERROR_HANDLING_NODE,
     INFORMATION_NODE,
     CODE_EXECUTION_NODE,
     FINAL_RESPONSE_NODE,
-    EXECUTION_ORCHESTRATOR_NODE,
     STEP_RESOLVER_NODE,
+    COMMAND_ERROR_HANDLING_MAX_ATTEMPTS
 )
 
 from os_assistant.utils.helper_functions import save_debug_state
@@ -64,35 +65,14 @@ def router(state: OSAssistantState):
     elif next_step.step_type == "information":
         return INFORMATION_NODE
 
-def route_after_orchestrator(state: OSAssistantState) -> str:
+
+def route_after_code_execution(state: OSAssistantState) -> str:
     """
-    Route after execution orchestrator node based on the next step determined by the orchestrator.
+    Route after code execution based on the execution result and error handling status.
     """
-    if state.execution_orchestrator[-1].is_blocked:
-        return EXECUTION_ORCHESTRATOR_NODE
-
-    next_step_type = state.execution_orchestrator[-1].next_step.step_type
-
-    if next_step_type == "command":
-        return CODE_EXECUTION_NODE
-    elif next_step_type == "information":
-        return INFORMATION_NODE
-
-# def route_to_final_response(state: OSAssistantState) -> str:
-#     """
-#     Route to final response node after code execution or information generation based on the completion of all steps.
-#     """
-#     if state.current_step_index < state.total_steps:
-#         return EXECUTION_ORCHESTRATOR_NODE
+    if state.command_error_handler_active:
+        logger.info("Currently in command error handling mode, routing to code error handling node.")
+        return CODE_ERROR_HANDLING_NODE
     
-#     return FINAL_RESPONSE_NODE
-
-
-def route_after_step_execution(state: OSAssistantState) -> str:
-    """
-    Route after executing a step(command/info).
-    """
-    #add logging
-    if state.execution_orchestrator[-1].is_final_step:
-        return FINAL_RESPONSE_NODE
-    return EXECUTION_ORCHESTRATOR_NODE
+    logger.info("Code execution successful, routing to next step.")
+    return router(state)
