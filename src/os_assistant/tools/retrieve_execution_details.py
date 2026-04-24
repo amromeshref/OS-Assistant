@@ -1,11 +1,32 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.utils.helper_functions import command_executions_to_str
-from langchain.tools import tool
+from os_assistant.core.states.os_assistant_state import CommandExecution, OSAssistantState
 from os_assistant.utils.logger import get_logger
 from langchain.tools import Tool
+from typing import List
 
 logger = get_logger(__name__)
 
+
+def command_executions_to_str(executions: List[CommandExecution]) -> str:
+    """
+    Convert a list of CommandExecution objects into a human-readable string format for debugging or prompting purposes.
+    Args:
+        executions (List[CommandExecution]): The list of CommandExecution objects to convert.
+    Returns:
+        str: A human-readable string representation of the command executions.
+    """
+    if not executions:
+        return "No command executions."
+
+    lines = []
+    for i, exec in enumerate(executions, start=1):
+        lines.append(f"Step Index: {exec.step_index}")
+        lines.append(f"Command: {exec.command}")
+        lines.append(f"  Success: {'Yes' if exec.success else 'No'}")
+        lines.append(f"  Output: {exec.output or 'no output'}")
+        lines.append(f"  Error: {exec.error or 'no errors'}")
+        lines.append("")  # empty line for separation
+
+    return "\n".join(lines)
 
 
 def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
