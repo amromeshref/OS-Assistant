@@ -30,6 +30,7 @@ Your Responsibilities:
 3. Extract error information:
    - If an error exists, include it clearly
    - set `error` = error message or relevant details, or empty string if no error
+   - set `success` = false if any error is detected
 
 Produce a valid CommandExecution Object.
 """
