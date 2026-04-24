@@ -100,6 +100,9 @@ Command Output(After running):
             )
             state.command_error_handler_active = False
             state.num_error_executions = 0
+    else:
+        state.command_error_handler_active = False
+        state.num_error_executions = 0
 
     if state.steps_resolver_active:
         print("="*90)
