@@ -39,10 +39,11 @@ Step Guidelines (Both Modes):
    - Always order steps so that dependencies appear before dependent steps.
    - Ensure that input_variables reference outputs from prior steps, and output_variables are clearly defined.
 
-3. Variable Handling (for command steps):
+3. Variable Handling:
    - Explicitly define all input and output variables.
    - Ensure that output variables from previous steps are used correctly in dependent steps.
    - Do not assume values; always treat them as outputs of previous steps.
+   - If a step depends on outputs from previous steps, this step must contain placeholders for those variables, and the plan must reflect the correct order of execution.
 
 4. Follow-up:
    - If you are unsure about a missing information or critical detail, set requires_follow_up to True and explain in follow_up_reasoning. If you can retrieve the missing information through a command or information step, include that in the plan instead of setting requires_follow_up to True.
