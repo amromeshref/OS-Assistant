@@ -1,8 +1,8 @@
 from os_assistant.core.models.groq import GroqModel
 from os_assistant.core.models.ollama import OllamaModel
 from os_assistant.core.settings import (
-    AVAILABLE_PLATFORMS,
-    DEFAULT_PLATFORM,
+    AVAILABLE_LLM_PLATFORMS,
+    DEFAULT_LLM_PLATFORM,
 )
 from os_assistant.utils.logger import get_logger
 
@@ -13,7 +13,7 @@ logger = get_logger(__name__)
 class LLMModel:
     def __init__(self, platform: str = None, model_name: str = None):
         if platform is None:
-            platform = DEFAULT_PLATFORM
+            platform = DEFAULT_LLM_PLATFORM
         self.platform = platform
 
         logger.info(f"Initializing LLMModel with platform: {self.platform }")
@@ -24,10 +24,10 @@ class LLMModel:
             self.llm_model = GroqModel(model_name)
         else:
             logger.error(
-                f"Unsupported platform: {self.platform}. Available platforms are: {AVAILABLE_PLATFORMS}"
+                f"Unsupported platform: {self.platform}. Available platforms are: {AVAILABLE_LLM_PLATFORMS}"
             )
             raise ValueError(
-                f"Unsupported platform: {self.platform}. Available platforms are: {AVAILABLE_PLATFORMS}"
+                f"Unsupported platform: {self.platform}. Available platforms are: {AVAILABLE_LLM_PLATFORMS}"
             )
 
 
