@@ -1,0 +1,225 @@
+from os_assistant.core.graphs.cognition.cognition_graph import CognitionGraph
+from os_assistant.core.graphs.planning.planning_graph import PlanningGraph 
+from os_assistant.core.graphs.execution.execution_graph import ExecutionGraph 
+from os_assistant.interfaces.voice_input.main import VoiceInputInterface
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import save_debug_state
+from rich.console import Console
+from rich.markdown import Markdown
+import argparse
+
+class OSAssistantApp:
+    def __init__(self, use_voice=False):
+        self.use_voice = use_voice
+        self.equal_num = 50
+
+        # Graphs
+        self.cognition_graph = CognitionGraph()
+        self.planning_graph = PlanningGraph()
+        self.execution_graph = ExecutionGraph()
+
+        self.cognition_graph.compile()
+        self.planning_graph.compile()
+        self.execution_graph.compile()
+
+        if self.use_voice:
+            self.voice_input_interface = VoiceInputInterface()
+
+    # ================= PRINT AI MESSAGE =================
+    def print_ai(self, text):
+        print("=" * self.equal_num)
+        print("AI:")
+        self.render(text)
+        print("=" * self.equal_num)
+
+    # ================= INPUT =================
+    def get_input(self):
+        inp = None
+        if self.use_voice:
+            inp = self.voice_input()
+        else:
+            print("=" * self.equal_num)
+            inp = input("YOU: ")
+        
+        if inp == "exit":
+            print("Exiting...")
+            exit(0)
+        return inp
+
+    def voice_input(self):
+        self.voice_input_interface.service.reset()
+        self.voice_input_interface.service.start_listening()
+        text = self.voice_input_interface.service.transcribe_audio()
+
+        print("You said:", text)
+        print("Type 'ok' or edit:")
+
+        print("=" * self.equal_num)
+        inp = input("YOU: ")
+        print("=" * self.equal_num)
+
+        return text if inp == "ok" else inp
+
+    # ================= UTIL =================
+    def render(self, text):
+        console = Console()
+        console.print(Markdown(text))
+
+    def append_hist(self, state: OSAssistantState):
+        state.multi_turn_conversation_history.append({
+            "turn_num": state.turn_num,
+            "user_query": state.original_queries[-1],
+            "assistant_response": state.multi_turn_generated_responses[-1]
+        })
+        state.turn_num += 1
+
+    def new_state_from(self, state: OSAssistantState):
+        """Clean state reset (you repeated this MANY times)"""
+        new_state = OSAssistantState()
+
+        new_state.finalized_enhanced_query = state.finalized_enhanced_query
+        new_state.original_queries = state.original_queries
+        new_state.turn_num = state.turn_num
+        new_state.multi_turn_conversation_history = state.multi_turn_conversation_history
+        new_state.original_queries_enhanced = state.original_queries_enhanced
+        new_state.multi_turn_generated_responses = state.multi_turn_generated_responses
+        new_state.clarification_attempts = state.clarification_attempts
+
+        new_state.query_clarification = state.query_clarification
+        new_state.query_classification = state.query_classification
+
+        return new_state
+
+    # ================= CLARIFICATION LOOP =================
+    def clarification_loop(self, state: OSAssistantState):
+        while True:
+            state = self.cognition_graph.execute(state)
+            save_debug_state(state, "clarification")
+
+            if not state.query_clarification.is_clarification_needed:
+                return state
+
+            self.print_ai(state.query_clarification.generated_response)
+            state.multi_turn_generated_responses.append(state.query_clarification.generated_response)
+            self.append_hist(state)
+
+            follow_up = self.get_input()
+            state.original_queries.append(follow_up)
+
+    # ================= COGNITION =================
+    def handle_cognition(self, state):
+        while True:
+            state = self.cognition_graph.execute(state)
+            save_debug_state(state, "cognition")
+
+            if not state.query_classification.requires_follow_up:
+                return state
+
+            self.print_ai(state.query_clarification.generated_response)
+            state.multi_turn_generated_responses.append(state.query_clarification.generated_response)
+            self.append_hist(state)
+
+            follow_up = self.get_input()
+            state.original_queries.append(follow_up)
+
+            # deeper clarification
+            state = self.clarification_loop(state)
+
+            # reset cleanly
+            state = self.new_state_from(state)
+
+
+    # ================= VALIDATION =================
+    def validation_loop(self, state: OSAssistantState):
+        while state.user_validation.is_validation_required:
+            self.print_ai(state.user_validation.generated_response)
+            state.multi_turn_generated_responses.append(state.user_validation.generated_response)
+            self.append_hist(state)
+
+            follow_up = self.get_input()
+            state.original_queries.append(follow_up)
+
+            state = self.planning_graph.execute(state)
+            save_debug_state(state, "validation")
+
+        return state
+
+    # ================= PLANNING =================
+    def handle_planning(self, state):
+        while True:
+            state = self.planning_graph.execute(state)
+            save_debug_state(state, "planning")
+
+            # clarification needed
+            if state.planning.requires_follow_up:
+                state.query_clarification.is_clarification_needed = True
+                state = self.clarification_loop(state)
+                state = self.new_state_from(state)
+                continue
+
+            # skip validation for info queries
+            if state.query_classification.query_type == "information":
+                return state
+
+            # validation loop
+            state = self.validation_loop(state)
+
+            if state.user_validation.user_feedback_type == "update_plan":
+                continue
+
+            return state
+
+
+
+    # ================= EXECUTION =================
+    def handle_execution(self, state: OSAssistantState):
+        state = self.execution_graph.execute(state)
+
+        self.print_ai(state.generated_final_response)
+        state.multi_turn_generated_responses.append(state.generated_final_response)
+        self.append_hist(state)
+
+        save_debug_state(state, "execution")
+        return state
+
+    # ================= MAIN LOOP =================
+    def run(self):
+        while True:
+            query = self.get_input()
+
+            state = OSAssistantState()
+            state.original_queries.append(query)
+
+            state = self.handle_cognition(state)
+            state = self.handle_planning(state)
+            state = self.handle_execution(state)
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="OS Assistant CLI"
+    )
+
+    parser.add_argument(
+        "--voice",
+        action="store_true",
+        help="Enable voice input"
+    )
+
+    parser.add_argument(
+        "--no-voice",
+        action="store_true",
+        help="Disable voice input"
+    )
+
+    args = parser.parse_args()
+
+
+    if args.voice:
+        use_voice = True
+    elif args.no_voice:
+        use_voice = False
+    else:
+        use_voice = False
+
+    app = OSAssistantApp(use_voice=use_voice)
+    app.run()
