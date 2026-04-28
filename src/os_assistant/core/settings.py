@@ -1,8 +1,13 @@
 import os
 
+# Voice input settings
 VOICE_INPUT_ENABLED = True
-AVAILABLE_PLATFORMS = ["ollama", "groq"]
-DEFAULT_PLATFORM = "groq"
+AVAILABLE_VOICE_PLATFORMS = ["whisper", "google"]
+DEFAULT_VOICE_PLATFORM = "google"
+
+# LLM Platforms
+AVAILABLE_LLM_PLATFORMS = ["ollama", "groq"]
+DEFAULT_LLM_PLATFORM = "groq"
 
 # Node Names
 QUERY_CLASSIFICATION_NODE = "query_classification_node"
