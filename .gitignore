@@ -34,3 +34,6 @@ src/os_assistant/core/graphs/memory/routing/__pycache__/
 src/os_assistant/core/graphs/planning/__pycache__/
 src/os_assistant/core/graphs/planning/nodes/__pycache__/
 src/os_assistant/core/graphs/planning/routing/__pycache__/
+
+src/os_assistant/interfaces/__pycache__/
+src/os_assistant/interfaces/voice_input/__pycache__/
