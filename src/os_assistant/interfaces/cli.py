@@ -1,6 +1,7 @@
 from os_assistant.core.graphs.cognition.cognition_graph import CognitionGraph
 from os_assistant.core.graphs.planning.planning_graph import PlanningGraph 
 from os_assistant.core.graphs.execution.execution_graph import ExecutionGraph 
+from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
 from os_assistant.interfaces.voice_input.main import VoiceInputInterface
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.utils.helper_functions import save_debug_state
@@ -17,10 +18,12 @@ class OSAssistantApp:
         self.cognition_graph = CognitionGraph()
         self.planning_graph = PlanningGraph()
         self.execution_graph = ExecutionGraph()
+        self.memory_graph = MemoryGraph()
 
         self.cognition_graph.compile()
         self.planning_graph.compile()
         self.execution_graph.compile()
+        self.memory_graph.compile()
 
         if self.use_voice:
             self.voice_input_interface = VoiceInputInterface()
@@ -181,6 +184,12 @@ class OSAssistantApp:
 
         save_debug_state(state, "execution")
         return state
+    
+    def handle_memory(self, state: OSAssistantState):
+        state = self.memory_graph.execute(state)
+
+        save_debug_state(state, "memory")
+        return state
 
     # ================= MAIN LOOP =================
     def run(self):
@@ -193,7 +202,8 @@ class OSAssistantApp:
             state = self.handle_cognition(state)
             state = self.handle_planning(state)
             state = self.handle_execution(state)
-
+            state = self.handle_memory(state)
+            
 def main():
     parser = argparse.ArgumentParser(
         description="OS Assistant CLI"
