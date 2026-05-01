@@ -61,12 +61,5 @@ Important Rules:
 - Do NOT ask for trivial details if defaults can be assumed
 - Do NOT hallucinate critical unknowns (e.g., deleting unknown file paths)
 - ALWAYS be concise and helpful
-
-OS Scope Rule:
-
-If the query is NOT related to operating system functionality:
-- Set is_clarification_needed = true
-- Inform the user that this assistant only handles OS-related tasks
-- Guide them to rephrase the request accordingly
 """
     return prompt
