@@ -480,6 +480,17 @@ class FinalResponse(BaseModel):
         description="Short summary of what was done"
     )
 
+class SummarizerState(BaseModel):
+    """
+    Represents the state of the Summarizer, which is responsible for extracting durable and reusable information from the conversation history, execution plan, and executed steps to be stored in long-term memory for retrieval augmentation in future sessions.
+    """
+    summary: List[str] = Field(
+        default_factory=list,
+        description=(
+            "A list of key information extracted from the conversation history, execution plan, and executed steps"
+        )
+    )
+
 class OSAssistantState(BaseModel):
     """
     Represents the state of the OS Assistant, including any relevant information
@@ -707,4 +718,10 @@ class OSAssistantState(BaseModel):
     final_response_status: str = Field(
         default=None,
         description="The status of the final response process (e.g., 'pending', 'completed', 'error')."
+    )
+
+    # =========== Summarization & Memory Extraction ===========
+    memory_extraction: SummarizerState = Field(
+        default=SummarizerState(),
+        description="The state of the summarization process for extracting durable and reusable information to be stored in long-term memory."
     )
