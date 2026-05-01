@@ -1,19 +1,20 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, SummarizerState
-from os_assistant.core.settings import SESSION_ID
 from os_assistant.prompts.summarizer import get_summarizer_sys_prompt, get_human_message
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 from datetime import datetime
 from typing import List
 import json
+import os
 
 logger = get_logger(__name__)
 
-
+PARENT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))))))
+print("Parent directory:", PARENT_DIR)
 def save_session_memory(
     session_id: int,
     summaries: List[str],
-    file_path: str = "memory/memory.jsonl",
+    file_path: str = PARENT_DIR + "/memory/memory.jsonl",
 ) -> None:
     """
     Saves summarizer output into a JSONL memory file for RAG.
@@ -30,6 +31,22 @@ def save_session_memory(
 
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
+def get_next_session_id(file_path = PARENT_DIR + "/memory/session_id.txt"):
+    if not os.path.exists(file_path):
+        with open(file_path, "w") as f:
+            f.write("1")
+        return 1
+
+    with open(file_path, "r") as f:
+        current_id = int(f.read().strip())
+
+    new_id = current_id + 1
+
+    with open(file_path, "w") as f:
+        f.write(str(new_id))
+
+    return new_id
+
 def summarizer_node(state: OSAssistantState) -> OSAssistantState:
     """
     Node responsible for summarizing the current state of the assistant's memory and reasoning.
@@ -43,13 +60,14 @@ def summarizer_node(state: OSAssistantState) -> OSAssistantState:
     response: SummarizerState = llm_model.generate_response(
         system_message=sys_prompt,
         human_message=human_message,
+        structured_output=SummarizerState,
     )
 
     state.memory_extraction = response
 
     # Save the extracted memory into a JSONL file for RAG
     save_session_memory(
-        session_id=SESSION_ID,
+        session_id=get_next_session_id(),
         summaries=response.summary,
     )
 
