@@ -20,6 +20,7 @@ INFORMATION_NODE = "information_generation_node"
 FINAL_RESPONSE_NODE = "final_response_node"
 STEP_RESOLVER_NODE = "step_resolver_node"
 CODE_ERROR_HANDLING_NODE = "code_error_handling_node"
+SUMMARIZER_NODE = "summarizer_node"
 
 # Configuration for the clarification node
 # shourd be added to config dir
@@ -37,3 +38,6 @@ DEFAULT_OLLAMA_MODEL_NAME = "qwen2.5:14b-instruct-q5_K_M"
 # Groq settings
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 DEFAULT_GROQ_MODEL_NAME = "openai/gpt-oss-120b"
+
+
+SESSION_ID = 0
