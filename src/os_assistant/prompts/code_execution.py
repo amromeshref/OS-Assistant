@@ -32,6 +32,8 @@ Your Responsibilities:
    - set `error` = error message or relevant details, or empty string if no error
    - set `success` = false if any error is detected
 
+4. Set `summary` = the executed command and its result in a concise summary form, suitable for long-term memory storage and future retrieval.
+
 Produce a valid CommandExecution Object.
 """
     return prompt
