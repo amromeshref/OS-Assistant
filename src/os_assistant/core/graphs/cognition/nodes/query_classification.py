@@ -4,8 +4,9 @@ from os_assistant.core.states.os_assistant_state import (
 )
 from os_assistant.prompts.query_classification import (
     get_query_classification_sys_prompt,
+    get_first_human_message,
+    get_second_human_message,
 )
-from os_assistant.core.settings import CLARIFICATION_NODE_MAX_ATTEMPTS
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 
@@ -28,18 +29,10 @@ def query_classification_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_query_classification_sys_prompt()
 
     if state.clarification_attempts == 0:    
-        human_message = f"""
-This is Mode 1: Initial Classification.
-Current Turn Query: {state.original_queries[-1]}
-Finalized Enhanced User Query from previous turns(if any): {state.finalized_enhanced_query}
-Conversation History: {str(state.multi_turn_conversation_history)}
-"""
+        human_message, retrieved_memories = get_first_human_message(state)
+        state.retrieved_memories = retrieved_memories
     else:
-        human_message = f"""
-This is Mode 2: Post-Clarification Classification.
-Current Turn Query: {state.original_queries[-1]}
-Conversation History: {str(state.multi_turn_conversation_history)}
-"""
+        human_message = get_second_human_message(state)
 
     # Generate the classification response from the LLM
     response: QueryClassificationState = llm_model.generate_response(
