@@ -49,5 +49,7 @@ Here is the current execution plan:
 {planning_state_to_str(state.planning)}
 Here is a summary of executed steps:
 {str(state.executed_steps)}
+Here is the AI's final response to the user:
+{state.generated_final_response}
 """
     return prompt
