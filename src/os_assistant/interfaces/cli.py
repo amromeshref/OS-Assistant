@@ -4,6 +4,8 @@ from os_assistant.core.graphs.execution.execution_graph import ExecutionGraph
 from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
 from os_assistant.interfaces.voice_input.main import VoiceInputInterface
 from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.core.settings import VOICE_INPUT_ENABLED, RAG_ENABLED
+from os_assistant.tools.rag.main import RAGTool
 from os_assistant.utils.helper_functions import save_debug_state
 from rich.console import Console
 from rich.markdown import Markdown
@@ -26,7 +28,13 @@ class OSAssistantApp:
         self.memory_graph.compile()
 
         if self.use_voice:
+            if not VOICE_INPUT_ENABLED:
+                print("Voice input is not enabled in settings. Please enable it to use voice input.")
+                exit(1)
             self.voice_input_interface = VoiceInputInterface()
+
+        if RAG_ENABLED:
+            self.rag_tool = RAGTool()
 
     # ================= PRINT AI MESSAGE =================
     def print_ai(self, text):
@@ -190,6 +198,10 @@ class OSAssistantApp:
 
         save_debug_state(state, "memory")
         return state
+    
+    def handle_rag(self, state: OSAssistantState):
+        self.rag_tool.add_memories(session_id=state.turn_num, summaries=state.memory_extraction.summary)
+        return state
 
     # ================= MAIN LOOP =================
     def run(self):
@@ -204,6 +216,8 @@ class OSAssistantApp:
             state = self.handle_execution(state)
             state = self.handle_memory(state)
             
+            if RAG_ENABLED:
+                state = self.handle_rag(state)
 def main():
     parser = argparse.ArgumentParser(
         description="OS Assistant CLI"
