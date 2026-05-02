@@ -1,6 +1,7 @@
 logs/
 notebooks/
 memory/
+database/
 
 thinking.txt
 
@@ -40,3 +41,9 @@ src/os_assistant/core/graphs/planning/routing/__pycache__/
 
 src/os_assistant/interfaces/__pycache__/
 src/os_assistant/interfaces/voice_input/__pycache__/
+
+src/os_assistant/tools/rag/__pycache__/
+src/os_assistant/tools/rag/chromadb/__pycache__/
+src/os_assistant/tools/rag/embedding_models/__pycache__/
+src/os_assistant/tools/rag/ingestion/__pycache__/
+src/os_assistant/tools/rag/retriever/__pycache__/
