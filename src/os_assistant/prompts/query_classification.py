@@ -1,4 +1,7 @@
+from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.settings import RAG_ENABLED
+from os_assistant.tools.rag.main import RAGTool
 
 def get_query_classification_sys_prompt(structured_output=None):
     prompt = f"""
@@ -90,5 +93,31 @@ Goal:
 - In Mode 1 → detect unclear or incomplete requests
 - In Mode 2 → finalize classification without unnecessary friction
 - Ensure smooth transition between classification and clarification without loops
+"""
+    return prompt
+
+def get_first_human_message(state: OSAssistantState):
+    prompt = f"""
+This is Mode 1: Initial Classification.
+Current Turn Query: {state.original_queries[-1]}
+Finalized Enhanced User Query from previous turns(if any): {state.finalized_enhanced_query}
+Conversation History: {str(state.multi_turn_conversation_history)}
+"""
+    if RAG_ENABLED:
+        rag_tool = RAGTool()
+        retrieved_memories = rag_tool.retrieve(state.original_queries[-1])
+        prompt += f"\nMore context from past interactions with the user:"
+        for idx, memory in enumerate(retrieved_memories):
+            prompt += f"\nMemory {idx+1}: {memory}"
+        
+        return prompt, retrieved_memories
+    else:
+        return prompt, []
+
+def get_second_human_message(state: OSAssistantState):
+    prompt = f"""
+This is Mode 2: Post-Clarification Classification.
+Current Turn Query: {state.original_queries[-1]}
+Conversation History: {str(state.multi_turn_conversation_history)}
 """
     return prompt
