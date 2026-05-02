@@ -11,10 +11,12 @@ logger = get_logger(__name__)
 
 PARENT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))))))
 print("Parent directory:", PARENT_DIR)
+
+
 def save_session_memory(
     session_id: int,
     summaries: List[str],
-    file_path: str = PARENT_DIR + "/memory/memory.jsonl",
+    file_path: str = PARENT_DIR + "/memory/session_memory.jsonl",
 ) -> None:
     """
     Saves summarizer output into a JSONL memory file for RAG.
@@ -32,6 +34,7 @@ def save_session_memory(
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 def get_next_session_id(file_path = PARENT_DIR + "/memory/session_id.txt"):
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     if not os.path.exists(file_path):
         with open(file_path, "w") as f:
             f.write("1")
