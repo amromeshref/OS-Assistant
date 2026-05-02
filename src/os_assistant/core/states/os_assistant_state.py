@@ -496,6 +496,16 @@ class OSAssistantState(BaseModel):
     Represents the state of the OS Assistant, including any relevant information
     about the current session, user preferences, and system status.
     """
+    # ====== RAG ======
+
+    retrieved_memories: List[str] = Field(
+        default_factory=list,
+        description=(
+            "A list of relevant memories retrieved from long-term memory based on the current query and conversation history."
+            "This should be populated during the query classification process if RAG is enabled, and can be used to provide additional context for understanding and classifying the user's query."
+        ),
+    )
+
     # ========== User query ==========
 
     turn_num: int = Field(
