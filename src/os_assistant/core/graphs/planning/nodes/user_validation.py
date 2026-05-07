@@ -1,8 +1,11 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, UserValidationState
 from os_assistant.core.models.main import LLMModel
-from os_assistant.prompts.user_validation import get_user_validation_sys_prompt
+from os_assistant.prompts.user_validation import (
+    get_user_validation_sys_prompt,
+    get_phase1_human_message,
+    get_phase2_human_message
+)
 from os_assistant.utils.logger import get_logger
-from os_assistant.utils.helper_functions import planning_state_to_str
 
 logger = get_logger(__name__)
 
@@ -19,19 +22,9 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
     llm_model = LLMModel()
     sys_prompt = get_user_validation_sys_prompt()
     if state.user_validation.is_validation_required:
-        human_message = f"""
-This is PHASE 2: User Feedback Handling
-Current Turn Query: {state.original_queries[-1]}
-Conversation History: {str(state.multi_turn_conversation_history)}
-The planning node has generated the following execution/information plan based on the user's original query: {planning_state_to_str(state.planning)}"""
+        human_message = get_phase2_human_message(state)
     else:
-        human_message = f"""
-This is PHASE 1: Plan Presentation (FIRST TURN)
-The user did not see the current plan yet. They did not reject it, approve it, or ask for changes.
-User's original query: {state.finalized_enhanced_query}
-Generated execution/information plan: {planning_state_to_str(state.planning)}
-Multi-turn conversation history (if any): {str(state.multi_turn_conversation_history)}
-    """
+        human_message = get_phase1_human_message(state)
         
     while True:
         try:

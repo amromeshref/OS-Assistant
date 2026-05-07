@@ -1,4 +1,6 @@
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import planning_state_to_str
 
 def get_user_validation_sys_prompt(structured_output=None) -> str:
     prompt = f"""
@@ -106,3 +108,20 @@ IMPORTANT
 - Return ONLY the structured response
 """
     return prompt
+
+def get_phase1_human_message(state: OSAssistantState):
+    return f"""
+This is PHASE 1: Plan Presentation (FIRST TURN)
+The user did not see the current plan yet. They did not reject it, approve it, or ask for changes.
+User's original query: {state.finalized_enhanced_query}
+Generated execution/information plan: {planning_state_to_str(state.planning)}
+Multi-turn conversation history (if any): {str(state.multi_turn_conversation_history)}
+"""
+
+def get_phase2_human_message(state: OSAssistantState):
+    return f"""
+This is PHASE 2: User Feedback Handling
+Current Turn Query: {state.original_queries[-1]}
+Conversation History: {str(state.multi_turn_conversation_history)}
+The planning node has generated the following execution/information plan based on the user's original query: {planning_state_to_str(state.planning)}
+"""
