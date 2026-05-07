@@ -1,5 +1,9 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, QueryClarificationState
-from os_assistant.prompts.query_clarification import get_query_clarification_sys_prompt
+from os_assistant.prompts.query_clarification import (
+    get_query_clarification_sys_prompt, 
+    get_fitst_human_message, 
+    get_second_human_message
+)
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 
@@ -21,21 +25,10 @@ def query_clarification_node(state: OSAssistantState) -> OSAssistantState:
     sys_prompt = get_query_clarification_sys_prompt()
 
     if state.planning.requires_follow_up:
-        human_message = f"""
-The planning node has determined that a follow-up question is needed to clarify the user's original query.
-You are supposed to have a multi-turn coversation with the user until you get the missing information to help the planning node complete its task.
-If the user has already provided the missing information in the current turn, update the finalized_enhanced_query with the new information and do not ask a follow-up question. Additionally, set is_clarification_needed to False.
-
-Please generate a follow-up question to ask the user based on the following information:
-User Query: {state.finalized_enhanced_query}
-Follow-up Reasoning: {state.planning.follow_up_reasoning}
-Conversation History: {str(state.multi_turn_conversation_history)}
-        """
+        human_message = get_second_human_message(state)
     else:
-        human_message = f"""
-Current Turn Query: {state.original_queries[-1]}
-Conversation History: {str(state.multi_turn_conversation_history)}
-    """
+        human_message = get_fitst_human_message(state)
+
     # Generate the classification response from the LLM
     response: QueryClarificationState = llm_model.generate_response(
         system_message=sys_prompt,
