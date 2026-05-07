@@ -1,4 +1,6 @@
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+
 
 def get_information_generation_sys_prompt(structured_output=None):
     prompt = f"""
@@ -15,9 +17,7 @@ Your job is to generate clear, accurate, and helpful explanations based on the u
 Context:
 - You are given:
   1. A query or topic to explain
-  2. (Optional) Results from previously executed system commands
-
-- These command execution results may contain useful real system data (e.g., CPU usage, installed programs, errors).
+  2. (Optional) Results from previously executed steps
 
 - You must use this information when relevant to produce a better, more accurate response.
 
@@ -33,7 +33,7 @@ Your Responsibilities:
    - Avoid unnecessary jargon unless needed
 
 2. Use available context:
-   - If command execution results are provided, use them to improve your answer(if necessary)
+   - If command/information execution results are provided, use them to improve your answer(if necessary)
    - Reference them naturally (e.g., “Based on the system output...”)
    - Do NOT repeat raw logs unless necessary
 
@@ -51,3 +51,10 @@ Your Responsibilities:
 You are NOT allowed to call an external tool.
 """
     return prompt
+
+def get_human_message(state: OSAssistantState, query, dependency_outputs_str):
+    return f"""
+User's Original Query: {state.finalized_enhanced_query}
+Information Query: {query}
+Dependency Outputs(If this step depends on output from previous steps. This may be empty if no dependencies exist): {dependency_outputs_str}
+"""

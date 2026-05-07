@@ -1,4 +1,3 @@
-from os_assistant.utils.helper_functions import save_information_responses
 from os_assistant.core.states.os_assistant_state import (
     OSAssistantState,
     InformationResponse,
@@ -6,10 +5,10 @@ from os_assistant.core.states.os_assistant_state import (
 )
 from os_assistant.prompts.information_generation import (
     get_information_generation_sys_prompt,
+    get_human_message
 )
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
-from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str
 from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
 from os_assistant.tools.retrieve_information_details import retrieve_information_details
 
@@ -37,7 +36,6 @@ def retrieve_dependency_outputs(state: OSAssistantState, current_step: Step) -> 
     return "\n".join(dependency_outputs)
 
 def information_generation_node(state: OSAssistantState) -> OSAssistantState:
-    """ """
     logger.info("Starting information generation node.")
 
     # if len(state.planning.information_steps) == 0:
@@ -67,11 +65,7 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
         if current_step.dependencies_required:
             dependency_outputs_str = retrieve_dependency_outputs(state, current_step)
 
-    human_message = f"""
-User's Original Query: {state.finalized_enhanced_query}
-Information Query: {information_response.query}
-Dependency Outputs(If this step depends on output from previous steps. This may be empty if no dependencies exist): {dependency_outputs_str}
-"""
+    human_message = get_human_message(state, information_response.query, dependency_outputs_str)
     
     response: str = llm_model.generate_response(
         human_message=human_message,
