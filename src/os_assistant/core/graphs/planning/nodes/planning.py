@@ -1,8 +1,7 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, PlanningState
 from os_assistant.core.models.main import LLMModel
-from os_assistant.prompts.planning import get_planning_sys_prompt
+from os_assistant.prompts.planning import get_planning_sys_prompt, get_first_human_message, get_second_human_message
 from os_assistant.utils.logger import get_logger
-from os_assistant.utils.helper_functions import planning_state_to_str
 
 logger = get_logger(__name__)
 
@@ -21,20 +20,11 @@ def planning_node(state: OSAssistantState) -> OSAssistantState:
 
     # Mode 2: Feedback Mode (after user validation if user asked for plan update)
     if state.user_validation.user_feedback_type == "update_plan":
-        human_message = f"""User's Original Query: {state.finalized_enhanced_query}
-This is Mode 2: Feedback Mode 
-Existing Plan:
-{planning_state_to_str(state.planning)}
-User Feedback on the Plan: {str(state.user_validation.user_feedback)}
-"""
+        human_message = get_second_human_message(state)
+
     # Mode 1: Initial Planning Mode (before user validation)
     else:
-        human_message = f"""
-This is Mode 1: Planning Mode 
-User's original query: {state.finalized_enhanced_query}
-Query Type (command, information, or both): {state.query_classification.query_type}
-Classification Reasoning: {state.query_classification.classification_reasoning}
-"""
+        human_message = get_first_human_message(state)
 
     response: PlanningState = llm_model.generate_response(
         system_message=sys_prompt,

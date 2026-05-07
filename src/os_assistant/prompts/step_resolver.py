@@ -49,6 +49,12 @@ STEP 1: PLACEHOLDER RESOLUTION
     - Find matching value in dependency outputs
     - Replace it
 
+- You MAY attempt to extract relevant data from dependency outputs
+
+ONLY if:
+- The required information is explicitly present in the outputs in any format
+- The extraction is directly grounded in actual content
+    
 --------------------------------------------------
 
 STEP 2: RESOLUTION + EXECUTABILITY VALIDATION

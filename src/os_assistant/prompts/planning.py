@@ -1,4 +1,6 @@
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import planning_state_to_str
 
 
 def get_planning_sys_prompt(structured_output=None):
@@ -87,4 +89,34 @@ NEVER combine information generation and system execution into a single step.
       - commands that produce output needed by later steps
       - system information retrieval
 """
+    return prompt
+
+def get_first_human_message(state: OSAssistantState):
+    prompt = f"""
+This is Mode 1: Planning Mode 
+User's original query: {state.finalized_enhanced_query}
+Query Type (command, information, or both): {state.query_classification.query_type}
+Classification Reasoning: {state.query_classification.classification_reasoning}
+"""
+    if len(state.retrieved_memories) > 0:
+        prompt += f"\nMore context from past interactions with the user:"
+        for idx, memory in enumerate(state.retrieved_memories):
+            prompt += f"\nMemory {idx+1}: {memory}"
+        
+    return prompt
+
+def get_second_human_message(state: OSAssistantState):
+    prompt = f"""
+User's Original Query: {state.finalized_enhanced_query}
+This is Mode 2: Feedback Mode 
+Existing Plan:
+{planning_state_to_str(state.planning)}
+User Feedback on the Plan: {str(state.user_validation.user_feedback)}
+"""
+
+    if len(state.retrieved_memories) > 0:
+        prompt += f"\nMore context from past interactions with the user:"
+        for idx, memory in enumerate(state.retrieved_memories):
+            prompt += f"\nMemory {idx+1}: {memory}"
+    
     return prompt
