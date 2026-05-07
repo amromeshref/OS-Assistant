@@ -1,5 +1,5 @@
 from os_assistant.tools.rag.chromadb.rag_service import RAGService
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     AVAILABLE_INGESTION_PLATFORMS, 
     AVAILABLE_RETRIEVER_PLATFORMS, 
     DEFAULT_INGESTION_PLATFORM, 

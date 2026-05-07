@@ -1,5 +1,5 @@
 from os_assistant.interfaces.voice_input.google_speech_recognition_service import GoogleSpeechRecognitionService
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     AVAILABLE_VOICE_PLATFORMS,
     DEFAULT_VOICE_PLATFORM,
 )

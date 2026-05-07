@@ -1,4 +1,4 @@
-from os_assistant.core.settings import AVAILABLE_EMBEDDING_MODELS_PLATFORMS, DEFAULT_EMBEDDING_MODEL_PLATFORM
+from os_assistant.config.config import AVAILABLE_EMBEDDING_MODELS_PLATFORMS, DEFAULT_EMBEDDING_MODEL_PLATFORM
 from os_assistant.tools.rag.embedding_models.huggingface import HuggingFaceEmbeddingModel
 from os_assistant.utils.logger import get_logger
 

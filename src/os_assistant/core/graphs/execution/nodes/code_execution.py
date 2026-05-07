@@ -4,7 +4,7 @@ from os_assistant.prompts.code_execution import get_code_execution_sys_prompt
 from os_assistant.tools.command_execution import run_command
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
-from os_assistant.core.settings import COMMAND_ERROR_HANDLING_MAX_ATTEMPTS
+from os_assistant.config.config import COMMAND_ERROR_HANDLING_MAX_ATTEMPTS
 
 logger = get_logger(__name__)
 

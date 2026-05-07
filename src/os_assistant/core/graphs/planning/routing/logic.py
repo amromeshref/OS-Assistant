@@ -1,7 +1,7 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from langgraph.graph import END
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     USER_VALIDATION_NODE,
     PLANNING_NODE,
 )

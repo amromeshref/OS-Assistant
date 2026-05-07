@@ -2,13 +2,12 @@ from flask import logging
 
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.utils.logger import get_logger
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     CODE_ERROR_HANDLING_NODE,
     INFORMATION_NODE,
     CODE_EXECUTION_NODE,
     FINAL_RESPONSE_NODE,
     STEP_RESOLVER_NODE,
-    COMMAND_ERROR_HANDLING_MAX_ATTEMPTS
 )
 
 from os_assistant.utils.helper_functions import save_debug_state

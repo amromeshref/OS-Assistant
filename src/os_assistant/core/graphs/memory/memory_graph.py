@@ -1,6 +1,6 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.memory.nodes.summarizer import summarizer_node
-from os_assistant.core.settings import SUMMARIZER_NODE
+from os_assistant.config.config import SUMMARIZER_NODE
 from os_assistant.utils.logger import get_logger
 from langgraph.graph import StateGraph, END, START
 

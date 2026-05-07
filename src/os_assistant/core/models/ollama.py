@@ -3,7 +3,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain.agents import create_react_agent, AgentExecutor
 from os_assistant.utils.logger import get_logger
 from langchain import hub
-from os_assistant.core.settings import DEFAULT_OLLAMA_MODEL_NAME
+from os_assistant.config.config import DEFAULT_OLLAMA_MODEL_NAME
 import subprocess
 
 logger = get_logger(__name__)

@@ -4,7 +4,7 @@ from os_assistant.core.graphs.execution.execution_graph import ExecutionGraph
 from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
 from os_assistant.interfaces.voice_input.main import VoiceInputInterface
 from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.core.settings import VOICE_INPUT_ENABLED, RAG_ENABLED
+from os_assistant.config.config import VOICE_INPUT_ENABLED, RAG_ENABLED
 from os_assistant.tools.rag.main import RAGTool
 from os_assistant.utils.helper_functions import save_debug_state
 from rich.console import Console

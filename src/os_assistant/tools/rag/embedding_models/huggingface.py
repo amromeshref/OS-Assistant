@@ -1,4 +1,4 @@
-from os_assistant.core.settings import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
+from os_assistant.config.config import DEFAULT_HUGGINGFACE_EMBEDDING_MODEL
 from os_assistant.utils.logger import get_logger
 from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F

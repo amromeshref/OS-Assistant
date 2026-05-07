@@ -2,7 +2,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.planning.nodes.planning import planning_node
 from os_assistant.core.graphs.planning.nodes.user_validation import user_validation_node
 from os_assistant.core.graphs.planning.routing.logic import route_after_starting, route_after_planning
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     PLANNING_NODE,
     USER_VALIDATION_NODE,
 )

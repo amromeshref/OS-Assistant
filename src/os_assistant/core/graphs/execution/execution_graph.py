@@ -9,7 +9,7 @@ from os_assistant.core.graphs.execution.routing.logic import (
     route_after_code_execution,
     router,
 )
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     CODE_EXECUTION_NODE,
     INFORMATION_NODE,
     FINAL_RESPONSE_NODE,

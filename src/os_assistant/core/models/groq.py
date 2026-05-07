@@ -3,7 +3,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain.agents import create_react_agent, AgentExecutor
 from os_assistant.utils.logger import get_logger
 from langchain import hub
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     GROQ_API_KEY,
     DEFAULT_GROQ_MODEL_NAME,
 )

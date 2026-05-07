@@ -1,5 +1,5 @@
 from os_assistant.tools.rag.embedding_models.main import EmbeddingModelFactory
-from os_assistant.core.settings import DEFAULT_TOP_K, DEFAULT_EMBEDDING_MODEL_NAME
+from os_assistant.config.config import DEFAULT_TOP_K, DEFAULT_EMBEDDING_MODEL_NAME
 import chromadb
 import os
 

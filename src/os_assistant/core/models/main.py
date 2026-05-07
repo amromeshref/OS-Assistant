@@ -1,6 +1,6 @@
 from os_assistant.core.models.groq import GroqModel
 from os_assistant.core.models.ollama import OllamaModel
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     AVAILABLE_LLM_PLATFORMS,
     DEFAULT_LLM_PLATFORM,
 )

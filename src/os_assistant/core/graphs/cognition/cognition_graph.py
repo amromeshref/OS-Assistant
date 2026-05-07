@@ -2,7 +2,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.core.graphs.cognition.nodes.query_clarification import query_clarification_node
 from os_assistant.core.graphs.cognition.nodes.query_classification import query_classification_node
 from os_assistant.core.graphs.cognition.routing.logic import route_query_after_classification, route_query_after_starting
-from os_assistant.core.settings import (
+from os_assistant.config.config import (
     QUERY_CLASSIFICATION_NODE,
     QUERY_CLARIFICATION_NODE,
 )
