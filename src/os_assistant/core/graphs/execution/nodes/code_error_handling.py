@@ -7,7 +7,6 @@ from os_assistant.prompts.code_error_handling import (
     get_first_human_message,
     get_second_human_message,
 )
-from os_assistant.tools.command_execution import run_command
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 
