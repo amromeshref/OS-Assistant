@@ -1,4 +1,10 @@
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.states.os_assistant_state import OSAssistantState
+from os_assistant.utils.helper_functions import( 
+    planning_state_to_str,
+    command_executions_to_str, 
+    information_responses_to_str
+)
 
 def get_final_response_sys_prompt(structured_output=None):
     prompt = f"""
@@ -76,3 +82,22 @@ FORBIDDEN:
 If no command results are provided, you MUST NOT mention command execution results at all.
 """
     return prompt
+
+def get_human_message_after_plan_rejection(state: OSAssistantState):
+    return f"""
+User rejected the plan during validation.
+User's Original Query: {state.finalized_enhanced_query}
+Planning State: {planning_state_to_str(state.planning)}
+Conversatin history till now: {str(state.multi_turn_conversation_history)}
+"""
+
+def get_normal_human_message(state: OSAssistantState):
+    return f"""
+User's Original Query: {state.finalized_enhanced_query}
+Short summary of how the user's query should be handeled: {state.planning.fulfillment_summary}
+Command Executions:
+{command_executions_to_str(state.command_executions)}
+Information Responses:
+{information_responses_to_str(state.generated_information_responses)}
+Short summary of the steps(information or command) that have already been executed: {str(state.executed_steps)}
+"""
