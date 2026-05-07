@@ -1,6 +1,6 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
 from os_assistant.utils.helper_functions import get_os_info
-from os_assistant.core.settings import RAG_ENABLED
+from os_assistant.config.config import RAG_ENABLED
 from os_assistant.tools.rag.main import RAGTool
 
 def get_query_classification_sys_prompt(structured_output=None):
