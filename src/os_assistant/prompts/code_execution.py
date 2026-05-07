@@ -1,4 +1,5 @@
 from os_assistant.utils.helper_functions import get_os_info
+from os_assistant.core.states.os_assistant_state import OSAssistantState
 
 def get_code_execution_sys_prompt(structured_output=None):
     prompt = f"""
@@ -37,3 +38,11 @@ Your Responsibilities:
 Produce a valid CommandExecution Object.
 """
     return prompt
+
+def get_human_message(state: OSAssistantState, command, command_output):
+    return f"""
+User's original query: {state.finalized_enhanced_query}
+Current command to execute: {command}
+Command Output(After running):
+{command_output}
+"""
