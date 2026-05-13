@@ -28,8 +28,13 @@ src/os_assistant/core/graphs/cognition/nodes/__pycache__/
 src/os_assistant/core/graphs/cognition/routing/__pycache__/
 
 src/os_assistant/core/graphs/execution/__pycache__/
-src/os_assistant/core/graphs/execution/nodes/__pycache__/
-src/os_assistant/core/graphs/execution/routing/__pycache__/
+src/os_assistant/core/graphs/execution/parallel/__pycache__/
+src/os_assistant/core/graphs/execution/parallel/nodes/__pycache__/
+src/os_assistant/core/graphs/execution/parallel/routing/__pycache__/
+src/os_assistant/core/graphs/execution/parallel/random.py
+src/os_assistant/core/graphs/execution/sequential/__pycache__/
+src/os_assistant/core/graphs/execution/sequential/nodes/__pycache__/
+src/os_assistant/core/graphs/execution/sequential/routing/__pycache__/
 
 src/os_assistant/core/graphs/memory/__pycache__/
 src/os_assistant/core/graphs/memory/nodes/__pycache__/
