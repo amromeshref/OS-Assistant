@@ -165,6 +165,14 @@ class Step(BaseModel):
         ),
     )
 
+    status: Literal["pending", "running", "completed"] = Field(
+        default="pending",
+        description="Execution status of the step."
+    )
+
+    model_config = ConfigDict(extra="allow")
+
+
 class PlanningState(BaseModel):
     """
     Represents the execution plan generated for a user query.
