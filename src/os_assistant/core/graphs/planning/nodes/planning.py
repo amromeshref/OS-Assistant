@@ -2,6 +2,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState, Planni
 from os_assistant.core.models.main import LLMModel
 from os_assistant.prompts.planning import get_planning_sys_prompt, get_first_human_message, get_second_human_message
 from os_assistant.utils.logger import get_logger
+from os_assistant.config.config import parallel_execution_enabled
 
 logger = get_logger(__name__)
 
@@ -31,6 +32,14 @@ def planning_node(state: OSAssistantState) -> OSAssistantState:
         human_message=human_message,
         structured_output=PlanningState,
     )
+
+    if parallel_execution_enabled:
+        for i in range(len(response.plan_steps)):
+            response.plan_steps[i].status = "pending"
+            response.plan_steps[i].step_index = i
+            response.plan_steps[i].command_executions = []
+            response.plan_steps[i].command_error_handlers = []
+            response.plan_steps[i].num_error_executions = 0
 
     # TODO: Implement the actual parsing logic based on the expected response format from the LLM
 
