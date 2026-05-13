@@ -19,6 +19,7 @@ from os_assistant.config.config import (
 )
 
 from os_assistant.utils.logger import get_logger
+from os_assistant.core.graphs.execution.parallel.code_execution_manager import CommandBatchCoordinator
 from langgraph.graph import StateGraph, END, START
 from concurrent.futures import (
     ThreadPoolExecutor,
@@ -26,86 +27,10 @@ from concurrent.futures import (
 )
 from typing import List
 import threading
-from dataclasses import dataclass, field
 
 logger = get_logger(__name__)
 
-@dataclass
-class CommandRequest:
 
-    step_index: int
-    commands: List[str]
-    execution_modes: List[str]
-
-    result: List[str] = field(default_factory=list)
-    error: Exception = None
-
-    event: threading.Event = field(
-        default_factory=threading.Event
-    )
-
-class CommandBatchCoordinator:
-
-    def __init__(self, expected_size: int):
-
-        self.expected_size = expected_size
-
-        self.lock = threading.Lock()
-
-        self.requests = {}
-
-        self.all_submitted = threading.Event()
-
-        self.results = {}
-
-    def submit(self, step_index: int, commands: List[str], execution_modes: List[str]):
-
-        request = CommandRequest(
-            step_index=step_index,
-            commands=commands,
-            execution_modes=execution_modes,
-        )
-
-        with self.lock:
-            self.requests[step_index] = request
-
-            if len(self.requests) == self.expected_size:
-                self.all_submitted.set()
-
-        # wait for execution result
-        request.event.wait()
-
-        if request.error:
-            raise request.error
-
-        return request.result
-    
-    def execute_all(self):
-
-        # wait until all commands submitted
-        self.all_submitted.wait()
-
-        # execute in strict order
-        for step_index in sorted(self.requests.keys()):
-
-            request: CommandRequest = self.requests[step_index]
-
-            try:
-                results = []
-                for i in range(len(request.commands)):
-                    output = run_command(
-                        request.commands[i],
-                        request.execution_modes[i],
-                    )
-                    results.append(output)
-                
-                request.result = results
-
-            except Exception as e:
-                request.error = e
-
-            finally:
-                request.event.set()
 
 
 class ExecutionGraph:
@@ -151,7 +76,7 @@ class ExecutionGraph:
         # 4. nothing left
         return []
 
-    def _execute_step(self, state: OSAssistantState, step: Step, command_outputs: dict):
+    def _execute_step(self, state: OSAssistantState, step: Step, coordinator: CommandBatchCoordinator):
         logger.info(f"Executing step {step.step_index}")
 
         try:
@@ -159,8 +84,7 @@ class ExecutionGraph:
             step.status = "running"
 
             if step.step_type == "command":
-                command_output = command_outputs[step.step_index]
-                code_execution_node(state, step, command_output)
+                code_execution_node(state, step, coordinator)
 
             elif step.step_type == "information":
                 information_generation_node(state, step)
@@ -197,34 +121,6 @@ class ExecutionGraph:
                 "error": str(e),
             }
         
-    def _execute_batch_commands(self, batch_steps: List[Step]):
-        command_outputs = {}
-
-        command_steps = [
-            step
-            for step in batch_steps
-            if step.step_type == "command"
-        ]
-
-        # sort by step index
-        command_steps.sort(key=lambda s: s.step_index)
-
-        for step in command_steps:
-
-            logger.info(
-                f"Executing command for "
-                f"step {step.step_index}"
-            )
-
-            command = step.step_details.command
-
-            execution_mode = step.step_details.execution_mode
-
-            output = run_command(command, execution_mode)
-
-            command_outputs[step.step_index] = output
-
-        return command_outputs
 
     def _execute_planned_steps(self, state: OSAssistantState, max_workers: int = 4):
 
@@ -254,13 +150,26 @@ class ExecutionGraph:
                 f"{batch_indices}"
             )
 
+            command_steps_size = 0
+            for step in batch_steps:
+                if step.step_type == "command":
+                    command_steps_size += 1
+
+
+            coordinator = CommandBatchCoordinator(expected_size=command_steps_size)
+
+            executor_thread = threading.Thread(
+                target=coordinator.execute_all,
+                daemon=True
+            )
+
+            executor_thread.start()
+
             # --------------------------------------
             # Execute batch in parallel
             # --------------------------------------
 
             futures = {}
-
-            command_outputs = self._execute_batch_commands(batch_steps)
             
 
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -271,7 +180,7 @@ class ExecutionGraph:
                         self._execute_step,
                         state,
                         step,
-                        command_outputs,
+                        coordinator,
                     )
 
                     futures[future] = step
