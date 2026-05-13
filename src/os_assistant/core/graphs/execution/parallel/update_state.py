@@ -19,7 +19,7 @@ def update_state(state: OSAssistantState, response, executed_step_summary=None, 
         logger.info("Updating the state")
 
         if isinstance(response, StepResolverState):
-            state.steps_resolver.append(response)
+            state.planning.plan_steps[step_index].steps_resolver.append(response)
 
         elif isinstance(response, CommandExecution):
             state.planning.plan_steps[step_index].command_executions.append(response)
