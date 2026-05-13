@@ -56,7 +56,7 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
     # Command output after running
     command_output = run_command(command, execution_mode)
 
-    human_message = get_human_message(state, command, command_output)
+    human_message = get_human_message(state.finalized_enhanced_query, command, command_output)
     
     response: CommandExecution = llm_model.generate_response(
         system_message=sys_prompt,
