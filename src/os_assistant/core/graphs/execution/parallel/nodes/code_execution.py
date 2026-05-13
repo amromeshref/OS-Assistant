@@ -7,6 +7,7 @@ from os_assistant.core.models.main import LLMModel
 from os_assistant.config.config import COMMAND_ERROR_HANDLING_MAX_ATTEMPTS
 from os_assistant.core.graphs.execution.parallel.update_state import update_state
 from os_assistant.core.graphs.execution.parallel.occ import detect_resources, ResourceDetails
+from os_assistant.core.graphs.execution.parallel.code_execution_manager import CommandBatchCoordinator
 from pathlib import Path
 from typing import List
 import hashlib
@@ -53,7 +54,7 @@ def validate_resource_snapshot(snapshot: dict):
             return False
     return True
 
-def code_execution_node(state: OSAssistantState, step: Step, command_output: str) -> CommandExecution:
+def code_execution_node(state: OSAssistantState, step: Step, coordinator: CommandBatchCoordinator) -> CommandExecution:
     """
     Node responsible for executing code/commands as part of the execution graph.
     """
@@ -96,7 +97,16 @@ def code_execution_node(state: OSAssistantState, step: Step, command_output: str
     #     if validate_resource_snapshot(pre_execution_snapshot):
     #         break
 
-    human_message = get_human_message(state.finalized_enhanced_query, command, command_output)
+    command = [step.step_details.command]
+    execution_mode = [step.step_details.execution_mode]
+
+    command_output = coordinator.submit(
+        step.step_index,
+        command,
+        execution_mode,
+    )
+
+    human_message = get_human_message(state.finalized_enhanced_query, command, command_output[0])
     
     response: CommandExecution = llm_model.generate_response(
         system_message=sys_prompt,
