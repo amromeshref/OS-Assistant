@@ -40,6 +40,7 @@ def planning_node(state: OSAssistantState) -> OSAssistantState:
             response.plan_steps[i].command_executions = []
             response.plan_steps[i].command_error_handlers = []
             response.plan_steps[i].num_error_executions = 0
+            response.plan_steps[i].steps_resolver = []
 
     # TODO: Implement the actual parsing logic based on the expected response format from the LLM
 
