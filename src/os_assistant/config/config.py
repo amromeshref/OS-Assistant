@@ -47,6 +47,7 @@ CLARIFICATION_NODE_MAX_ATTEMPTS = 10
 # Configuration for the command error handling node
 COMMAND_ERROR_HANDLING_MAX_ATTEMPTS = 5
 
-
+# Parallel Execution Settings
+parallel_execution_enabled = True
 
 
