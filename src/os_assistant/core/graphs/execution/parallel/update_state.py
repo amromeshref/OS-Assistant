@@ -1,0 +1,47 @@
+from os_assistant.core.states.os_assistant_state import (
+    OSAssistantState,
+    StepResolverState,
+    CommandExecution,
+    CommandErrorHandlerState,
+    InformationResponse,
+)
+from os_assistant.utils.logger import get_logger
+import threading
+
+logger = get_logger(__name__)
+
+
+state_lock = threading.Lock()
+
+def update_state(state: OSAssistantState, response, executed_step_summary=None, step_index : int = None):
+
+    with state_lock:
+        logger.info("Updating the state")
+
+        if isinstance(response, StepResolverState):
+            state.steps_resolver.append(response)
+
+        elif isinstance(response, CommandExecution):
+            state.planning.plan_steps[step_index].command_executions.append(response)
+
+        elif isinstance(response, CommandErrorHandlerState,):
+            state.planning.plan_steps[step_index].command_error_handlers.append(response)
+            state.planning.plan_steps[step_index].num_error_executions += 1
+
+
+        elif isinstance(response, InformationResponse):
+            state.generated_information_responses.append(response)
+
+        elif isinstance(response, str):
+            state.generated_final_response = response
+
+        else:
+            logger.warning(
+                f"Unknown response type: "
+                f"{type(response)}"
+            )
+        
+        if executed_step_summary:
+            state.executed_steps.append(executed_step_summary)
+
+        logger.info(f"State updated successfully")
