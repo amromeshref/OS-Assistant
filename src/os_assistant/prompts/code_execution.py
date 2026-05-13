@@ -39,9 +39,9 @@ Produce a valid CommandExecution Object.
 """
     return prompt
 
-def get_human_message(state: OSAssistantState, command, command_output):
+def get_human_message(finalized_enhanced_query, command, command_output):
     return f"""
-User's original query: {state.finalized_enhanced_query}
+User's original query: {finalized_enhanced_query}
 Current command to execute: {command}
 Command Output(After running):
 {command_output}
