@@ -26,7 +26,10 @@ DEFAULT_OLLAMA_MODEL_NAME = "qwen2.5:14b-instruct-q5_K_M"
 
 # Groq settings
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
-DEFAULT_GROQ_MODEL_NAME = "openai/gpt-oss-120b"
+GROQ_MODEL_1 = "openai/gpt-oss-120b"
+GROQ_MODEL_2 = "openai/gpt-oss-20b"
+DEFAULT_GROQ_MODEL_NAME = GROQ_MODEL_1
+
 
 # Node Names
 QUERY_CLASSIFICATION_NODE = "query_classification_node"
@@ -48,6 +51,7 @@ CLARIFICATION_NODE_MAX_ATTEMPTS = 10
 COMMAND_ERROR_HANDLING_MAX_ATTEMPTS = 5
 
 # Parallel Execution Settings
-parallel_execution_enabled = True
+PARALLEL_EXECUTION_ENABLED = True
+MAX_WORKERS = 4
 
 
