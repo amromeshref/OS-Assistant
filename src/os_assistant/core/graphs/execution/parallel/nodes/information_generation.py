@@ -11,6 +11,7 @@ from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
 from os_assistant.tools.retrieve_information_details import retrieve_information_details
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 
 logger = get_logger(__name__)
 
@@ -68,11 +69,11 @@ def information_generation_node(state: OSAssistantState, step: Step):
     # state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     #save_information_responses(state.generated_information_responses)
-
-    state.generated_information_responses_status = "completed"
-    logger.info("Completed information generation node.")
     
-    update_state(state, information_response, executed_step_summary)
+    update_state(state=state, response=information_response, executed_step_summary=executed_step_summary)
+
+    logger.info("Completed information generation node.")
+
 
     return {
     "step_index": step_index,
