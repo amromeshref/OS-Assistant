@@ -1,10 +1,10 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.core.graphs.execution.nodes.code_execution import code_execution_node
-from os_assistant.core.graphs.execution.nodes.information_generation import information_generation_node
-from os_assistant.core.graphs.execution.nodes.final_response import final_response_node
-from os_assistant.core.graphs.execution.nodes.code_error_handling import code_error_handling_node
-from os_assistant.core.graphs.execution.nodes.step_resolver import step_resolver_node
-from os_assistant.core.graphs.execution.routing.logic import (
+from os_assistant.core.graphs.execution.sequential.nodes.code_execution import code_execution_node
+from os_assistant.core.graphs.execution.sequential.nodes.information_generation import information_generation_node
+from os_assistant.core.graphs.execution.sequential.nodes.final_response import final_response_node
+from os_assistant.core.graphs.execution.sequential.nodes.code_error_handling import code_error_handling_node
+from os_assistant.core.graphs.execution.sequential.nodes.step_resolver import step_resolver_node
+from os_assistant.core.graphs.execution.sequential.routing.logic import (
     route_after_starting,
     route_after_code_execution,
     router,
@@ -23,7 +23,7 @@ from langgraph.graph import StateGraph, END, START
 
 logger = get_logger(__name__)
 
-class ExecutionGraph:
+class SequentialExecutionGraph:
     def __init__(self):
         self.graph = self._build_execution_graph()
         self.compiled_graph = None
