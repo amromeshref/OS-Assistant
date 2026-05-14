@@ -13,7 +13,12 @@ logger = get_logger(__name__)
 
 state_lock = threading.Lock()
 
-def update_state(state: OSAssistantState, response, executed_step_summary=None, step_index : int = None):
+def update_state(state: OSAssistantState, 
+                 response = None, 
+                 executed_step_summary=None, 
+                 step_index : int = None,
+                 step_status: str = None,
+                 ):
 
     with state_lock:
         logger.info("Updating the state")
@@ -43,5 +48,8 @@ def update_state(state: OSAssistantState, response, executed_step_summary=None, 
         
         if executed_step_summary:
             state.executed_steps.append(executed_step_summary)
+        
+        if step_status:
+            state.planning.plan_steps[step_index].status = step_status
 
         logger.info(f"State updated successfully")
