@@ -1,5 +1,5 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.config.config import parallel_execution_enabled
+from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED
 from os_assistant.utils.helper_functions import get_os_info
 from os_assistant.utils.helper_functions import (
     command_executions_to_str,
@@ -184,7 +184,7 @@ def retrieve_previous_recovery_outputs(state: OSAssistantState, step_index: int 
     Retrieve the previous recovery outputs for Mode 2 operation.
     """
     outputs = []
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         for i in range(1, state.planning.plan_steps[step_index].num_error_executions + 1):
             if len(state.planning.plan_steps[step_index].command_error_handlers) >= i:
                 handler_state = state.planning.plan_steps[step_index].command_error_handlers[-i]
@@ -204,12 +204,12 @@ def get_first_human_message(state: OSAssistantState, step_index: int = None):
     """
     Get the human message for the first turn of the code error handling node.
     """
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         failed_command_execution = state.planning.plan_steps[step_index].command_executions[-1]
     else:
         failed_command_execution = state.command_executions[-1]
 
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         prompt = f"""
 This is MODE 1: INITIAL RECOVERY. This is the first recovery attempt for a failed command execution.
 Step description: {state.planning.plan_steps[step_index].step_details.description}
@@ -233,12 +233,12 @@ def get_second_human_message(state: OSAssistantState, step_index: int = None) ->
       Get the human message for the second turn of the code error handling node (Mode 2
     operation).
     """
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         failed_command_execution = state.planning.plan_steps[step_index].command_executions[-1]
     else:
         failed_command_execution = state.command_executions[-1]
 
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         prompt = f"""
 This is mode 2: RETRY RECOVERY. A previous recovery attempts was made but the last suggested command also failed.
 Step description: {state.planning.plan_steps[step_index].step_details.description}
