@@ -2,7 +2,7 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState, Planni
 from os_assistant.core.models.main import LLMModel
 from os_assistant.prompts.planning import get_planning_sys_prompt, get_first_human_message, get_second_human_message
 from os_assistant.utils.logger import get_logger
-from os_assistant.config.config import parallel_execution_enabled
+from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED
 
 logger = get_logger(__name__)
 
@@ -33,7 +33,7 @@ def planning_node(state: OSAssistantState) -> OSAssistantState:
         structured_output=PlanningState,
     )
 
-    if parallel_execution_enabled:
+    if PARALLEL_EXECUTION_ENABLED:
         for i in range(len(response.plan_steps)):
             response.plan_steps[i].status = "pending"
             response.plan_steps[i].step_index = i
