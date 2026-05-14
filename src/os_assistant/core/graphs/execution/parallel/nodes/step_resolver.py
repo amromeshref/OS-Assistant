@@ -11,10 +11,9 @@ from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
 from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
 from os_assistant.tools.retrieve_information_details import retrieve_information_details
-from os_assistant.core.graphs.execution.parallel.update_state import update_state
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 
 logger = get_logger(__name__)
-
 
 def retrieve_dependency_outputs(state: OSAssistantState, current_step: Step) -> str:
     """
@@ -63,7 +62,6 @@ def step_resolver_node(state: OSAssistantState, step: Step) -> StepResolverState
 
     # TODO: Add parsing logic
 
-    state.steps_resolver_active = True
     # TODO: implement a function to update the state.(wait and lock)
 
     executed_step_summary = None
@@ -71,9 +69,8 @@ def step_resolver_node(state: OSAssistantState, step: Step) -> StepResolverState
     if not response.is_resolution_successful:
         executed_step_summary = f"Could not execute the step whose index is {step_index} and description is {step.description} due to the following reason: {response.resolution_reasoning}"
         logger.info("Step resolution failed. Moving to the next step.")
-        state.steps_resolver_active = False
 
-    update_state(state, response, executed_step_summary)
+    update_state(state=state, response=response, executed_step_summary=executed_step_summary, step_index=step_index)
 
     logger.info("Completed step resolver node.")
     
