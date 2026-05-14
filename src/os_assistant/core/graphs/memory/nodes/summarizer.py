@@ -1,4 +1,6 @@
 from os_assistant.core.states.os_assistant_state import OSAssistantState, SummarizerState
+from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 from os_assistant.prompts.summarizer import get_summarizer_sys_prompt, get_human_message
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
@@ -66,7 +68,10 @@ def summarizer_node(state: OSAssistantState) -> OSAssistantState:
         structured_output=SummarizerState,
     )
 
-    state.memory_extraction = response
+    if not PARALLEL_EXECUTION_ENABLED:
+        state.memory_extraction = response
+    else:
+        update_state(state=state, response=response)
 
     # Save the extracted memory into a JSONL file for RAG
     save_session_memory(
