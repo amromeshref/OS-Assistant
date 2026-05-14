@@ -6,6 +6,8 @@ from os_assistant.core.graphs.execution.parallel.code_execution_manager import C
 from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 from os_assistant.config.config import MAX_WORKERS
 from os_assistant.utils.logger import get_logger
+from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
+from os_assistant.utils.helper_functions import save_debug_state
 from concurrent.futures import (
     ThreadPoolExecutor,
     as_completed,
@@ -18,7 +20,8 @@ logger = get_logger(__name__)
 
 class ParallelExecutionGraph:
     def __init__(self):
-        pass
+        self.memory_graph = MemoryGraph()
+        self.memory_graph.compile()
 
     def _dependencies_satisfied(self, step: Step, steps: List[Step]) -> bool:
         for dep_idx in step.dependency_step_indices:
@@ -110,8 +113,25 @@ class ParallelExecutionGraph:
         logger.info("Starting parallel execution engine.")
 
         if state.user_validation.user_feedback_type == "rejected":
+
             logger.info("User rejected the plan during validation, routing to final response node.")
-            final_response_node(state)
+
+            with ThreadPoolExecutor(max_workers=2) as executor:
+
+                memory_future = executor.submit(
+                    self.memory_graph.execute,
+                    state,
+                )
+
+                response_future = executor.submit(
+                    final_response_node,
+                    state,
+                )
+
+                memory_result = memory_future.result()
+
+                save_debug_state(memory_result, "memory")
+
             return state
 
         steps = state.planning.plan_steps
@@ -195,7 +215,21 @@ class ParallelExecutionGraph:
 
             logger.info("Batch execution finished.")
 
-        final_response_node(state)
+        with ThreadPoolExecutor(max_workers=2) as executor:
+
+            memory_future = executor.submit(
+                self.memory_graph.execute,
+                state,
+            )
+
+            response_future = executor.submit(
+                final_response_node,
+                state,
+            )
+
+            memory_result = memory_future.result()
+                        
+            save_debug_state(memory_result, "memory")
 
         logger.info("Execution engine completed.")
 
