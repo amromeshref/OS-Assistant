@@ -4,6 +4,7 @@ from os_assistant.core.states.os_assistant_state import (
     CommandExecution,
     CommandErrorHandlerState,
     InformationResponse,
+    SummarizerState
 )
 from os_assistant.utils.logger import get_logger
 import threading
@@ -39,6 +40,9 @@ def update_state(state: OSAssistantState,
 
         elif isinstance(response, str):
             state.generated_final_response = response
+        
+        elif isinstance(response, SummarizerState):
+            state.memory_extraction = response
 
         else:
             logger.warning(
