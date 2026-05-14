@@ -1,4 +1,5 @@
 from os_assistant.core.states.os_assistant_state import CommandExecution, OSAssistantState
+from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED
 from os_assistant.utils.logger import get_logger
 from langchain.tools import Tool
 from typing import List
@@ -42,9 +43,13 @@ def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
 
     try:
         command_executions = []
-        for command_exe in state.command_executions:
-            if command_exe.step_index == step_index:
+        if PARALLEL_EXECUTION_ENABLED:
+            for command_exe in state.planning.plan_steps[step_index].command_executions:
                 command_executions.append(command_exe)
+        else:
+            for command_exe in state.command_executions:
+                if command_exe.step_index == step_index:
+                    command_executions.append(command_exe)
     
 
         command_executions_str = command_executions_to_str(command_executions)
