@@ -9,7 +9,7 @@ from os_assistant.prompts.code_error_handling import (
 )
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
-from os_assistant.core.graphs.execution.parallel.update_state import update_state
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 
 logger = get_logger(__name__)
 
