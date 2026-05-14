@@ -1,6 +1,8 @@
 from os_assistant.core.graphs.cognition.cognition_graph import CognitionGraph
 from os_assistant.core.graphs.planning.planning_graph import PlanningGraph 
-from os_assistant.core.graphs.execution.execution_graph import ExecutionGraph 
+from os_assistant.core.graphs.execution.sequential.execution_graph import SequentialExecutionGraph 
+from os_assistant.core.graphs.execution.parallel.execution_graph import ParallelExecutionGraph
+from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED 
 from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
 from os_assistant.interfaces.voice_input.main import VoiceInputInterface
 from os_assistant.core.states.os_assistant_state import OSAssistantState
@@ -11,6 +13,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 import argparse
 
+
 class OSAssistantApp:
     def __init__(self, use_voice=False):
         self.use_voice = use_voice
@@ -19,7 +22,12 @@ class OSAssistantApp:
         # Graphs
         self.cognition_graph = CognitionGraph()
         self.planning_graph = PlanningGraph()
-        self.execution_graph = ExecutionGraph()
+
+        if PARALLEL_EXECUTION_ENABLED:
+            self.execution_graph = ParallelExecutionGraph()
+        else:
+            self.execution_graph = SequentialExecutionGraph()
+            
         self.memory_graph = MemoryGraph()
 
         self.cognition_graph.compile()
