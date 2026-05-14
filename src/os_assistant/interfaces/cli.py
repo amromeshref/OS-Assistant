@@ -28,12 +28,15 @@ class OSAssistantApp:
         else:
             self.execution_graph = SequentialExecutionGraph()
             
-        self.memory_graph = MemoryGraph()
+        
 
         self.cognition_graph.compile()
         self.planning_graph.compile()
         self.execution_graph.compile()
-        self.memory_graph.compile()
+        
+        if not PARALLEL_EXECUTION_ENABLED:
+            self.memory_graph = MemoryGraph()
+            self.memory_graph.compile()
 
         if self.use_voice:
             if not VOICE_INPUT_ENABLED:
@@ -222,7 +225,9 @@ class OSAssistantApp:
             state = self.handle_cognition(state)
             state = self.handle_planning(state)
             state = self.handle_execution(state)
-            state = self.handle_memory(state)
+            
+            if not PARALLEL_EXECUTION_ENABLED:
+                state = self.handle_memory(state)
             
             if RAG_ENABLED:
                 state = self.handle_rag(state)
