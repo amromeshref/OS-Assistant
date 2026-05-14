@@ -2,25 +2,10 @@ from os_assistant.core.states.os_assistant_state import OSAssistantState, Step
 from os_assistant.core.graphs.execution.parallel.nodes.code_execution import code_execution_node
 from os_assistant.core.graphs.execution.parallel.nodes.information_generation import information_generation_node
 from os_assistant.core.graphs.execution.parallel.nodes.final_response import final_response_node
-from os_assistant.core.graphs.execution.parallel.nodes.code_error_handling import code_error_handling_node
-from os_assistant.core.graphs.execution.parallel.nodes.step_resolver import step_resolver_node
-from os_assistant.tools.command_execution import run_command
-from os_assistant.core.graphs.execution.routing.logic import (
-    route_after_starting,
-    route_after_code_execution,
-    router,
-)
-from os_assistant.config.config import (
-    CODE_EXECUTION_NODE,
-    INFORMATION_NODE,
-    FINAL_RESPONSE_NODE,
-    STEP_RESOLVER_NODE,
-    CODE_ERROR_HANDLING_NODE
-)
-
-from os_assistant.utils.logger import get_logger
 from os_assistant.core.graphs.execution.parallel.code_execution_manager import CommandBatchCoordinator
-from langgraph.graph import StateGraph, END, START
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
+from os_assistant.config.config import MAX_WORKERS
+from os_assistant.utils.logger import get_logger
 from concurrent.futures import (
     ThreadPoolExecutor,
     as_completed,
@@ -31,9 +16,7 @@ import threading
 logger = get_logger(__name__)
 
 
-
-
-class ExecutionGraph:
+class ParallelExecutionGraph:
     def __init__(self):
         pass
 
@@ -81,7 +64,7 @@ class ExecutionGraph:
 
         try:
 
-            step.status = "running"
+            update_state(state=state, step_index=step.step_index, step_status="running")
 
             if step.step_type == "command":
                 code_execution_node(state, step, coordinator)
@@ -94,7 +77,7 @@ class ExecutionGraph:
                     f"{step.step_type}"
                 )
 
-            step.status = "completed"
+            update_state(state=state, step_index=step.step_index, step_status="completed")
 
             logger.info(
                 f"Completed step "
@@ -113,7 +96,7 @@ class ExecutionGraph:
                 f"{step.step_index}"
             )
 
-            step.status = "failed"
+            update_state(state=state, step_index=step.step_index, step_status="failed")
 
             return {
                 "step_index": step.step_index,
@@ -122,9 +105,14 @@ class ExecutionGraph:
             }
         
 
-    def _execute_planned_steps(self, state: OSAssistantState, max_workers: int = 4):
+    def _execute_planned_steps(self, state: OSAssistantState, max_workers: int = MAX_WORKERS):
 
         logger.info("Starting parallel execution engine.")
+
+        if state.user_validation.user_feedback_type == "rejected":
+            logger.info("User rejected the plan during validation, routing to final response node.")
+            final_response_node(state)
+            return state
 
         steps = state.planning.plan_steps
 
@@ -207,10 +195,18 @@ class ExecutionGraph:
 
             logger.info("Batch execution finished.")
 
+        final_response_node(state)
+
         logger.info("Execution engine completed.")
 
         return state
-    
+
+    def compile(self) -> None:
+        """
+        Compile the execution graph to prepare it for execution.
+        """
+        logger.info("Execution graph compiled successfully.")
+
     def execute(self, initial_state: OSAssistantState) -> OSAssistantState:
         """
         Execute the compiled graph starting from the initial state and return the final state after execution.
