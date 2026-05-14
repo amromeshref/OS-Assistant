@@ -1,3 +1,4 @@
+from os_assistant.core.graphs.execution.parallel.state_manager import update_state
 from os_assistant.core.states.os_assistant_state import (
     OSAssistantState,
 )
@@ -12,7 +13,7 @@ from os_assistant.core.models.main import LLMModel
 
 logger = get_logger(__name__)
 
-def final_response_node(state: OSAssistantState) -> OSAssistantState:
+def final_response_node(state: OSAssistantState):
     """
     Node responsible for generating the final response to the user after all planning, code execution, and information generation steps are completed.
     This node takes into account the entire execution process, including any user feedback during validation, to generate a comprehensive final response.
@@ -35,9 +36,10 @@ def final_response_node(state: OSAssistantState) -> OSAssistantState:
 
     # TODO: Add parse logic here
 
-    state.final_response_status = "completed"
+    update_state(state=state, response=response)
+
     logger.info("Completed final response node.")
 
-    state.generated_final_response = response
-
-    return state
+    return {
+    "success": True,
+}
