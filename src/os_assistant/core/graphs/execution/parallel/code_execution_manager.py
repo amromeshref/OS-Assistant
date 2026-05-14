@@ -52,7 +52,7 @@ class CommandBatchCoordinator:
         if request.error:
             raise request.error
 
-        return request.result
+        return self.requests[step_index].result
     
     def execute_all(self):
 
@@ -67,13 +67,17 @@ class CommandBatchCoordinator:
             try:
                 results = []
                 for i in range(len(request.commands)):
-                    output = run_command(
-                        request.commands[i],
-                        request.execution_modes[i],
-                    )
+                    if request.commands[i] != "ignore":
+                        output = run_command(
+                            request.commands[i],
+                            request.execution_modes[i],
+                        )
+                    else:
+                        output = "ignored"
+
                     results.append(output)
                 
-                request.result = results
+                self.requests[step_index].result = results
 
             except Exception as e:
                 request.error = e
