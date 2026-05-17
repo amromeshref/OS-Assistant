@@ -77,6 +77,7 @@ def information_generation_node(state: OSAssistantState) -> OSAssistantState:
 
     information_response.answer = response
     information_response.step_index = step_index
+    information_response.dependency_outputs = dependency_outputs_str
     state.generated_information_responses.append(information_response)
     state.executed_steps.append(
         f"The information step involving the query '{information_response.query}' is done."
