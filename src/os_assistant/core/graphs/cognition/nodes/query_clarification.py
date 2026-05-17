@@ -36,6 +36,9 @@ def query_clarification_node(state: OSAssistantState) -> OSAssistantState:
         structured_output=QueryClarificationState
     )
 
+    if state.clarification_attempts == 1:
+        state.first_generated_clarification_response = response.clarification_reasoning
+
     # TODO: Implement parsing logic
 
     state.query_clarification = response
