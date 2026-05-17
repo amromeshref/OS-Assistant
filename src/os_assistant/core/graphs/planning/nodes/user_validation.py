@@ -19,6 +19,8 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
     """
     logger.info("Starting user validation node.")
 
+    state.user_validation_attempts += 1
+
     llm_model = LLMModel()
     sys_prompt = get_user_validation_sys_prompt()
     if state.user_validation.is_validation_required:
@@ -42,6 +44,9 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
                 logger.warning("Tool call failed during user validation. Retrying...")
                 human_message += "\nNote: The previous response encountered an error related to tool calls. Please ensure that the response adheres to the expected format and does not include any tool calls."
                 continue  # Retry the user validation node
+    
+    if state.user_validation_attempts == 1:
+        state.first_generated_validation_response = response.validation_reasoning
 
     # TODO: Implement parsing logic
 
