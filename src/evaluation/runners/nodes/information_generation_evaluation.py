@@ -13,6 +13,10 @@ logger = get_logger(__name__)
 
 def information_generation_evaluation_node(information_responses: List[InformationResponse]) -> List[InformationGenerationEvaluation]:
     logger.info("Starting Information Generation Evaluation Node")
+
+    if len(information_responses) == 0:
+        logger.info("No information responses to evaluate. Skipping Information Generation Evaluation Node.")
+        return [InformationGenerationEvaluation(evaluation_needed=False)]
     
     # Get the system prompt for evaluation
     system_prompt = get_information_generation_evaluation_system_prompt()
@@ -44,7 +48,7 @@ def information_generation_evaluation_node(information_responses: List[Informati
             human_message=human_message,
             structured_output=InformationGenerationEvaluation
         )
-
+        response.evaluation_needed = True
         responses.append(response)
 
     logger.info("Completed Information Generation Evaluation Node")
