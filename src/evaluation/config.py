@@ -12,3 +12,6 @@ GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 GROQ_MODEL_1 = "llama-3.3-70b-versatile"
 GROQ_MODEL_2 = "llama-3.1-8b-instant"
 DEFAULT_GROQ_MODEL_NAME = GROQ_MODEL_1
+
+# Dataset
+DATASET_VERSION = "v1"
