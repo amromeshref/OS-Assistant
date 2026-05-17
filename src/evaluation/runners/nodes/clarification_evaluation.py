@@ -13,6 +13,10 @@ logger = get_logger(__name__)
 def clarification_evaluation_node(state: OSAssistantState) -> ClarificationEvaluation:
     logger.info("Starting Clarification Evaluation Node")
     
+    if state.clarification_attempts == 0:
+        logger.info("No clarification attempts were made, skipping evaluation.")
+        return ClarificationEvaluation(evaluation_needed=False)
+
     # Get the system prompt for evaluation
     system_prompt = get_clarification_evaluation_system_prompt()
     
@@ -38,6 +42,8 @@ def clarification_evaluation_node(state: OSAssistantState) -> ClarificationEvalu
         human_message=human_message,
         structured_output=ClarificationEvaluation
     )
+
+    response.evaluation_needed = True
 
     logger.info("Completed Clarification Evaluation Node")
     
