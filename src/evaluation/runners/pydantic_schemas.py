@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-
+from typing import List
 
 class ClassificationEvaluation(BaseModel):
     """
@@ -42,6 +42,11 @@ class ClarificationEvaluation(BaseModel):
     Evaluation metrics for the Clarification node
     for a SINGLE evaluation data point.
     """
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether clarification evaluation was needed."
+    )
+
     evaluation_score: float = Field(
         default=0.0,
         ge=0.0,
@@ -202,6 +207,10 @@ class UserValidationEvaluation(BaseModel):
     Evaluation result for the User Validation node.
     Evaluates the quality of the plan representation shown to the user.
     """
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether user validation evaluation was needed."
+    )
 
     evaluation_score: float = Field(
         default=0.0,
@@ -224,12 +233,16 @@ class UserValidationEvaluation(BaseModel):
     )
 
 
-
 class StepResolverEvaluation(BaseModel):
     """
     Evaluation metrics for the Step Resolver node
     for a SINGLE evaluation data point.
     """
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether step resolution evaluation was needed."
+    )
+
     expected_resolution_success: bool = Field(
         default=False,
         description="Expected feasibility/resolution outcome."
@@ -279,14 +292,17 @@ class StepResolverEvaluation(BaseModel):
         )
     )
 
-
-
 class InformationGenerationEvaluation(BaseModel):
     """
     Evaluation result for the Information Generation node.
     Evaluates whether the generated informational response
     is accurate, relevant, grounded, and clearly written.
     """
+
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether information generation evaluation was needed."
+    )
 
     evaluation_score: float = Field(
         default=0.0,
@@ -315,6 +331,10 @@ class CommandExecutionEvaluation(BaseModel):
     Evaluation metrics for the Command Execution Analysis node
     for a SINGLE evaluation data point.
     """
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether command execution evaluation was needed."
+    )
 
     expected_success: bool = Field(
         default=False,
@@ -334,6 +354,10 @@ class CommandErrorHandlingEvaluation(BaseModel):
     Evaluation metrics for the Command Error Handling node
     for a SINGLE evaluation data point.
     """
+    evaluation_needed: bool = Field(
+        default=True,
+        description="Ground truth indicating whether command error handling evaluation was needed."
+    )
 
     expected_can_recover: bool = Field(
         default=False,
@@ -390,46 +414,46 @@ class DataPointEvaluation(BaseModel):
     """
 
     classification_evaluation: ClassificationEvaluation = Field(
-        default=None,
+        default=ClassificationEvaluation(),
         description="Evaluation results for the Classification node."
     )
 
     clarification_evaluation: ClarificationEvaluation = Field(
-        default=None,
+        default=ClarificationEvaluation(),
         description="Evaluation results for the Clarification node."
     )
 
     planning_evaluation: PlanningEvaluation = Field(
-        default=None,
+        default=PlanningEvaluation(),
         description="Evaluation results for the Planning node."
     )
 
     user_validation_evaluation: UserValidationEvaluation = Field(
-        default=None,
+        default=UserValidationEvaluation(),
         description="Evaluation results for the User Validation node."
     )
 
-    step_resolver_evaluation: StepResolverEvaluation = Field(
-        default=None,
+    step_resolver_evaluation: List[StepResolverEvaluation] = Field(
+        default_factory=list,
         description="Evaluation results for the Step Resolver node."
     )
 
-    information_generation_evaluation: InformationGenerationEvaluation = Field(
-        default=None,
+    information_generation_evaluation: List[InformationGenerationEvaluation] = Field(
+        default_factory=list,
         description="Evaluation results for the Information Generation node."
     )
 
-    command_execution_evaluation: CommandExecutionEvaluation = Field(
-        default=None,
+    command_execution_analysis_evaluation: List[CommandExecutionEvaluation] = Field(
+        default_factory=list,
         description="Evaluation results for the Command Execution Analysis node."
     )
 
-    command_error_handling_evaluation: CommandErrorHandlingEvaluation = Field(
-        default=None,
+    command_error_handling_evaluation: List[CommandErrorHandlingEvaluation] = Field(
+        default_factory=list,
         description="Evaluation results for the Command Error Handling node."
     )
 
     final_response_evaluation: FinalResponseEvaluation = Field(
-        default=None,
+        default=FinalResponseEvaluation(),
         description="Evaluation results for the Final Response node."
     )
