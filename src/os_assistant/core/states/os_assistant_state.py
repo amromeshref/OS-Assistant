@@ -761,3 +761,10 @@ class OSAssistantState(BaseModel):
         default=SummarizerState(),
         description="The state of the summarization process for extracting durable and reusable information to be stored in long-term memory."
     )
+
+    execution_time: float = Field(
+        default=0.0,
+        description=(
+            "A timer to keep track of the total execution time of the OS Assistant."
+        )
+    )
