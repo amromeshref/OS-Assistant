@@ -57,6 +57,7 @@ src/evaluation/__pycache__/
 src/evaluation/outputs/__pycache__/
 src/evaluation/outputs/evaluation-output/__pycache__/
 src/evaluation/outputs/os-assistant-output/__pycache__/
+src/evaluation/outputs/os-assistant-output
 
 src/evaluation/runners/__pycache__/
 src/evaluation/runners/nodes/__pycache__/
