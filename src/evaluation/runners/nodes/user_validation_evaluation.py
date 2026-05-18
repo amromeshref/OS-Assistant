@@ -12,6 +12,10 @@ logger = get_logger(__name__)
 
 def user_validation_evaluation_node(state: OSAssistantState) -> UserValidationEvaluation:
     logger.info("Starting User Validation Evaluation Node")
+
+    if state.user_validation_attempts == 0:
+        logger.info("No user validation attempts were made, skipping evaluation.")
+        return UserValidationEvaluation(evaluation_needed=False)
     
     # Get the system prompt for evaluation
     system_prompt = get_user_validation_evaluation_system_prompt()
@@ -38,6 +42,8 @@ def user_validation_evaluation_node(state: OSAssistantState) -> UserValidationEv
         human_message=human_message,
         structured_output=UserValidationEvaluation
     )
+
+    response.evaluation_needed = True
 
     logger.info("Completed User Validation Evaluation Node")
     
