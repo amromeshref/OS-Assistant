@@ -52,3 +52,14 @@ src/os_assistant/tools/rag/chromadb/__pycache__/
 src/os_assistant/tools/rag/embedding_models/__pycache__/
 src/os_assistant/tools/rag/ingestion/__pycache__/
 src/os_assistant/tools/rag/retriever/__pycache__/
+
+src/evaluation/__pycache__/
+src/evaluation/outputs/__pycache__/
+src/evaluation/outputs/evaluation-output/__pycache__/
+src/evaluation/outputs/os-assistant-output/__pycache__/
+
+src/evaluation/runners/__pycache__/
+src/evaluation/runners/nodes/__pycache__/
+src/evaluation/runners/prompts/__pycache__/
+
+src/evaluation/random.py
