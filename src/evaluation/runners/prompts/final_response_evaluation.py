@@ -104,7 +104,7 @@ Original user request:
 Command execution results:
 {command_executions_to_str(state.command_executions)}
 Information responses:
-{information_responses_to_str(state.information_responses)}
+{information_responses_to_str(state.generated_information_responses)}
 Generated final response:
 {state.generated_final_response}
 """
