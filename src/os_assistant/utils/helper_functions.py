@@ -15,14 +15,15 @@ import json
 from pathlib import Path
 from datetime import datetime
 from typing import Union, List
-import subprocess
 import os
 import platform
 import tempfile
 
-DEBUG_STATE_PATH = "logs/debug_state.json"
-COMMAND_EXECUTIONS_JSON_FILE = "command_executions.json"
-INFORMATION_RESPONSES_JSON_FILE = "information_responses.json"
+PARENT_DIR = Path(__file__).parent.parent.parent.parent
+
+DEBUG_STATE_PATH = PARENT_DIR / "logs" / "debug_state.json"
+COMMAND_EXECUTIONS_JSON_FILE = PARENT_DIR / "logs" / "command_executions.json"
+INFORMATION_RESPONSES_JSON_FILE = PARENT_DIR / "logs" / "information_responses.json"
 
 def save_debug_state(
     state, title: str, path: Union[str, Path] = DEBUG_STATE_PATH
