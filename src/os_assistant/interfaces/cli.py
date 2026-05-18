@@ -6,7 +6,7 @@ from os_assistant.config.config import PARALLEL_EXECUTION_ENABLED
 from os_assistant.core.graphs.memory.memory_graph import MemoryGraph
 from os_assistant.interfaces.voice_input.main import VoiceInputInterface
 from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.config.config import VOICE_INPUT_ENABLED, RAG_ENABLED
+from os_assistant.config.config import VOICE_INPUT_ENABLED, RAG_ENABLED, DEBUG_MODE
 from os_assistant.tools.rag.main import RAGTool
 from os_assistant.utils.helper_functions import save_debug_state
 from rich.console import Console
@@ -116,7 +116,9 @@ class OSAssistantApp:
     def clarification_loop(self, state: OSAssistantState):
         while True:
             state = self.cognition_graph.execute(state)
-            save_debug_state(state, "clarification")
+
+            if DEBUG_MODE:
+                save_debug_state(state, "clarification")
 
             if not state.query_clarification.is_clarification_needed:
                 return state
@@ -132,7 +134,9 @@ class OSAssistantApp:
     def handle_cognition(self, state):
         while True:
             state = self.cognition_graph.execute(state)
-            save_debug_state(state, "cognition")
+
+            if DEBUG_MODE:
+                save_debug_state(state, "cognition")
 
             if not state.query_classification.requires_follow_up:
                 return state
@@ -162,7 +166,9 @@ class OSAssistantApp:
             state.original_queries.append(follow_up)
 
             state = self.planning_graph.execute(state)
-            save_debug_state(state, "validation")
+
+            if DEBUG_MODE:
+                save_debug_state(state, "validation")
 
         return state
 
@@ -170,7 +176,9 @@ class OSAssistantApp:
     def handle_planning(self, state):
         while True:
             state = self.planning_graph.execute(state)
-            save_debug_state(state, "planning")
+
+            if DEBUG_MODE:
+                save_debug_state(state, "planning")
 
             # clarification needed
             if state.planning.requires_follow_up:
@@ -200,14 +208,18 @@ class OSAssistantApp:
         self.print_ai(state.generated_final_response)
         state.multi_turn_generated_responses.append(state.generated_final_response)
         self.append_hist(state)
+        
+        if DEBUG_MODE:
+            save_debug_state(state, "execution")
 
-        save_debug_state(state, "execution")
         return state
     
     def handle_memory(self, state: OSAssistantState):
         state = self.memory_graph.execute(state)
 
-        save_debug_state(state, "memory")
+        if DEBUG_MODE:
+            save_debug_state(state, "memory")
+            
         return state
     
     def handle_rag(self, state: OSAssistantState):
