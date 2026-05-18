@@ -1,0 +1,6 @@
+{
+"id": 5,
+"user_query": "Restart Wi-Fi",
+"expected_query_type": "command",
+"expected_requires_clarification": false
+}

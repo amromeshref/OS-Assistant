@@ -1,0 +1,6 @@
+{
+"id": 4,
+"user_query": "How much storage do I have left?",
+"expected_query_type": "information",
+"expected_requires_clarification": true
+}
