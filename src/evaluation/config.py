@@ -15,3 +15,12 @@ DEFAULT_GROQ_MODEL_NAME = GROQ_MODEL_1
 
 # Dataset
 DATASET_VERSION = "v1"
+
+# Parallel execution
+PARALLEL_EXECUTION_ENABLED = False
+
+# RAG settings
+RAG_ENABLED = True
+
+# Debug mode
+DEBUG_MODE = True
