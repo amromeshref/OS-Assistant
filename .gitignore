@@ -64,3 +64,5 @@ src/evaluation/runners/nodes/__pycache__/
 src/evaluation/runners/prompts/__pycache__/
 
 src/evaluation/random.py
+
+src/evaluation/reports
