@@ -52,8 +52,7 @@ def router(state: OSAssistantState):
         return FINAL_RESPONSE_NODE
     
     next_step = state.planning.plan_steps[state.current_step_index]
-    if next_step.dependencies_required:
-        # TODO: Dont route to step resolver node if step type is info. we already give the dep output to the info node. Maybe you can update the info sys prompt to handle this.
+    if next_step.dependencies_required and next_step.step_type != "information":
         logger.info(f"Next step ({state.current_step_index}) has dependencies, routing to step resolver.")
         #save_debug_state(state, "Routing to step resolver due to dependencies.")
         return STEP_RESOLVER_NODE
