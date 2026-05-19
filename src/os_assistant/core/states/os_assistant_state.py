@@ -559,7 +559,7 @@ class OSAssistantState(BaseModel):
     # The generated response from the LLM must be in the format of QueryClassificationState, so we can directly assign it to this field
     # If an error occurs, retry and generate another response until we get a valid QueryClassificationState response or reach a maximum number of retries to avoid infinite loops
     query_classification_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the query classification process (e.g., 'pending', 'completed', 'error').",
     )
 
@@ -598,7 +598,7 @@ class OSAssistantState(BaseModel):
     )
 
     planning_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the planning process (e.g., 'pending', 'completed', 'error').",
     )
     
@@ -622,7 +622,7 @@ class OSAssistantState(BaseModel):
     )
 
     user_validation_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the user validation process (e.g., 'pending', 'completed', 'error')."
     )
 
@@ -705,7 +705,7 @@ class OSAssistantState(BaseModel):
     )
 
     command_execution_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the command execution process (e.g., 'pending', 'completed', 'error')."
     )
 
@@ -741,18 +741,18 @@ class OSAssistantState(BaseModel):
     )
 
     generated_information_responses_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the information generation process (e.g., 'pending', 'completed', 'error')."
     )
 
     # =========== Final Response ===========
     generated_final_response: str = Field(
-        default=None,
+        default="",
         description="The final response generated to be sent to the user after completing all steps of the plan execution. This should be a clear and user-friendly response"
     )
 
     final_response_status: str = Field(
-        default=None,
+        default="pending",
         description="The status of the final response process (e.g., 'pending', 'completed', 'error')."
     )
 
@@ -766,5 +766,12 @@ class OSAssistantState(BaseModel):
         default=0.0,
         description=(
             "A timer to keep track of the total execution time of the OS Assistant."
+        )
+    )
+
+    total_retry_wait_time: float = Field(
+        default=0.0,
+        description=(
+            "A timer to keep track of the total wait time spent on retries during llm calls."
         )
     )
