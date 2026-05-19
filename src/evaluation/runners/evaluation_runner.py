@@ -279,9 +279,9 @@ class EvaluationRunner:
     
     def save_os_assistant_output(self, state: OSAssistantState, data_point_id: int, parallel_execution: bool = False):
         if parallel_execution:
-            output_path = OS_ASISTANT_OUTPUT_DIR / "parallel" / f"data-point-{data_point_id }-osass-output.json"
+            output_path = OS_ASISTANT_OUTPUT_DIR / "parallel" / f"data-point-{data_point_id }-osass-output-parallel.json"
         else:
-            output_path = OS_ASISTANT_OUTPUT_DIR / "sequential" / f"data-point-{data_point_id}-osass-output.json"
+            output_path = OS_ASISTANT_OUTPUT_DIR / "sequential" / f"data-point-{data_point_id}-osass-output-sequential.json"
 
         with open(output_path, "w") as f:
             json.dump(state.model_dump(), f, indent=4)
