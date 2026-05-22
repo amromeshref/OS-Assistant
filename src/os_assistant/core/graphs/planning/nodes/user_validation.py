@@ -45,8 +45,6 @@ def user_validation_node(state: OSAssistantState) -> OSAssistantState:
                 human_message += "\nNote: The previous response encountered an error related to tool calls. Please ensure that the response adheres to the expected format and does not include any tool calls."
                 continue  # Retry the user validation node
     
-    if state.user_validation_attempts == 1:
-        state.first_generated_validation_response = response.validation_reasoning
 
     # TODO: Implement parsing logic
 
