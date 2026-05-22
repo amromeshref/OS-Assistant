@@ -66,3 +66,6 @@ src/evaluation/runners/prompts/__pycache__/
 src/evaluation/random.py
 
 src/evaluation/reports
+
+test/
+backup/
