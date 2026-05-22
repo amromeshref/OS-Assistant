@@ -28,7 +28,7 @@ def retrieve_dependency_outputs(state: OSAssistantState, current_step: Step) -> 
     for dep_idx in current_step.dependency_step_indices:
         dep_output = None
         if state.planning.plan_steps[dep_idx].step_type == "command":
-            dep_output = retrieve_execution_details(state, dep_idx)
+            dep_output = retrieve_execution_details(state, dep_idx, parallel_execution_enabled=False)
         elif state.planning.plan_steps[dep_idx].step_type == "information":
             dep_output = retrieve_information_details(state, dep_idx)
         dependency_outputs.append(dep_output)
