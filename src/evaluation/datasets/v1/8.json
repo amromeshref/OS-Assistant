@@ -2,5 +2,6 @@
 "id": 8,
 "user_query": "What version of Python is installed?",
 "expected_query_type": "command",
-"expected_requires_clarification": false
+"expected_requires_clarification": false,
+"level": "easy"
 }

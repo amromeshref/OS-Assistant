@@ -2,5 +2,6 @@
 "id": 3,
 "user_query": "Rename my python file",
 "expected_query_type": "command",
-"expected_requires_clarification": true
+"expected_requires_clarification": true,
+"level": "easy"
 }

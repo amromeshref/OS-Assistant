@@ -2,5 +2,6 @@
 "id": 2,
 "user_query": "Open Chrome",
 "expected_query_type": "command",
-"expected_requires_clarification": false
+"expected_requires_clarification": false,
+"level": "easy"
 }

@@ -1,6 +1,7 @@
 {
 "id": 4,
 "user_query": "How much storage do I have left?",
-"expected_query_type": "information",
-"expected_requires_clarification": true
+"expected_query_type": "command",
+"expected_requires_clarification": false,
+"level": "easy"
 }

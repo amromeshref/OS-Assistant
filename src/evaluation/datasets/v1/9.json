@@ -1,0 +1,7 @@
+{
+"id": 9,
+"user_query": "List all .py files inside the test folder and explain their contend",
+"expected_query_type": "both",
+"expected_requires_clarification": false,
+"level": "medium"
+}

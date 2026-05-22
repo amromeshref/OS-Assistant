@@ -1,0 +1,7 @@
+{
+    "id": 10,
+    "user_query": "Compress all images in the test folder",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "easy"
+}

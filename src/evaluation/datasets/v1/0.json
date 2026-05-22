@@ -2,5 +2,6 @@
 "id": 0,
 "user_query": "Create a folder named projects on my desktop",
 "expected_query_type": "command",
-"expected_requires_clarification": false
+"expected_requires_clarification": false,
+"level": "easy"
 }

@@ -1,6 +1,7 @@
 {
-"id": 5,
-"user_query": "Restart Wi-Fi",
-"expected_query_type": "command",
-"expected_requires_clarification": false
+    "id": 5,
+    "user_query": "Show me my CPU usage",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
 }

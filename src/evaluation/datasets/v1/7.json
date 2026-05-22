@@ -1,6 +1,7 @@
 {
-"id": 7,
-"user_query": "Install VS Code",
-"expected_query_type": "command",
-"expected_requires_clarification": false
+    "id": 7,
+    "user_query": "Which process is using the most memory?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
 }

@@ -2,5 +2,6 @@
 "id": 1,
 "user_query": "What processes are using the most memory?",
 "expected_query_type": "both",
-"expected_requires_clarification": false
+"expected_requires_clarification": false,
+"level": "easy"
 }

@@ -1,6 +1,7 @@
 {
-"id": 6,
-"user_query": "Uninstall the app",
-"expected_query_type": "command",
-"expected_requires_clarification": true
+    "id": 6,
+    "user_query": "Find all PDF files and move them into a backup folder",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "medium"
 }
