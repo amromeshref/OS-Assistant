@@ -8,9 +8,33 @@ from os_assistant.prompts.step_resolver import (
 )
 from os_assistant.utils.logger import get_logger
 from os_assistant.core.models.main import LLMModel
-from os_assistant.utils.helper_functions import retrieve_dependency_outputs
+from os_assistant.tools.retrieve_execution_details import retrieve_execution_details
+from os_assistant.tools.retrieve_information_details import retrieve_information_details
 
 logger = get_logger(__name__)
+
+def retrieve_dependency_outputs(state: OSAssistantState) -> str:
+    """
+    Retrieve the outputs of the dependencies for the current step.
+    Args:
+        state: OSAssistantState
+    Returns:
+        str: A string representation of the dependency outputs. 
+    """
+    current_step_index = state.current_step_index
+    current_step = state.planning.plan_steps[current_step_index]
+
+    dependency_outputs = []
+
+    for dep_idx in current_step.dependency_step_indices:
+        dep_output = None
+        if state.planning.plan_steps[dep_idx].step_type == "command":
+            dep_output = retrieve_execution_details(state, dep_idx, parallel_execution_enabled=False)
+        elif state.planning.plan_steps[dep_idx].step_type == "information":
+            dep_output = retrieve_information_details(state, dep_idx)
+        dependency_outputs.append(dep_output)
+
+    return "\n".join(dependency_outputs)
 
     
 def step_resolver_node(state: OSAssistantState) -> OSAssistantState:
