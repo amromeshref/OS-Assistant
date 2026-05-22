@@ -26,13 +26,16 @@ def update_state(state: OSAssistantState,
 
         if isinstance(response, StepResolverState):
             state.planning.plan_steps[step_index].steps_resolver.append(response)
+            state.steps_resolver.append(response)
 
         elif isinstance(response, CommandExecution):
             state.planning.plan_steps[step_index].command_executions.append(response)
+            state.command_executions.append(response)
 
         elif isinstance(response, CommandErrorHandlerState,):
             state.planning.plan_steps[step_index].command_error_handlers.append(response)
             state.planning.plan_steps[step_index].num_error_executions += 1
+            state.command_error_handlers.append(response)
 
 
         elif isinstance(response, InformationResponse):
