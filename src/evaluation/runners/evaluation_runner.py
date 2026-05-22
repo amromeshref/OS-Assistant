@@ -37,6 +37,8 @@ class EvaluationRunner:
         self._init_os_assistant()
         self.execution_time = 0.0
         self.timer_start = None
+        self.first_generated_clarification_response = "no output"
+        self.first_generated_validation_response = "no output"
 
     def resume_timer(self):
         self.timer_start = time.perf_counter()
@@ -167,6 +169,9 @@ class EvaluationRunner:
             state.multi_turn_generated_responses.append(state.query_clarification.generated_response)
             self.append_hist(state)
 
+            if self.first_generated_clarification_response == "no output":
+                self.first_generated_clarification_response = state.query_clarification.generated_response
+
             follow_up = self.get_input()
             state.original_queries.append(follow_up)
 
@@ -183,6 +188,9 @@ class EvaluationRunner:
             self.print_ai(state.user_validation.generated_response)
             state.multi_turn_generated_responses.append(state.user_validation.generated_response)
             self.append_hist(state)
+
+            if self.first_generated_validation_response == "no output":
+                self.first_generated_validation_response = state.user_validation.generated_response
 
             follow_up = self.get_input()
             state.original_queries.append(follow_up)
@@ -272,6 +280,9 @@ class EvaluationRunner:
 
         self.reset_timer()
 
+        state.first_generated_clarification_response = self.first_generated_clarification_response
+        state.first_generated_validation_response = self.first_generated_validation_response
+
         self.save_os_assistant_output(state, data_point_id, parallel_execution=self.parallel_execution)
 
 
@@ -355,7 +366,7 @@ def main():
     args = parser.parse_args()
 
 
-    parallel = True
+    parallel = False
 
     if not parallel:
         runner = EvaluationRunner(parallel_execution=args.parallel_execution)
