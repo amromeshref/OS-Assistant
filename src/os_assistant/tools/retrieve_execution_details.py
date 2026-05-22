@@ -30,7 +30,7 @@ def command_executions_to_str(executions: List[CommandExecution]) -> str:
     return "\n".join(lines)
 
 
-def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
+def retrieve_execution_details(state: OSAssistantState, step_index: int, parallel_execution_enabled=PARALLEL_EXECUTION_ENABLED) -> str:
     """
     Retrieve the execution details of a specific command.
     Args:
@@ -43,7 +43,7 @@ def retrieve_execution_details(state: OSAssistantState, step_index: int) -> str:
 
     try:
         command_executions = []
-        if PARALLEL_EXECUTION_ENABLED:
+        if parallel_execution_enabled:
             for command_exe in state.planning.plan_steps[step_index].command_executions:
                 command_executions.append(command_exe)
         else:
