@@ -21,15 +21,7 @@ INPUTS YOU RECEIVE:
 1. User Request
    - The original user query
 
-2. Clarification Reason
-   - Why clarification was needed
-   - Example:
-       - Missing file path
-       - Ambiguous intent
-       - Unsafe operation
-       - Missing critical information
-
-3. Clarification Response
+2. Clarification Response
    - The generated clarification message from the clarification node
 
 --------------------------------------------------
@@ -113,9 +105,6 @@ def get_human_message_for_clarification_evaluation(state: OSAssistantState) -> s
     human_message = f"""
 USER REQUEST:
 {state.original_queries[0]}
-
-CLARIFICATION REASON:
-{state.query_classification.follow_up_reasoning}
 
 CLARIFICATION RESPONSE:
 {state.first_generated_clarification_response}
