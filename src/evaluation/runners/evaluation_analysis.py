@@ -76,8 +76,8 @@ class EvaluationAnalysis:
         ######## Step Resolution Evaluation Metrics ########
 
         # Resolution success metrics
-        self.total_expected_resolution_success_count = 0
-        self.total_generated_resolution_success_count = 0
+        self.total_step_resolution_count = 0
+        self.total_correctly_predicted_resolution_success = 0
         self.resolution_success_accuracy_score = 0.0
 
         # Placeholder metrics
@@ -187,8 +187,9 @@ class EvaluationAnalysis:
         for step_resolution_eval in eval_data.step_resolver_evaluation:
             if step_resolution_eval.evaluation_needed:
                 # Resolution success metrics
-                self.total_expected_resolution_success_count += int(step_resolution_eval.expected_resolution_success)
-                self.total_generated_resolution_success_count += int(step_resolution_eval.generated_resolution_success)
+                self.total_step_resolution_count += 1
+                self.total_correctly_predicted_resolution_success += int((step_resolution_eval.expected_resolution_success == step_resolution_eval.generated_resolution_success))
+                
 
                 # Placeholder metrics
                 self.total_generated_placeholders_count += step_resolution_eval.total_generated_placeholders
@@ -244,7 +245,7 @@ class EvaluationAnalysis:
         self.user_validation_score /= 10
 
         # Step Resolution
-        self.resolution_success_accuracy_score = self.total_generated_resolution_success_count / self.total_expected_resolution_success_count if self.total_expected_resolution_success_count > 0 else 0.0
+        self.resolution_success_accuracy_score = self.total_correctly_predicted_resolution_success / self.total_step_resolution_count if self.total_step_resolution_count > 0 else 0.0
         self.placeholder_resolution_accuracy_score = self.total_correctly_resolved_placeholders_count / self.total_generated_placeholders_count if self.total_generated_placeholders_count > 0 else 0.0
         self.resolved_steps_count_accuracy_score = self.total_actual_generated_resolved_steps_count / self.total_expected_generated_resolved_steps_count if self.total_expected_generated_resolved_steps_count > 0 else 0.0
         self.step_resolution_score = (self.resolution_success_accuracy_score + self.placeholder_resolution_accuracy_score + self.resolved_steps_count_accuracy_score) / 3  
