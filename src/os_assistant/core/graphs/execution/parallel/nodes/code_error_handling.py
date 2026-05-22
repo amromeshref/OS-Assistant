@@ -24,9 +24,9 @@ def code_error_handling_node(state: OSAssistantState, step_index: int):
     llm_model = LLMModel()
 
     if state.planning.plan_steps[step_index].num_error_executions == 0:
-        human_message = get_first_human_message(state)
+        human_message = get_first_human_message(state, step_index=step_index, parallel_execution_enabled=True)
     else:
-        human_message = get_second_human_message(state)
+        human_message = get_second_human_message(state, step_index=step_index, parallel_execution_enabled=True)
 
     response: CommandErrorHandlerState = llm_model.generate_response(
         system_message=sys_prompt,
