@@ -179,12 +179,12 @@ CRITICAL RULES:
     return prompt
 
 
-def retrieve_previous_recovery_outputs(state: OSAssistantState, step_index: int = None) -> str:
+def retrieve_previous_recovery_outputs(state: OSAssistantState, step_index: int = None, parallel_execution_enabled: bool = PARALLEL_EXECUTION_ENABLED) -> str:
     """
     Retrieve the previous recovery outputs for Mode 2 operation.
     """
     outputs = []
-    if PARALLEL_EXECUTION_ENABLED:
+    if parallel_execution_enabled:
         for i in range(1, state.planning.plan_steps[step_index].num_error_executions + 1):
             if len(state.planning.plan_steps[step_index].command_error_handlers) >= i:
                 handler_state = state.planning.plan_steps[step_index].command_error_handlers[-i]
@@ -200,16 +200,16 @@ def retrieve_previous_recovery_outputs(state: OSAssistantState, step_index: int 
         return "\n".join(outputs)
 
 
-def get_first_human_message(state: OSAssistantState, step_index: int = None):
+def get_first_human_message(state: OSAssistantState, step_index: int = None, parallel_execution_enabled: bool = PARALLEL_EXECUTION_ENABLED):
     """
     Get the human message for the first turn of the code error handling node.
     """
-    if PARALLEL_EXECUTION_ENABLED:
+    if parallel_execution_enabled:
         failed_command_execution = state.planning.plan_steps[step_index].command_executions[-1]
     else:
         failed_command_execution = state.command_executions[-1]
 
-    if PARALLEL_EXECUTION_ENABLED:
+    if parallel_execution_enabled:
         prompt = f"""
 This is MODE 1: INITIAL RECOVERY. This is the first recovery attempt for a failed command execution.
 Step description: {state.planning.plan_steps[step_index].step_details.description}
@@ -228,17 +228,17 @@ Failed command execution: {command_executions_to_str([failed_command_execution])
     return prompt
 
 
-def get_second_human_message(state: OSAssistantState, step_index: int = None) -> str:
+def get_second_human_message(state: OSAssistantState, step_index: int = None, parallel_execution_enabled: bool = PARALLEL_EXECUTION_ENABLED) -> str:
     """
       Get the human message for the second turn of the code error handling node (Mode 2
     operation).
     """
-    if PARALLEL_EXECUTION_ENABLED:
+    if parallel_execution_enabled:
         failed_command_execution = state.planning.plan_steps[step_index].command_executions[-1]
     else:
         failed_command_execution = state.command_executions[-1]
 
-    if PARALLEL_EXECUTION_ENABLED:
+    if parallel_execution_enabled:
         prompt = f"""
 This is mode 2: RETRY RECOVERY. A previous recovery attempts was made but the last suggested command also failed.
 Step description: {state.planning.plan_steps[step_index].step_details.description}
