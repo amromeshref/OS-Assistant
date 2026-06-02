@@ -4,9 +4,9 @@ import subprocess
 logger = get_logger(__name__)
 
 
-def run_command(command: str, execution_mode: str) -> str:
+def run_command(command: str, execution_mode: str) -> tuple[bool, str, str]:
     """
-    Executes a system command and returns its output.
+    Executes a system command and returns structured execution results.
     Supports background execution with partial output capture.
     """
     logger.info(f"Running the command: {command}")
@@ -22,22 +22,31 @@ def run_command(command: str, execution_mode: str) -> str:
             )
 
             try:
-                # Wait briefly to catch immediate errors (e.g., command not found)
                 stdout, stderr = process.communicate(timeout=1)
 
                 if process.returncode is not None:
-                    # Process exited quickly → likely error
                     if process.returncode != 0:
-                        logger.error(f"Command failed with error: {stderr.strip()}")
-                        return f"Command failed: {stderr.strip() or 'Unknown error'}"
-                    
+                        error = stderr.strip() or "Unknown error"
+                        logger.error(f"Command failed with error: {error}")
+                        
+                        success = False
+                        output = stdout.strip() or "no output"
+                        return success, output, error
+
                     logger.info("Command executed successfully in the background.")
-                    return stdout.strip() or "Command executed successfully."
+
+                    success = True
+                    output = stdout.strip() or "no output"
+                    error = "no errors"
+                    return success, output, error
 
             except subprocess.TimeoutExpired:
-                # Process is still running → expected for background apps
                 logger.info("Command is running in the background.")
-                return "Command started successfully in background."
+
+                success = True
+                output = "no output"
+                error = "no errors"
+                return success, output, error
 
         # Foreground execution
         result = subprocess.run(
@@ -49,11 +58,26 @@ def run_command(command: str, execution_mode: str) -> str:
 
         if result.returncode == 0:
             logger.info("Command executed successfully.")
-            return result.stdout.strip() or "Command executed successfully with no output."
-        else:
-            logger.error(f"Command failed with error: {result.stderr.strip()}")
-            return f"Command failed: {result.stderr.strip()}"
+
+            success = True
+            output = result.stdout.strip() or "no output"
+            error = "no errors"
+
+            return success, output, error
+
+        error = result.stderr.strip() or "Unknown error"
+        logger.error(f"Command failed with error: {error}")
+
+        success = False
+        output = result.stdout.strip() or "no output"
+            
+        return success, output, error
 
     except Exception as e:
         logger.error(f"Unexpected error occurred: {str(e)}")
-        return f"Error: {str(e)}"
+
+        success = False
+        output = "no output"
+        error = str(e)
+
+        return success, output, error
