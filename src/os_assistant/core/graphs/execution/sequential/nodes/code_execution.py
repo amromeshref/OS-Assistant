@@ -12,9 +12,6 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
     Node responsible for executing code/commands as part of the execution graph.
     """
     logger.info("Starting code execution node.")
-
-    sys_prompt: str = get_code_execution_sys_prompt()
-    llm_model = LLMModel()
     
     step_index = state.current_step_index
 
@@ -54,30 +51,31 @@ def code_execution_node(state: OSAssistantState) -> OSAssistantState:
         execution_mode = state.planning.plan_steps[step_index].step_details.execution_mode
 
     # Command output after running
-    command_output = run_command(command, execution_mode)
+    success, output, error = run_command(command, execution_mode)
+    summary = f"Executed command: {command} with success: {success}, output: {output}, error: {error}"
 
-    human_message = get_human_message(state.finalized_enhanced_query, command, command_output)
-    
-    response: CommandExecution = llm_model.generate_response(
-        system_message=sys_prompt,
-        human_message=human_message,
-        structured_output=CommandExecution
+    command_execution = CommandExecution(
+        command=command,
+        success=success,
+        output=output,
+        error=error,
+        summary=summary
     )
 
-    response.step_index = step_index
+    command_execution.step_index = step_index
 
     # TODO: Add parsing logic here
 
-    state.command_executions.append(response)
-    if response.success:
-        state.executed_steps.append(response.summary)    
+    state.command_executions.append(command_execution)
+    if command_execution.success:
+        state.executed_steps.append(command_execution.summary)    
     
     #state.current_step_index += 1
     #state.steps_done_indicies.append(state.execution_orchestrator[-1].next_step_index)
 
     #save_command_executions(state.command_executions)
 
-    if not response.success:
+    if not command_execution.success:
         if state.num_error_executions < COMMAND_ERROR_HANDLING_MAX_ATTEMPTS:
             logger.info("Command execution failed, routing to code error handling node.")
             state.command_error_handler_active = True
