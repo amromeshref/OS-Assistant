@@ -1,0 +1,7 @@
+{
+    "id": 33,
+    "user_query": "Please scan my system for apps that haven't been used in a long time",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

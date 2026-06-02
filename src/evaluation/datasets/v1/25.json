@@ -1,0 +1,7 @@
+{
+    "id": 25,
+    "user_query": "Collect CPU temperature, fan speed, and battery health information and generate a diagnostic report",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

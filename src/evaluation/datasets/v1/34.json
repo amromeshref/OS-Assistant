@@ -1,0 +1,7 @@
+{
+    "id": 34,
+    "user_query": "Can you check all mounted drives and tell me which ones are almost full?",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 38,
+    "user_query": "I wanna create a file and put three articles inside it. The first article is about Egypt. The second about palestine, and the last one about KSA. Each article should not exceed 300 word. Then, translate the articles into Arabic and save the translation into a new file",
+    "expected_query_type": "both",
+    "expected_requires_clarification": true,
+    "level": "medium"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 15,
+    "user_query": "Generate an article about egypt and save it to my current dir.",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

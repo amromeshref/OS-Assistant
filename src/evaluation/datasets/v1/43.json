@@ -1,0 +1,7 @@
+{
+    "id": 43,
+    "user_query": "Please play surah kahf. you can find it in Quran folder in the test folder.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "easy"
+}

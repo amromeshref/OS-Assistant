@@ -1,0 +1,7 @@
+{
+    "id": 29,
+    "user_query": "I wanna clean up my computer. Find temporary files, browser caches, and unused downloads I can safely remove.",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

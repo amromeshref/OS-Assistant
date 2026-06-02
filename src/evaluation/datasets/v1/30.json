@@ -1,0 +1,7 @@
+{
+    "id": 30,
+    "user_query": "Can you check if any applications are secretly running in the background and using lots of memory?",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

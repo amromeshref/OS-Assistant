@@ -1,0 +1,7 @@
+{
+    "id": 44,
+    "user_query": "Which subdir in the test folder contains the largest amount of files.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

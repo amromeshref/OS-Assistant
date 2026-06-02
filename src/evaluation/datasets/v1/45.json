@@ -1,0 +1,7 @@
+{
+    "id": 45,
+    "user_query": "There is a pdf paper named as OS-ATLAS. It exists in my current dir, but i dont remember where exactly. Can you check its path? and also open it for me.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

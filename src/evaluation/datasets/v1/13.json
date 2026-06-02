@@ -1,0 +1,7 @@
+{
+    "id": 13,
+    "user_query": "Explain why my CPU temperature spikes during gaming",
+    "expected_query_type": "information",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

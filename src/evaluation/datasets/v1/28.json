@@ -1,0 +1,7 @@
+{
+    "id": 28,
+    "user_query": "Can you check which apps are using the most internet bandwidth right now?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

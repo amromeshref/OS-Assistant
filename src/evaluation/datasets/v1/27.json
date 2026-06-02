@@ -1,0 +1,7 @@
+{
+    "id": 27,
+    "user_query": "Internet has been acting weird today. Can you test DNS, connectivity, and network latency and explain what you find?",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

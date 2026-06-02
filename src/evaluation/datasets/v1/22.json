@@ -1,0 +1,7 @@
+{
+    "id": 22,
+    "user_query": "I wanna know the api keys stored in my .bashrc",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

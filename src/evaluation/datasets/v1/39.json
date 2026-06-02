@@ -1,0 +1,7 @@
+{
+    "id": 39,
+    "user_query": "I wanna know the salary of Amro. I also wanna change the phone number of Ahmed to 89401. This data is present in data.xlsx in the test folder.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

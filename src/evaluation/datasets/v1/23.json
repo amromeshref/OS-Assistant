@@ -1,0 +1,7 @@
+{
+    "id": 23,
+    "user_query": "Scan CPU, memory, and disk usage and generate a system health summary",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

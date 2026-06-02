@@ -1,0 +1,7 @@
+{
+    "id": 26,
+    "user_query": "find all files in the test folder and group them by file type in seperate folders",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

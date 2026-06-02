@@ -1,0 +1,7 @@
+{
+    "id": 14,
+    "user_query": "Create a bootable USB drive from this ISO file",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "hard"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 11,
+    "user_query": "Restart the audio service",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

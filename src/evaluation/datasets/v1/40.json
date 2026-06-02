@@ -1,0 +1,7 @@
+{
+    "id": 40,
+    "user_query": "Look at data.xlsx in the test folder. I wanna know the phone number of Amro, and i wanna know the average salaries of all employees. Also, add the average value in the file.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

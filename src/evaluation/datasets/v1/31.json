@@ -1,0 +1,7 @@
+{
+    "id": 31,
+    "user_query": "Can you organize all my screenshots in the test folder into folders by month?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "medium"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 41,
+    "user_query": "Look at the employee data in the test folder. The files Company1.xlsx, Company2.xlsx, and Company3.xlsx each contain employee salary information. Calculate the overall average salary across all three companies.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

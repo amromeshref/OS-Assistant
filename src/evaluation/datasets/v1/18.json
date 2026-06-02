@@ -1,0 +1,7 @@
+{
+    "id": 18,
+    "user_query": "find all files in the test folder that contain the word api_key",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

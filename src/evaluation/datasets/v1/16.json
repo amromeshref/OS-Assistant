@@ -1,0 +1,7 @@
+{
+    "id": 16,
+    "user_query": "Generate a c++ code that calculates the gcd of two numbers and save it to my disk.",
+    "expected_query_type": "both",
+    "expected_requires_clarification": true,
+    "level": "medium"
+}

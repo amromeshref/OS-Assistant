@@ -1,0 +1,7 @@
+{
+    "id": 24,
+    "user_query": "Compress all videos, images, and PDFs in the test folder into separate archives",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "hard"
+}

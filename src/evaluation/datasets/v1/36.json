@@ -1,0 +1,7 @@
+{
+    "id": 36,
+    "user_query": "Please compare disk read and write speeds across all connected drives",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

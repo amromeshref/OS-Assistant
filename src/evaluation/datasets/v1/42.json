@@ -1,0 +1,7 @@
+{
+    "id": 42,
+    "user_query": "Look at the employee data in the test folder. The file Company1.xlsx contains employee salary information. Identify any employees with null salary values and replace those values with the mean",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

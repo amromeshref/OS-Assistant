@@ -1,0 +1,7 @@
+{
+    "id": 37,
+    "user_query": "Convert all PNG files in the test folder to JPG format.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

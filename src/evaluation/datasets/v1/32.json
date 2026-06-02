@@ -1,0 +1,7 @@
+{
+    "id": 32,
+    "user_query": "I wanna know which apps start automatically and how much memory each one uses",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

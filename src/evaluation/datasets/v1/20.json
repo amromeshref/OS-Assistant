@@ -1,0 +1,7 @@
+{
+    "id": 20,
+    "user_query": "I wanna know my last downloaded file in my downloads.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

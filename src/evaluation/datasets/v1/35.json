@@ -1,0 +1,7 @@
+{
+    "id": 35,
+    "user_query": "Find all applications using my microphone, webcam, or screen recording permissions",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}
