@@ -424,7 +424,7 @@ def command_error_handler_state_to_str(state: CommandErrorHandlerState) -> str:
 
     return "\n".join(lines)
 
-def retrieve_dependency_outputs(state: OSAssistantState) -> str:
+def retrieve_dependency_outputs(state: OSAssistantState, parallel_execution_enabled=False) -> str:
     """
     Retrieve the outputs of the dependencies for the current step.
     Args:
@@ -440,7 +440,7 @@ def retrieve_dependency_outputs(state: OSAssistantState) -> str:
     for dep_idx in current_step.dependency_step_indices:
         dep_output = None
         if state.planning.plan_steps[dep_idx].step_type == "command":
-            dep_output = retrieve_execution_details(state, dep_idx)
+            dep_output = retrieve_execution_details(state, dep_idx, parallel_execution_enabled=parallel_execution_enabled)
         elif state.planning.plan_steps[dep_idx].step_type == "information":
             dep_output = retrieve_information_details(state, dep_idx)
         dependency_outputs.append(dep_output)
