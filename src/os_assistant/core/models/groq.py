@@ -59,6 +59,7 @@ class GroqModel:
             llm = ChatGroq(
                 model=self.model_name,
                 api_key=GROQ_API_KEY,
+                temperature=0
             )
 
             logger.info("Generating response using Groq without structured output.")
@@ -75,6 +76,7 @@ class GroqModel:
                 model_kwargs={
                     "tools": [{"name": "json"}],
                 },
+                temperature=0
             )
 
             response = llm.with_structured_output(structured_output).invoke(messages)
