@@ -11,7 +11,7 @@ class CommandRequest:
     commands: List[str]
     execution_modes: List[str]
 
-    result: List[str] = field(default_factory=list)
+    result: List[tuple[bool, str, str]] = field(default_factory=list)
     error: Exception = None
 
     event: threading.Event = field(
@@ -68,14 +68,16 @@ class CommandBatchCoordinator:
                 results = []
                 for i in range(len(request.commands)):
                     if request.commands[i] != "ignore":
-                        output = run_command(
+                        success, output, error = run_command(
                             request.commands[i],
                             request.execution_modes[i],
                         )
                     else:
+                        success = True
                         output = "ignored"
+                        error = "no errors"
 
-                    results.append(output)
+                    results.append((success, output, error))
                 
                 self.requests[step_index].result = results
 
