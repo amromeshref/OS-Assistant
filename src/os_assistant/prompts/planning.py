@@ -88,6 +88,8 @@ NEVER combine information generation and system execution into a single step.
   - Use "blocking" for:
       - commands that produce output needed by later steps
       - system information retrieval
+
+Do not generate steps that explain the approach to the user.
 """
     return prompt
 
