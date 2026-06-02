@@ -13,31 +13,32 @@ from concurrent.futures import as_completed
 
 logger = get_logger(__name__)
 
-def analyze_code_execution(state: OSAssistantState, command: str, command_output: str, step_index: int):
+def analyze_code_execution(state: OSAssistantState, command: str, success: bool, command_output: str, error: str, step_index: int):
     sys_prompt: str = get_code_execution_sys_prompt()
     llm_model = LLMModel()
 
-    human_message = get_human_message(state.finalized_enhanced_query, command, command_output)
-
-    response: CommandExecution = llm_model.generate_response(
-        system_message=sys_prompt,
-        human_message=human_message,
-        structured_output=CommandExecution
+    summary = f"Executed command: {command} with success: {success}, output: {command_output}, error: {error}"
+    command_execution = CommandExecution(
+        command=command,
+        success=success,
+        output=command_output,
+        error=error,
+        summary=summary
     )
 
-    response.step_index = step_index
+    command_execution.step_index = step_index
 
     # TODO: Send the generated command by error handler to user
     # TODO: Generated commands by error handlers should be executed sequantially in order of step index
 
     executed_step_summary = None
-    if response.success:
-        executed_step_summary = response.summary
+    if command_execution.success:
+        executed_step_summary = command_execution.summary
 
-    update_state(state=state, response=response, executed_step_summary=executed_step_summary, step_index=step_index)
+    update_state(state=state, response=command_execution, executed_step_summary=executed_step_summary, step_index=step_index)
 
     # Error handler bart
-    if not response.success:
+    if not command_execution.success:
         if state.planning.plan_steps[step_index].num_error_executions >= COMMAND_ERROR_HANDLING_MAX_ATTEMPTS:
             executed_step_summary = f"Could not resolve the error in step index {step_index} and description {state.planning.plan_steps[step_index].step_details.description} after {state.planning.plan_steps[step_index].num_error_executions} recovery attempts."
             update_state(state=state, executed_step_summary=executed_step_summary, step_index=step_index)
@@ -51,9 +52,9 @@ def analyze_code_execution(state: OSAssistantState, command: str, command_output
         command = response.suggested_command
         execution_mode = response.execution_mode
 
-        command_output = run_command(command, execution_mode)
+        success, output, error = run_command(command, execution_mode)
 
-        analyze_code_execution(state, command, command_output, step_index)
+        analyze_code_execution(state, command, success, output, error, step_index)
 
     return
 
@@ -98,7 +99,7 @@ def code_execution_node(state: OSAssistantState, step: Step, coordinator: Comman
         commands.append(step.step_details.command)
         execution_modes.append(step.step_details.execution_mode)
 
-    commands_output = coordinator.submit(
+    coordinator_output = coordinator.submit(
         step_index,
         commands,
         execution_modes,
@@ -110,16 +111,17 @@ def code_execution_node(state: OSAssistantState, step: Step, coordinator: Comman
 
         with ThreadPoolExecutor(max_workers=len(commands)) as executor:
 
-            for command, output in zip(
-                commands,
-                commands_output,
-            ):
-
+            for i in range(len(commands)):
+                command = commands[i]
+                success, output, error = coordinator_output[i]
+    
                 future = executor.submit(
                     analyze_code_execution,
                     state,
                     command,
+                    success,
                     output,
+                    error,
                     step_index,
                 )
 
@@ -135,7 +137,7 @@ def code_execution_node(state: OSAssistantState, step: Step, coordinator: Comman
                         f"Analyze code execution failed: {e}"
                     )
     else:
-        analyze_code_execution(state, commands[0], commands_output[0], step_index)
+        analyze_code_execution(state, commands[0], coordinator_output[0][0], coordinator_output[0][1], coordinator_output[0][2], step_index)
 
 
     logger.info("Completed code execution node.")
