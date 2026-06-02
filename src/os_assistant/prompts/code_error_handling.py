@@ -252,11 +252,11 @@ Failed command execution: {command_executions_to_str([failed_command_execution])
 """
         
     if state.planning.plan_steps[state.current_step_index].dependencies_required:
-        prompt += f"\nDependency outputs: {retrieve_dependency_outputs(state)}"
+        prompt += f"\nDependency outputs: {retrieve_dependency_outputs(state=state, parallel_execution_enabled=parallel_execution_enabled)}"
 
     prompt += f"""
 Previous recovery outputs (from most recent to oldest): 
-{retrieve_previous_recovery_outputs(state, step_index)}
+{retrieve_previous_recovery_outputs(state=state, step_index=step_index, parallel_execution_enabled=parallel_execution_enabled)}
 """
 
     return prompt
