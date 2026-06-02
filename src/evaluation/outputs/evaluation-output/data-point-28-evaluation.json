@@ -1,0 +1,81 @@
+{
+    "classification_evaluation": {
+        "expected_query_type": "command",
+        "predicted_query_type": "command",
+        "is_query_type_correct": true,
+        "expected_requires_clarification": false,
+        "predicted_requires_clarification": false,
+        "is_clarification_prediction_correct": true
+    },
+    "clarification_evaluation": {
+        "evaluation_needed": false,
+        "evaluation_score": 0.0,
+        "evaluation_reasoning": ""
+    },
+    "planning_evaluation": {
+        "generated_steps_count": 2,
+        "correctly_generated_steps_count": 2,
+        "step_correctness_score": 1.0,
+        "num_required_steps": 1,
+        "num_fulfilling_steps": 1,
+        "step_completion_coverage_score": 1.0,
+        "is_step_ordering_correct": false,
+        "total_generated_dependency_steps": 0,
+        "correctly_generated_dependency_steps": 0,
+        "dependency_accuracy_score": 0.0,
+        "generated_information_steps_count": 1,
+        "correctly_generated_information_steps_count": 1,
+        "generated_command_steps_count": 1,
+        "correctly_generated_command_steps_count": 1,
+        "step_type_accuracy_score": 1.0,
+        "total_generated_steps_require_iteration": 0,
+        "correctly_generated_iterative_steps": 0,
+        "iteration_handling_score": 0.0,
+        "num_redundant_steps": 1,
+        "redundancy_score": 0.0
+    },
+    "user_validation_evaluation": {
+        "evaluation_needed": true,
+        "evaluation_score": 9.0,
+        "evaluation_reasoning": "The plan presentation is clear, concise, and accurately reflects the actual plan. It explains the method used to determine the top bandwidth-consuming applications and provides a step-by-step breakdown of the process. The use of the nethogs utility and the command to capture per-process network usage are well-explained. The presentation also mentions the safety risk as medium and provides a natural confirmation request at the end. The only minor issue is that it does not explicitly mention the output format, but it is implied in the command explanation."
+    },
+    "step_resolver_evaluation": [
+        {
+            "evaluation_needed": false,
+            "expected_resolution_success": false,
+            "generated_resolution_success": false,
+            "total_generated_placeholders": 0,
+            "correctly_resolved_placeholders": 0,
+            "placeholder_resolution_accuracy": 0.0,
+            "expected_generated_resolved_steps_count": 0,
+            "actual_generated_resolved_steps_count": 0,
+            "is_iteration_expansion_correct": false
+        }
+    ],
+    "information_generation_evaluation": [
+        {
+            "evaluation_needed": true,
+            "evaluation_score": 9.0,
+            "evaluation_reasoning": "The generated response is highly relevant, accurate, and clearly written. It provides a detailed explanation of what the data will show, how the ranking works, and what to look for in the results. The response also includes a typical output format and explains why the list can change quickly. The next steps for the user are well-defined and easy to follow. The only limitation is that the response cannot provide specific results without the actual nethogs output. The response avoids hallucinations, is concise, and complete, making it an excellent response."
+        }
+    ],
+    "command_execution_analysis_evaluation": [
+        {
+            "evaluation_needed": true,
+            "expected_success": true,
+            "predicted_success": true
+        }
+    ],
+    "command_error_handling_evaluation": [
+        {
+            "evaluation_needed": false,
+            "expected_can_recover": false,
+            "predicted_can_recover": false,
+            "recovery_command_executed_successfully": false
+        }
+    ],
+    "final_response_evaluation": {
+        "evaluation_score": 10.0,
+        "evaluation_reasoning": "The generated final response correctly synthesizes the command execution results and information outputs. It accurately reflects the absence of network traffic during the sampling period and provides clear explanations for potential next steps. The response avoids hallucinations by not inventing outputs or actions and correctly represents the lack of data. It is complete, including important information needed by the user, and is well-structured and easy to understand. The response also handles the failure to detect network traffic in a clear and understandable manner, providing suggestions for the user to try again or adjust the sampling duration. Overall, the response demonstrates excellent clarity, completeness, and conciseness, with no noticeable issues."
+    }
+}
