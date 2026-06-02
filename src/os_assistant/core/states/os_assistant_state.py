@@ -165,7 +165,7 @@ class Step(BaseModel):
         ),
     )
 
-    status: Literal["pending", "running", "completed"] = Field(
+    status: Literal["pending", "running", "completed", "failed"] = Field(
         default="pending",
         description="Execution status of the step."
     )
