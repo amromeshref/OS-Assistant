@@ -223,15 +223,18 @@ class OSAssistantApp:
         return state
     
     def handle_rag(self, state: OSAssistantState):
-        self.rag_tool.add_memories(session_id=state.turn_num, summaries=state.memory_extraction.summary)
+        self.rag_tool.add_memories(session_id=state.turn_num, summaries=state.memory_extraction.summary_for_rag)
         return state
 
     # ================= MAIN LOOP =================
     def run(self):
+        past_session_summaries = []
+
         while True:
             query = self.get_input()
 
             state = OSAssistantState()
+            state.past_session_summaries = past_session_summaries
             state.original_queries.append(query)
 
             state = self.handle_cognition(state)
@@ -243,6 +246,10 @@ class OSAssistantApp:
             
             if RAG_ENABLED:
                 state = self.handle_rag(state)
+
+            save_debug_state(state, "final_state")
+            
+            past_session_summaries.append(state.memory_extraction.session_summary)
 def main():
     parser = argparse.ArgumentParser(
         description="OS Assistant CLI"
