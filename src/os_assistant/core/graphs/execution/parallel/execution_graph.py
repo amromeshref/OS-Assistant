@@ -233,6 +233,9 @@ class ParallelExecutionGraph:
 
         logger.info("Execution engine completed.")
 
+        state.memory_extraction = memory_result.memory_extraction
+        state.past_session_summaries.append(memory_result.memory_extraction.session_summary)
+
         return state
 
     def compile(self) -> None:
