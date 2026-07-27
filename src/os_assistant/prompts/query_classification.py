@@ -88,6 +88,8 @@ Only set requires_follow_up = true IF:
 Otherwise:
 - ALWAYS set requires_follow_up = false
 
+- If you receive a summary of past sessions, use it in your reasoning to improve classification accuracy.
+
 Goal:
 
 - In Mode 1 → detect unclear or incomplete requests
@@ -101,8 +103,14 @@ def get_first_human_message(state: OSAssistantState):
 This is Mode 1: Initial Classification.
 Current Turn Query: {state.original_queries[-1]}
 Finalized Enhanced User Query from previous turns(if any): {state.finalized_enhanced_query}
-Conversation History: {str(state.multi_turn_conversation_history)}
+Conversation History for the current session: {str(state.multi_turn_conversation_history)}
 """
+    if len(state.past_session_summaries) > 0:
+        prompt += "Here are summaries of past sessions with the user:\n"
+
+        for idx, summary in enumerate(state.past_session_summaries):
+            prompt += f"Summary of session {idx+1}: {summary}\n"
+
     if RAG_ENABLED:
         rag_tool = RAGTool()
         retrieved_memories = rag_tool.retrieve(state.original_queries[-1])
@@ -120,4 +128,10 @@ This is Mode 2: Post-Clarification Classification.
 Current Turn Query: {state.original_queries[-1]}
 Conversation History: {str(state.multi_turn_conversation_history)}
 """
+    if len(state.past_session_summaries) > 0:
+        prompt += "Here are summaries of past sessions with the user:\n"
+
+        for idx, summary in enumerate(state.past_session_summaries):
+            prompt += f"Summary of session {idx+1}: {summary}\n"
+
     return prompt
