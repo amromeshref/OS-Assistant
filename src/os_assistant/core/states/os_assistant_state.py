@@ -492,12 +492,20 @@ class SummarizerState(BaseModel):
     """
     Represents the state of the Summarizer, which is responsible for extracting durable and reusable information from the conversation history, execution plan, and executed steps to be stored in long-term memory for retrieval augmentation in future sessions.
     """
-    summary: List[str] = Field(
+    summary_for_rag: List[str] = Field(
         default_factory=list,
         description=(
             "A list of key information extracted from the conversation history, execution plan, and executed steps"
         )
     )
+
+    session_summary: str = Field(
+        default="",
+        description=(
+            "A concise summary of the entire session, including the user's queries, the execution plan, and the results of executed steps. This summary should provide a clear overview of what was accomplished during the session and any important context that may be relevant for future queries."
+        )
+    )
+    
 
 class OSAssistantState(BaseModel):
     """
@@ -760,6 +768,14 @@ class OSAssistantState(BaseModel):
     memory_extraction: SummarizerState = Field(
         default=SummarizerState(),
         description="The state of the summarization process for extracting durable and reusable information to be stored in long-term memory."
+    )
+
+    past_session_summaries: List[str] = Field(
+        default_factory=list,
+        description=(
+            "A list of summaries from past sessions, which can be used for retrieval augmentation in future sessions. "
+            "This should be updated after each session to include the summary of that session."
+        ),
     )
 
     execution_time: float = Field(
