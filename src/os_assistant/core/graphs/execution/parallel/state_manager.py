@@ -46,6 +46,7 @@ def update_state(state: OSAssistantState,
         
         elif isinstance(response, SummarizerState):
             state.memory_extraction = response
+            state.past_session_summaries.append(response.session_summary)
 
         else:
             logger.warning(
