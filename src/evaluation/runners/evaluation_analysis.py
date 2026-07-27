@@ -115,6 +115,7 @@ class EvaluationAnalysis:
         self.can_recover_prediction_score = 0.0
 
         # Recovery command execution success metrics
+        self.total_generated_recoveries_count = 0
         self.total_succesfully_executed_recoveries_count = 0
         self.successfully_executed_recoveries_score = 0.0
 
@@ -218,6 +219,9 @@ class EvaluationAnalysis:
                 self.total_correctly_predicted_can_recover_count += int((cmd_error_eval.expected_can_recover == cmd_error_eval.predicted_can_recover))
                 self.total_succesfully_executed_recoveries_count += int(cmd_error_eval.recovery_command_executed_successfully)
 
+                if cmd_error_eval.predicted_can_recover:
+                    self.total_generated_recoveries_count += 1
+
     def analyze_final_response_evaluation(self, eval_data: DataPointEvaluation):
         self.final_response_score += eval_data.final_response_evaluation.evaluation_score
 
@@ -260,7 +264,7 @@ class EvaluationAnalysis:
 
         # Command Error Handling
         self.can_recover_prediction_score = self.total_correctly_predicted_can_recover_count / self.total_command_errors_count if self.total_command_errors_count > 0 else 0.0
-        self.successfully_executed_recoveries_score = self.total_succesfully_executed_recoveries_count / self.total_command_errors_count if self.total_command_errors_count > 0 else 0.0
+        self.successfully_executed_recoveries_score = self.total_succesfully_executed_recoveries_count / self.total_generated_recoveries_count if self.total_generated_recoveries_count > 0 else 0.0
         self.command_error_handling_score = (self.can_recover_prediction_score + self.successfully_executed_recoveries_score) / 2   
 
         # Final Response
