@@ -70,13 +70,14 @@ def summarizer_node(state: OSAssistantState) -> OSAssistantState:
 
     if not PARALLEL_EXECUTION_ENABLED:
         state.memory_extraction = response
+        state.past_session_summaries.append(response.session_summary)
     else:
         update_state(state=state, response=response)
-
+    
     # Save the extracted memory into a JSONL file for RAG
     save_session_memory(
         session_id=get_next_session_id(),
-        summaries=response.summary,
+        summaries=response.summary_for_rag,
     )
 
     logger.info("Completed summarizer node.")
