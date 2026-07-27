@@ -1,0 +1,7 @@
+{
+    "id": 65,
+    "user_query": "Check if there's an active SSH connection to this machine right now, and if so, tell me what IP address it's coming from",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 46,
+    "user_query": "I accidentally deleted a python file right now. Can you help me get it back?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "easy"
+}

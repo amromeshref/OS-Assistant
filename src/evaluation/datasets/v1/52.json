@@ -1,0 +1,7 @@
+{
+    "id": 52,
+    "user_query": "I wanna know how much GB free and used in my external hard disk",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 68,
+    "user_query": "Check if Numpy is installed in my environment.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

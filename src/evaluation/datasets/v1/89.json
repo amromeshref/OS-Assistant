@@ -1,0 +1,7 @@
+{
+    "id": 89,
+    "user_query": "Show me the complete hardware specifications of this machine",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

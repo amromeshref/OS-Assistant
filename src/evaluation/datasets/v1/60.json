@@ -1,0 +1,7 @@
+{
+    "id": 60,
+    "user_query": "Find all CVs in test/Cvs that contain the word Python",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 57,
+    "user_query": "Open opera and go to youtube",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

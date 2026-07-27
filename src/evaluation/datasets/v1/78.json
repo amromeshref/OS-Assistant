@@ -1,0 +1,7 @@
+{
+    "id": 78,
+    "user_query": "Check whether port 8000 is open and explain what is using it",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

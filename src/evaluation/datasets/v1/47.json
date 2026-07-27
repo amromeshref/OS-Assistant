@@ -1,0 +1,7 @@
+{
+    "id": 47,
+    "user_query": "What is my IP address?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

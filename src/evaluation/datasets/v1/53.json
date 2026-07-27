@@ -1,0 +1,7 @@
+{
+    "id": 53,
+    "user_query": "I wanna if there are duplicate folders in my current dir (based on their contents)",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

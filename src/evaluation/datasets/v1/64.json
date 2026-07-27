@@ -1,0 +1,7 @@
+{
+    "id": 64,
+    "user_query": "Can you tell me which application i open a lot? VScode or Clion",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

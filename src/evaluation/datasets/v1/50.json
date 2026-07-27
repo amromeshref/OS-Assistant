@@ -1,0 +1,7 @@
+{
+    "id": 50,
+    "user_query": "Determine which applications are consuming the most battery",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

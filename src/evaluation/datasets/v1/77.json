@@ -1,0 +1,7 @@
+{
+    "id": 77,
+    "user_query": "List startup applications and tell me which ones are safe to disable",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

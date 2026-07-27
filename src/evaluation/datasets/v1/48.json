@@ -1,0 +1,7 @@
+{
+    "id": 48,
+    "user_query": "Can you find the devices connected to my network?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

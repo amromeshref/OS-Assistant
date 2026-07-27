@@ -1,0 +1,7 @@
+{
+    "id": 75,
+    "user_query": "Find applications that I repeatedly close and reopen throughout the day",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

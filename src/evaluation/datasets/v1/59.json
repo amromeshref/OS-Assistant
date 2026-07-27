@@ -1,0 +1,7 @@
+{
+    "id": 59,
+    "user_query": "Rename every photo in test/images using the date it was taken",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

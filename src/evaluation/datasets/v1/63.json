@@ -1,0 +1,7 @@
+{
+    "id": 63,
+    "user_query": "Find files in the current dir that have references to things that no longer exist",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

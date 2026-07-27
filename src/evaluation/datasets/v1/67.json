@@ -1,0 +1,7 @@
+{
+    "id": 67,
+    "user_query": "Look through my chrome's cached files and delete anything related to my bank login session",
+    "expected_query_type": "both",
+    "expected_requires_clarification": true,
+    "level": "hard"
+}

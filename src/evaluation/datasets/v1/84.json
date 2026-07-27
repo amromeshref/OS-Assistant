@@ -1,0 +1,7 @@
+{
+    "id": 84,
+    "user_query": "Trace the route to github.com and identify where latency increases",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 72,
+    "user_query": "Determine whether this computer can handle another virtual machine",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

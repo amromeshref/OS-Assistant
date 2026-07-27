@@ -1,0 +1,7 @@
+{
+    "id": 49,
+    "user_query": "Find files that were downloaded in the Downloads folder but never opened.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

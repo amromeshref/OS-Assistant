@@ -1,0 +1,7 @@
+{
+    "id": 86,
+    "user_query": "Check whether my DNS configuration is causing slow browsing",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 82,
+    "user_query": "Show which applications are currently using the network",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

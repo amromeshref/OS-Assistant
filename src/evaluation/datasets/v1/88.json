@@ -1,0 +1,7 @@
+{
+    "id": 88,
+    "user_query": "What is my computer's serial number?",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

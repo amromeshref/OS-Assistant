@@ -1,0 +1,7 @@
+{
+    "id": 74,
+    "user_query": "I want you to create a new conda environment",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "easy"
+}

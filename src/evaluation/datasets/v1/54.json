@@ -1,0 +1,7 @@
+{
+    "id": 54,
+    "user_query": "I wanna know which subdirectories in my current dir would free the most space if compressed",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

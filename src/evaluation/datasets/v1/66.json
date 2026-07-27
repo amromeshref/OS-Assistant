@@ -1,0 +1,7 @@
+{
+    "id": 66,
+    "user_query": "Check if my airpods is paired via bluetooth. If so, unpair it.",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

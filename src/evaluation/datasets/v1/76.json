@@ -1,0 +1,7 @@
+{
+    "id": 76,
+    "user_query": "Kill the process using port 1234",
+    "expected_query_type": "command",
+    "expected_requires_clarification": true,
+    "level": "easy"
+}

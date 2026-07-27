@@ -1,0 +1,7 @@
+{
+    "id": 58,
+    "user_query": "Please check for missing __init__.py files in my python package(in the current dir).",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

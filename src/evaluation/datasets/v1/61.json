@@ -1,0 +1,7 @@
+{
+    "id": 61,
+    "user_query": "Find the CV of a person named Amro Meshref. The file may not named by his name. The CVs are located in test/Cvs",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

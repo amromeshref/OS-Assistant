@@ -1,0 +1,7 @@
+{
+    "id": 85,
+    "user_query": "Show all users currently logged into this machine",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 69,
+    "user_query": "Go through my source code directory(test/code) and find all TODO comments in the files.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

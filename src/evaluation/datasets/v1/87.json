@@ -1,0 +1,7 @@
+{
+    "id": 87,
+    "user_query": "Which hardware component is currently under the most stress?",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "hard"
+}

@@ -1,0 +1,7 @@
+{
+    "id": 55,
+    "user_query": "I wanna know the ollama models installed on my device.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

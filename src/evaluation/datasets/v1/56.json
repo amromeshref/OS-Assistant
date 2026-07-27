@@ -1,0 +1,7 @@
+{
+    "id": 56,
+    "user_query": "I want a script that checks whether required developer tools are installed and reports missing ones. Save it in my current dir.",
+    "expected_query_type": "both",
+    "expected_requires_clarification": true,
+    "level": "medium"
+}

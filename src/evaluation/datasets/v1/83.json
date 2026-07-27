@@ -1,0 +1,7 @@
+{
+    "id": 83,
+    "user_query": "Find all open ports and explain whether any are risky",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

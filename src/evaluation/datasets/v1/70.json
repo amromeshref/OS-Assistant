@@ -1,0 +1,7 @@
+{
+    "id": 70,
+    "user_query": "I wanna know the cpu and gpu of my laptop.",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "easy"
+}

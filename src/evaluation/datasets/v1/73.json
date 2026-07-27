@@ -1,0 +1,7 @@
+{
+    "id": 73,
+    "user_query": "Will my computer be able to run GTAV?",
+    "expected_query_type": "both",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}
