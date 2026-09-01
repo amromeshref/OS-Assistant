@@ -9,63 +9,64 @@ tests.txt
 
 Similar Papers/
 
-src/os_assistant.egg-info/
-src/os_assistant/__pycache__/
+src/os_hope.egg-info/
+src/oshope/__pycache__/
 
-src/os_assistant/core/models/__pycache__
+src/oshope/core/models/__pycache__
 
-src/os_assistant/config/__pycache__
-src/os_assistant/core/__pycache__/
-src/os_assistant/prompts/__pycache__
-src/os_assistant/tools/__pycache__
-src/os_assistant/utils/__pycache__/
+src/oshope/config/__pycache__
+src/oshope/core/__pycache__/
+src/oshope/prompts/__pycache__
+src/oshope/tools/__pycache__
+src/oshope/utils/__pycache__/
 
-src/os_assistant/core/graphs/__pycache__/
-src/os_assistant/core/states/__pycache__/
+src/oshope/core/graphs/__pycache__/
+src/oshope/core/states/__pycache__/
 
-src/os_assistant/core/graphs/cognition/__pycache__/
-src/os_assistant/core/graphs/cognition/nodes/__pycache__/
-src/os_assistant/core/graphs/cognition/routing/__pycache__/
+src/oshope/core/graphs/cognition/__pycache__/
+src/oshope/core/graphs/cognition/nodes/__pycache__/
+src/oshope/core/graphs/cognition/routing/__pycache__/
 
-src/os_assistant/core/graphs/execution/__pycache__/
-src/os_assistant/core/graphs/execution/parallel/__pycache__/
-src/os_assistant/core/graphs/execution/parallel/nodes/__pycache__/
-src/os_assistant/core/graphs/execution/parallel/routing/__pycache__/
-src/os_assistant/core/graphs/execution/parallel/random.py
-src/os_assistant/core/graphs/execution/sequential/__pycache__/
-src/os_assistant/core/graphs/execution/sequential/nodes/__pycache__/
-src/os_assistant/core/graphs/execution/sequential/routing/__pycache__/
+src/oshope/core/graphs/execution/__pycache__/
+src/oshope/core/graphs/execution/parallel/__pycache__/
+src/oshope/core/graphs/execution/parallel/nodes/__pycache__/
+src/oshope/core/graphs/execution/parallel/routing/__pycache__/
+src/oshope/core/graphs/execution/parallel/random.py
+src/oshope/core/graphs/execution/sequential/__pycache__/
+src/oshope/core/graphs/execution/sequential/nodes/__pycache__/
+src/oshope/core/graphs/execution/sequential/routing/__pycache__/
 
-src/os_assistant/core/graphs/memory/__pycache__/
-src/os_assistant/core/graphs/memory/nodes/__pycache__/
-src/os_assistant/core/graphs/memory/routing/__pycache__/
+src/oshope/core/graphs/memory/__pycache__/
+src/oshope/core/graphs/memory/nodes/__pycache__/
+src/oshope/core/graphs/memory/routing/__pycache__/
 
-src/os_assistant/core/graphs/planning/__pycache__/
-src/os_assistant/core/graphs/planning/nodes/__pycache__/
-src/os_assistant/core/graphs/planning/routing/__pycache__/
+src/oshope/core/graphs/planning/__pycache__/
+src/oshope/core/graphs/planning/nodes/__pycache__/
+src/oshope/core/graphs/planning/routing/__pycache__/
 
-src/os_assistant/interfaces/__pycache__/
-src/os_assistant/interfaces/voice_input/__pycache__/
+src/oshope/interfaces/__pycache__/
+src/oshope/interfaces/voice_input/__pycache__/
 
-src/os_assistant/tools/rag/__pycache__/
-src/os_assistant/tools/rag/chromadb/__pycache__/
-src/os_assistant/tools/rag/embedding_models/__pycache__/
-src/os_assistant/tools/rag/ingestion/__pycache__/
-src/os_assistant/tools/rag/retriever/__pycache__/
+src/oshope/tools/rag/__pycache__/
+src/oshope/tools/rag/chromadb/__pycache__/
+src/oshope/tools/rag/embedding_models/__pycache__/
+src/oshope/tools/rag/ingestion/__pycache__/
+src/oshope/tools/rag/retriever/__pycache__/
 
-src/evaluation/__pycache__/
-src/evaluation/outputs/__pycache__/
-src/evaluation/outputs/evaluation-output/__pycache__/
-src/evaluation/outputs/os-assistant-output/__pycache__/
-src/evaluation/outputs/os-assistant-output
+src/oshope_evaluation/__pycache__/
+src/oshope_evaluation/human-oversight-evaluation
+src/oshope_evaluation/outputs/__pycache__/
+src/oshope_evaluation/outputs/evaluation-output/__pycache__/
+src/oshope_evaluation/outputs/os-hope-output/__pycache__/
+src/oshope_evaluation/outputs/os-hope-output
 
-src/evaluation/runners/__pycache__/
-src/evaluation/runners/nodes/__pycache__/
-src/evaluation/runners/prompts/__pycache__/
+src/oshope_evaluation/runners/__pycache__/
+src/oshope_evaluation/runners/nodes/__pycache__/
+src/oshope_evaluation/runners/prompts/__pycache__/
 
-src/evaluation/random.py
+src/oshope_evaluation/random.py
 
-src/evaluation/reports
+src/oshope_evaluation/reports
 
 test/
 backup/
