@@ -3,14 +3,14 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "os-assistant"
+name = "os-hope"
 version = "0.1.0"
 description = "AI OS Assistant"
-authors = [{ name = "Amro Meshref" }]
+authors = [{ name = "" }]
 dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [project.scripts]
-os-assistant = "os_assistant.interfaces.cli:main"
+os-hope = "oshope.interfaces.cli:main"
