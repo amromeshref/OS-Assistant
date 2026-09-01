@@ -1,4 +1,5 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
+from oshope.core.states.oshope_state import OSHopeState
+
 
 def get_clarification_evaluation_system_prompt(structured_output=None) -> str:
     prompt = f"""
@@ -101,7 +102,8 @@ WHAT TO EVALUATE:
 """
     return prompt
 
-def get_human_message_for_clarification_evaluation(state: OSAssistantState) -> str:
+
+def get_human_message_for_clarification_evaluation(state: OSHopeState) -> str:
     human_message = f"""
 USER REQUEST:
 {state.original_queries[0]}

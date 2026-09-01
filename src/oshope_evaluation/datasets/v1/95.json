@@ -1,0 +1,7 @@
+{
+    "id": 95,
+    "user_query": "Stop all unnecessary background services",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

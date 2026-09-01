@@ -1,0 +1,7 @@
+{
+    "id": 100,
+    "user_query": "Delete all files with names beginning with test_ from /home/user/datasets/",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

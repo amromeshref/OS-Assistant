@@ -1,4 +1,5 @@
-from os_assistant.core.states.os_assistant_state import InformationResponse
+from oshope.core.states.oshope_state import InformationResponse
+
 
 def get_information_generation_evaluation_system_prompt(structured_output=None):
     prompt = f"""
@@ -91,8 +92,11 @@ SCORING RUBRIC (0 → 10):
 """
     return prompt
 
-def get_human_message_for_information_generation_evaluation(information_response: InformationResponse) -> str:
-   human_message = f"""
+
+def get_human_message_for_information_generation_evaluation(
+    information_response: InformationResponse,
+) -> str:
+    human_message = f"""
 Information step description:
 {information_response.query}
 Optional context from previous steps(if any):
@@ -100,4 +104,4 @@ Optional context from previous steps(if any):
 Generated informational response:
 {information_response.answer}
 """
-   return human_message
+    return human_message

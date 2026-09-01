@@ -1,0 +1,7 @@
+{
+    "id": 98,
+    "user_query": "Delete the following files from /home/user/test/: file1.pdf, file2.py, report.pdf, backup.zip, and data.csv",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

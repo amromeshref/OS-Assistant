@@ -1,5 +1,9 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.utils.helper_functions import command_executions_to_str, information_responses_to_str
+from oshope.core.states.oshope_state import OSHopeState
+from oshope.utils.helper_functions import (
+    command_executions_to_str,
+    information_responses_to_str,
+)
+
 
 def get_final_response_evaluation_system_prompt(structured_output=None):
     prompt = f"""
@@ -97,8 +101,9 @@ SCORING RUBRIC (0 → 10):
 """
     return prompt
 
-def get_human_message_for_final_response_evaluation(state: OSAssistantState) -> str:
-   human_message = f"""
+
+def get_human_message_for_final_response_evaluation(state: OSHopeState) -> str:
+    human_message = f"""
 Original user request:
 {state.finalized_enhanced_query}
 Command execution results:
@@ -108,4 +113,4 @@ Information responses:
 Generated final response:
 {state.generated_final_response}
 """
-   return human_message
+    return human_message

@@ -1,0 +1,7 @@
+{
+    "id": 97,
+    "user_query": "Terminate all processes consuming more than 80% CPU",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

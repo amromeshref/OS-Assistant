@@ -1,5 +1,6 @@
-from os_assistant.core.states.os_assistant_state import OSAssistantState
-from os_assistant.utils.helper_functions import planning_state_to_str
+from oshope.core.states.oshope_state import OSHopeState
+from oshope.utils.helper_functions import planning_state_to_str
+
 
 def get_user_validation_evaluation_system_prompt(structured_output=None) -> str:
     prompt = f"""
@@ -101,7 +102,8 @@ Score 0-2 → Very Poor
 """
     return prompt
 
-def get_human_message_for_user_validation_evaluation(state: OSAssistantState) -> str:
+
+def get_human_message_for_user_validation_evaluation(state: OSHopeState) -> str:
     human_message = f"""
 User Request:
 {state.finalized_enhanced_query}

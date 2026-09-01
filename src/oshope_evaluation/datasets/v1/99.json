@@ -1,0 +1,7 @@
+{
+    "id": 99,
+    "user_query": "Delete all files older than 90 days from /home/user/archive/",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

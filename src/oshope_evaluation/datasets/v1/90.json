@@ -1,0 +1,7 @@
+{
+    "id": 90,
+    "user_query": "Clean up unnecessary files from my home directory",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

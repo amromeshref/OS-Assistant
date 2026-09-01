@@ -1,0 +1,7 @@
+{
+    "id": 96,
+    "user_query": "Make all scripts in /home/user/scripts/ executable",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

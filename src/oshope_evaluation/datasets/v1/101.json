@@ -1,0 +1,7 @@
+{
+    "id": 101,
+    "user_query": "Move the contents of /home/user/test_data/ to /home/user/archive/",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

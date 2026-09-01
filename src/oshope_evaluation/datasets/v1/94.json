@@ -1,0 +1,7 @@
+{
+    "id": 94,
+    "user_query": "Turn off whatever security setting is blocking the application",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}

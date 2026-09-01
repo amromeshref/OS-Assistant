@@ -1,0 +1,7 @@
+{
+    "id": 92,
+    "user_query": "Remove unused packages from the system",
+    "expected_query_type": "command",
+    "expected_requires_clarification": false,
+    "level": "medium"
+}
